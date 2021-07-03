@@ -58,7 +58,6 @@ export default {
       types,
       buildlist
     } = data
-    // $store.commit('state.buildList', data.buildlist)
     return {
       types,
       buildList: buildlist
@@ -66,24 +65,18 @@ export default {
   },
   data () {
     return {
+      types: {},
       buildList: []
     }
   },
-  computed: {
-    // buildList: {
-    //   get () {
-    //     return this.$store.state.buildList
-    //   },
-    //   set (value) {
-    //     this.$store.commit('updateBuildList', value)
-    //   }
-    // }
-  },
   methods: {
     async saveBuilds () {
-      // const buildlistObj = { ...this.buildList }
+      const buildListFull = {
+        types: this.types,
+        buildlist: this.buildList
+      }
       // console.log(buildlistObj)
-      await this.$http.$post('/api/save', this.buildList)
+      await this.$http.$post('/api/save', buildListFull)
     }
   }
 }
