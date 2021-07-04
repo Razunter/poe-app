@@ -33,10 +33,14 @@
       </md-app-drawer>
       <md-app-content>
         <section v-for="buildtype in buildList" :key="buildtype.type">
-          <h2>{{ buildtype.type }}</h2>
+          <h2>{{ typeName(buildtype.type) }}</h2>
           <draggable tag="ol" :list="buildtype.builds">
             <li v-for="build in buildtype.builds" :key="build.url">
-              {{ build }}
+              <Build
+                :build="build"
+                :build-type="typeName(buildtype.type)"
+                :outdated="outdated(build.versions)"
+              />
             </li>
           </draggable>
         </section>
@@ -47,31 +51,42 @@
 
 <script>
 import draggable from 'vuedraggable'
+import Build from '@/components/Build'
 
 export default {
   components: {
-    draggable
+    draggable,
+    Build
   },
   async asyncData ({ $http }) {
     const data = await $http.$get('/api/load')
-    const {
-      types,
-      buildlist
-    } = data
     return {
-      types,
-      buildList: buildlist
+      types: data.types,
+      buildList: data.buildlist,
+      currentVersion: data.currentVersion
     }
   },
   data () {
     return {
       types: {},
-      buildList: []
+      buildList: [],
+      currentVersion: ''
     }
   },
   methods: {
+    typeName (typeID) {
+      return this.types[typeID]
+    },
+    outdated (versions) {
+      if (versions) {
+        return !versions.includes(this.currentVersion)
+      } else {
+        return true
+      }
+    },
     async saveBuilds () {
       const buildListFull = {
+        currentVersion: this.currentVersion,
         types: this.types,
         buildlist: this.buildList
       }
@@ -91,5 +106,9 @@ export default {
 
 .md-app {
   min-height: 100vh;
+}
+
+.md-toolbar.md-theme-default.md-primary {
+  background: #35495e;
 }
 </style>

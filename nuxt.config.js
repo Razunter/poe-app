@@ -42,7 +42,11 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    '@/plugins/vue-material'
+    '@/plugins/vue-material',
+    {
+      src: '~/plugins/vuelidate.js',
+      mode: 'client'
+    }
   ],
 
   /*
