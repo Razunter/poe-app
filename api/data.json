@@ -10,24 +10,28 @@
     "minions": "Minions",
     "misc": "Misc"
   },
-  "buildlist": [
+  "buildList": [
     {
       "type": "melee",
       "builds": [
+        {
+          "type": "melee",
+          "title": "For Marauder - Ngamahu's Flame Cyclone / Consecrated Path / Tectonic Slam Buil",
+          "url": "https://www.pathofexile.com/forum/view-thread/2092338",
+          "videotype": "youtube",
+          "video": "VCueqRvsVpY",
+          "versions": [
+            "3.14"
+          ]
+        },
         {
           "title": "From League Starter to Shaper – Cheap, Tanky, Fast and Fun Physical ST – Very Detailed Guide",
           "url": "https://www.pathofexile.com/forum/view-thread/2077519",
           "videotype": "youtube",
           "video": "NqynUMlMulw",
-          "versions": ["3.10"]
-        },
-        {
-          "type": "melee",
-          "title": "For Marauder - Ngamahu's Flame Cyclone / Consecrated Path / Tectonic Slam Build",
-          "url": "https://www.pathofexile.com/forum/view-thread/2092338",
-          "videotype": "youtube",
-          "video": "VCueqRvsVpY",
-          "versions": ["3.14"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -35,7 +39,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2149501",
           "videotype": "youtube",
           "video": "zCnoS1PH8WU",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -43,7 +49,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2093747",
           "videotype": "youtube",
           "video": "NXZ56WrE9CE",
-          "versions": ["3.9"]
+          "versions": [
+            "3.9"
+          ]
         },
         {
           "type": "melee",
@@ -51,7 +59,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2211489",
           "videotype": "youtube",
           "video": "iZSe8RTxJgQ",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -59,7 +69,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2585877",
           "videotype": "youtube",
           "video": "Ue3JL4BWQNo",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -67,7 +79,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1819239",
           "videotype": "youtube",
           "video": "ArAg-dhVemg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -75,7 +89,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2171678",
           "videotype": "youtube",
           "video": "VvdEpaQDEzA",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -83,7 +99,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2514061",
           "videotype": "youtube",
           "video": "MiIcQ38cVts",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -91,7 +109,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2284176",
           "videotype": "youtube",
           "video": "4IQYtLWqEWc",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -99,7 +119,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2618769",
           "videotype": "youtube",
           "video": "WRwc39QPbq4",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -107,7 +129,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2875553",
           "videotype": "youtube",
           "video": "MLHRfA0fDIY",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -115,7 +139,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2187472",
           "videotype": "youtube",
           "video": "jzLqQvmc8aA",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -123,7 +149,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2575392",
           "videotype": "youtube",
           "video": "dkZr7IpDyzI",
-          "versions": ["3.9"]
+          "versions": [
+            "3.9"
+          ]
         },
         {
           "type": "melee",
@@ -131,7 +159,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2668482",
           "videotype": "youtube",
           "video": "n8llHL6286c",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -139,7 +169,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2650714",
           "videotype": "youtube",
           "video": "b8v5mY7rGTI",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "melee",
@@ -147,7 +179,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2605098",
           "videotype": "youtube",
           "video": "tf_mG-QGpxA",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -155,7 +189,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2526420",
           "videotype": "youtube",
           "video": "qpLt3Tuqma4",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -163,7 +199,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1960309",
           "videotype": "youtube",
           "video": "Gsikjka3EZ4",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -171,7 +209,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2768886",
           "videotype": "youtube",
           "video": "k1DZPtBQ0_4",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -179,7 +219,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2129487",
           "videotype": "youtube",
           "video": "obrewJUBnMM",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -187,7 +229,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2639074",
           "videotype": "youtube",
           "video": "0CT_nkL4IUY",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -195,7 +239,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2587658",
           "videotype": "youtube",
           "video": "Fhz7iVnx6Cg",
-          "versions": ["3.9"]
+          "versions": [
+            "3.9"
+          ]
         },
         {
           "type": "melee",
@@ -203,7 +249,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2615012",
           "videotype": "youtube",
           "video": "pwEMG13mIkI",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -211,7 +259,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2686278",
           "videotype": "youtube",
           "video": "K9dec1K8NNI",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -219,7 +269,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2558982",
           "videotype": "youtube",
           "video": "an9OkhaqgvA",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -227,7 +279,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2586705",
           "videotype": "youtube",
           "video": "We6iK5jq5Jo",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -235,7 +289,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2591825",
           "videotype": "youtube",
           "video": "6Lyrhk_q4iU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -243,7 +299,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2775438",
           "videotype": "youtube",
           "video": "bHiX7G7hsiY",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -251,7 +309,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2529202",
           "videotype": "youtube",
           "video": "m5MDgu3rkRs",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "melee",
@@ -259,7 +319,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2622675",
           "videotype": "youtube",
           "video": "2rKmIH42M6w",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -267,7 +329,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2702132",
           "videotype": "youtube",
           "video": "df760-W-72Y",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -275,7 +339,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2589795",
           "videotype": "youtube",
           "video": "hHpJXvi3SHw",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -283,7 +349,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2674867",
           "videotype": "youtube",
           "video": "FAxUNDYdNN8",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -291,7 +359,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2288501",
           "videotype": "youtube",
           "video": "18DmdoUxvl8",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -299,7 +369,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2761746",
           "videotype": "youtube",
           "video": "PrJWMOVTWpA",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "melee",
@@ -307,7 +379,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2874676",
           "videotype": "youtube",
           "video": "J5T-m8n-CgQ",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "melee",
@@ -315,7 +389,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2936173",
           "videotype": "youtube",
           "video": "XBj0SbQZYRI",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "melee",
@@ -323,7 +399,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2775490",
           "videotype": "youtube",
           "video": "uZlGIbIoOcw",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -331,7 +409,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2874747",
           "videotype": "youtube",
           "video": "UzApjFcugsc",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -339,7 +419,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2932377",
           "videotype": "youtube",
           "video": "pq50BdLMAoM",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "melee",
@@ -347,7 +429,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2976624",
           "videotype": "youtube",
           "video": "lp_RcSLaNBs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -355,7 +439,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2936314",
           "videotype": "youtube",
           "video": "QQfXxi4ouUc",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -363,7 +449,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2934802",
           "videotype": "youtube",
           "video": "Q0Jy-qa3l8k",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -371,7 +459,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2081371",
           "videotype": "youtube",
           "video": "uKRTqKhqoj0",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -379,7 +469,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2955035",
           "videotype": "youtube",
           "video": "qOF1kjyttOU",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "melee",
@@ -387,7 +479,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2859157",
           "videotype": "youtube",
           "video": "-V8kzOKB2I8",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -395,7 +489,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2912301",
           "videotype": "youtube",
           "video": "H1eLo15p5hU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -403,7 +499,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3080159",
           "videotype": "youtube",
           "video": "rkl5c6Chfm8",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -411,7 +509,9 @@
           "url": "https://www.youtube.com/watch?v=l3uH7CnByK4",
           "videotype": "youtube",
           "video": "l3uH7CnByK4",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -419,7 +519,9 @@
           "url": "https://www.youtube.com/watch?v=HqocypE_DRg",
           "videotype": "youtube",
           "video": "HqocypE_DRg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -427,7 +529,9 @@
           "url": "https://www.youtube.com/watch?v=6AXPj-FMHSo",
           "videotype": "youtube",
           "video": "6AXPj-FMHSo",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -435,7 +539,9 @@
           "url": "https://www.youtube.com/watch?v=-7yIpiqVPmI",
           "videotype": "youtube",
           "video": "-7yIpiqVPmI",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -443,7 +549,9 @@
           "url": "https://www.youtube.com/watch?v=mPFcDlXdqc4",
           "videotype": "youtube",
           "video": "mPFcDlXdqc4",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -451,7 +559,9 @@
           "url": "https://www.youtube.com/watch?v=3xdSBrDFij4",
           "videotype": "youtube",
           "video": "3xdSBrDFij4",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "melee",
@@ -459,7 +569,9 @@
           "url": "https://www.youtube.com/watch?v=QxYGb739KzI",
           "videotype": "youtube",
           "video": "QxYGb739KzI",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -472,7 +584,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1147951",
           "videotype": "youtube",
           "video": "uCPyyiPFUGM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -480,7 +594,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2784465",
           "videotype": "youtube",
           "video": "VU8MsnLIBow",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "caster",
@@ -488,7 +604,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2784069",
           "videotype": "youtube",
           "video": "UFWqgyfwEek",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "caster",
@@ -496,7 +614,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2606026",
           "videotype": "youtube",
           "video": "oL_5qiqa1WE",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -504,7 +624,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2865430",
           "videotype": "youtube",
           "video": "RdhButU92D8",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -512,7 +634,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2320561",
           "videotype": "youtube",
           "video": "e0KlCo97zUI",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -520,7 +644,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2753922",
           "videotype": "youtube",
           "video": "hgYRf1Oqnro",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "caster",
@@ -528,7 +654,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2333065",
           "videotype": "youtube",
           "video": "xAVgqoEskh0",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -536,7 +664,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2685676",
           "videotype": "youtube",
           "video": "Cb7jNgemAYg",
-          "versions": ["3.9"]
+          "versions": [
+            "3.9"
+          ]
         },
         {
           "type": "caster",
@@ -544,7 +674,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2714125",
           "videotype": "youtube",
           "video": "0164qub8Tcw",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -552,7 +684,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2474628",
           "videotype": "youtube",
           "video": "GibEZEqyA2k",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "caster",
@@ -560,7 +694,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2843873",
           "videotype": "youtube",
           "video": "i0oUFCSlj4Q",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "caster",
@@ -568,7 +704,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2682119",
           "videotype": "youtube",
           "video": "pZ2Haafb960",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -576,7 +714,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2486384",
           "videotype": "youtube",
           "video": "xRKjq2QXGYk",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -584,7 +724,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2687562",
           "videotype": "youtube",
           "video": "rvdVwEWM6Wk",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -592,7 +734,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2581551",
           "videotype": "youtube",
           "video": "FS_pkzOXutc",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -600,7 +744,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2121651",
           "videotype": "youtube",
           "video": "NPM_m_YRkkw",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -608,7 +754,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2661120",
           "videotype": "youtube",
           "video": "3QNlEmX1k1U",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -616,7 +764,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2785198",
           "videotype": "youtube",
           "video": "qLAT_iurj2A",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -624,7 +774,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2739393",
           "videotype": "youtube",
           "video": "UBgT9waxbmY",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "caster",
@@ -632,7 +784,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3009476",
           "videotype": "youtube",
           "video": "Kn3foJ_-Y94",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -640,7 +794,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2986132",
           "videotype": "youtube",
           "video": "gnbb8lCg1OQ",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -648,7 +804,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2917692",
           "videotype": "youtube",
           "video": "ubAfKSYzm3I",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -656,7 +814,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2935991",
           "videotype": "youtube",
           "video": "5m0TVTHCm_U",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "caster",
@@ -664,7 +824,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2967830",
           "videotype": "youtube",
           "video": "aewG_GQYSCk",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -672,7 +834,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3080303",
           "videotype": "youtube",
           "video": "1lpcAiwHeyg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -680,7 +844,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3007160",
           "videotype": "youtube",
           "video": "_KHBzv7fMJU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -688,7 +854,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2797749",
           "videotype": "youtube",
           "video": "sbGzM9qXVAQ",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -696,7 +864,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2885912",
           "videotype": "youtube",
           "video": "wVm5hBdmRXk",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -704,7 +874,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3049865",
           "videotype": "youtube",
           "video": "Joh-1ENhuLg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -712,7 +884,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1963181",
           "videotype": "youtube",
           "video": "s5hW-6gV5JI",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -720,7 +894,9 @@
           "url": "https://www.poe-vault.com/guides/chaos-dot-trickster-build-guide",
           "videotype": "youtube",
           "video": "_ijk7e--U8k",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -728,7 +904,9 @@
           "url": "https://www.poe-vault.com/guides/cold-snap-vortex-occultist-build-guide",
           "videotype": "youtube",
           "video": "jqH3a4VhoyE",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -736,7 +914,9 @@
           "url": "https://www.poe-vault.com/guides/coldslinger-occultist-build-guide",
           "videotype": "youtube",
           "video": "P9lBVu-z92w",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -744,7 +924,9 @@
           "url": "https://www.poe-vault.com/guides/blade-blast-bladefall-poison-assassin-build-guide",
           "videotype": "youtube",
           "video": "-iiztsITtzM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -752,7 +934,9 @@
           "url": "https://www.poe-vault.com/guides/flame-wall-spellslinger-elementalist-build-guide",
           "videotype": "youtube",
           "video": "jy1qXlTe6NA",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -760,7 +944,9 @@
           "url": "https://www.poe-vault.com/guides/archmage-bladefall-blade-blast-hierophant-build-guide",
           "videotype": "youtube",
           "video": "fhAYWkooxBg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -768,7 +954,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3108817",
           "videotype": "youtube",
           "video": "gk5Ypqfzjhs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -776,7 +964,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3102014",
           "videotype": "youtube",
           "video": "Hjl6yoh72mw",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -784,7 +974,9 @@
           "url": "https://www.youtube.com/watch?v=ZaFRN0dsTp8",
           "videotype": "youtube",
           "video": "ZaFRN0dsTp8",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -792,7 +984,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2890856",
           "videotype": "twitch",
           "video": "https://www.twitch.tv/videos/763607741",
-          "versions": ["3.14"],
+          "versions": [
+            "3.14"
+          ],
           "videothumb": "https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/b629699dc306b69660ba_velyna_30502710747_2656257170//thumb/thumb763607741-%{width}x%{height}.jpg",
           "videoid": "763607741"
         },
@@ -802,7 +996,9 @@
           "url": "https://www.youtube.com/watch?v=3npA1n10PpQ",
           "videotype": "youtube",
           "video": "3npA1n10PpQ",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -810,7 +1006,9 @@
           "url": "https://www.youtube.com/watch?v=SSn8uo-Jkko",
           "videotype": "youtube",
           "video": "SSn8uo-Jkko",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -818,7 +1016,9 @@
           "url": "https://www.youtube.com/watch?v=OR8vWzTQgCU",
           "videotype": "youtube",
           "video": "OR8vWzTQgCU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "caster",
@@ -826,7 +1026,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3063150",
           "videotype": "",
           "video": "",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -839,7 +1041,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2247655",
           "videotype": "youtube",
           "video": "GVTM01-jbBg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -847,7 +1051,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2077932",
           "videotype": "youtube",
           "video": "kxT3wKfuJZM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -855,7 +1061,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2712106",
           "videotype": "youtube",
           "video": "KiXFU7iozFk",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "ranged",
@@ -863,7 +1071,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2611619",
           "videotype": "youtube",
           "video": "uhPZXq6mzgQ",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "ranged",
@@ -871,7 +1081,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2756995",
           "videotype": "youtube",
           "video": "E0LBg90xJ8E",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "ranged",
@@ -879,7 +1091,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2467666",
           "videotype": "youtube",
           "video": "zdyzUjrcE08",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -887,7 +1101,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2551841",
           "videotype": "youtube",
           "video": "dS-gx4lgU7s",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -895,7 +1111,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2208830",
           "videotype": "youtube",
           "video": "oOxy9DUkx6g",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "ranged",
@@ -903,7 +1121,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2778181",
           "videotype": "youtube",
           "video": "vMuqK95WTXM",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "ranged",
@@ -911,7 +1131,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2866127",
           "videotype": "youtube",
           "video": "JGb5AyfLMEU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -919,7 +1141,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2894207",
           "videotype": "youtube",
           "video": "9AqJ3vvwCww",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -927,7 +1151,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2548646",
           "videotype": "youtube",
           "video": "Wby46F7e0oM",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "ranged",
@@ -935,7 +1161,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2672813",
           "videotype": "youtube",
           "video": "N80uwaimHRM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -943,7 +1171,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3077253",
           "videotype": "youtube",
           "video": "lpZGDkspRGg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -951,7 +1181,9 @@
           "url": "https://www.poe-vault.com/guides/caustic-arrow-ci-trickster-build-guide",
           "videotype": "youtube",
           "video": "vMuqK95WTXM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -959,7 +1191,9 @@
           "url": "https://www.youtube.com/watch?v=9gjRshfmi_s",
           "videotype": "youtube",
           "video": "9gjRshfmi_s",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -967,7 +1201,9 @@
           "url": "https://www.youtube.com/watch?v=6uVj-OXy-Gs",
           "videotype": "youtube",
           "video": "6uVj-OXy-Gs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "ranged",
@@ -975,7 +1211,9 @@
           "url": "https://www.youtube.com/watch?v=CSye-pb5V3Y",
           "videotype": "youtube",
           "video": "CSye-pb5V3Y",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -988,7 +1226,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2731974",
           "videotype": "youtube",
           "video": "CsFE3syWkrA",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "totems",
@@ -996,7 +1236,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2685450",
           "videotype": "youtube",
           "video": "K8ZDMNoUl1w",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "totems",
@@ -1005,7 +1247,9 @@
           "videotype": "twitch",
           "video": "397432742",
           "videothumb": "https://static-cdn.jtvnw.net/s3_vods/f9926e7a3219c6bea040_mrseanconnor_64101443270_7305845219//thumb/thumb397432742-%{width}x%{height}.jpg",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "totems",
@@ -1013,7 +1257,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2784985",
           "videotype": "youtube",
           "video": "GDBmAMpR_g0",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "totems",
@@ -1022,7 +1268,9 @@
           "videotype": "twitch",
           "video": "399015124",
           "videothumb": "https://static-cdn.jtvnw.net/s3_vods/a5d1825df3803a7a7a68_mrseanconnor_10162920444_9390190554//thumb/thumb399015124-%{width}x%{height}.jpg",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "totems",
@@ -1030,7 +1278,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2769163",
           "videotype": "youtube",
           "video": "wxLohWMLDEE",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "totems",
@@ -1038,7 +1288,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1694250",
           "videotype": "youtube",
           "video": "-UQnZ7fHcow",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "totems",
@@ -1046,7 +1298,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2623691",
           "videotype": "youtube",
           "video": "lTbFYk0MWjQ",
-          "versions": ["3.1"]
+          "versions": [
+            "3.1"
+          ]
         },
         {
           "type": "totems",
@@ -1054,7 +1308,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3005581",
           "videotype": "youtube",
           "video": "0e4yDf7eD34",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "totems",
@@ -1062,7 +1318,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3078246",
           "videotype": "youtube",
           "video": "EX5CR-VNuNs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "totems",
@@ -1070,7 +1328,9 @@
           "url": "https://balormage.com/build-guides/explosive-arrow-totems",
           "videotype": "",
           "video": "",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -1083,7 +1343,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1985355",
           "videotype": "youtube",
           "video": "5v0-zX-Thk4",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "rf",
@@ -1091,7 +1353,9 @@
           "url": "https://www.youtube.com/watch?v=SwdtdIVy-TA",
           "videotype": "youtube",
           "video": "SwdtdIVy-TA",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -1104,7 +1368,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2179053",
           "videotype": "youtube",
           "video": "CJj_PYxLUtk",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1112,7 +1378,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2803662",
           "videotype": "youtube",
           "video": "HoobcXCnwv0",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "mines",
@@ -1120,7 +1388,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2686206",
           "videotype": "youtube",
           "video": "3Z0WnD-8XJI",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "mines",
@@ -1128,7 +1398,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2249948",
           "videotype": "youtube",
           "video": "lXSCa5rMoW4",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "mines",
@@ -1136,7 +1408,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2784747",
           "videotype": "youtube",
           "video": "9JBhsYGjt_o",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "mines",
@@ -1144,7 +1418,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2660573",
           "videotype": "youtube",
           "video": "sAFC4ugC-5E",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "mines",
@@ -1152,7 +1428,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2846126",
           "videotype": "youtube",
           "video": "xAEfDkXPLTY",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "mines",
@@ -1160,7 +1438,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2943592",
           "videotype": "youtube",
           "video": "4Vr_-0t1v2Y",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1168,7 +1448,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3071009",
           "videotype": "youtube",
           "video": "tyF7C-2F-NE",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1176,7 +1458,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/3078555",
           "videotype": "youtube",
           "video": "QW1xkRoYr74",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1184,7 +1468,9 @@
           "url": "https://www.youtube.com/watch?v=d0kne5HmUmA",
           "videotype": "youtube",
           "video": "4Vr_-0t1v2Y",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1192,7 +1478,9 @@
           "url": "https://www.youtube.com/watch?v=okFDtR-6_pg",
           "videotype": "youtube",
           "video": "okFDtR-6_pg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1200,7 +1488,9 @@
           "url": "https://balormage.com/build-guides/trmines/",
           "videotype": "youtube",
           "video": "VWRVAaUDsMU",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "mines",
@@ -1208,7 +1498,9 @@
           "url": "https://balormage.com/build-guides/ball-lightning-mines/",
           "videotype": "",
           "video": "",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -1221,7 +1513,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2164014",
           "videotype": "youtube",
           "video": "6oHJcOixwvY",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "minions",
@@ -1229,7 +1523,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2624013",
           "videotype": "youtube",
           "video": "r6EA_gnhp-w",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "minions",
@@ -1237,7 +1533,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/1827487",
           "videotype": "youtube",
           "video": "EXcYZmV8y5s",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1245,7 +1543,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2780128",
           "videotype": "youtube",
           "video": "1LKUO5uCuBY",
-          "versions": ["3.12"]
+          "versions": [
+            "3.12"
+          ]
         },
         {
           "type": "minions",
@@ -1253,7 +1553,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2181275",
           "videotype": "youtube",
           "video": "nklMyb4qSYQ",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1261,7 +1563,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2563355",
           "videotype": "youtube",
           "video": "PlYLgr6zjA0",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "minions",
@@ -1269,7 +1573,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2774965",
           "videotype": "youtube",
           "video": "UmDB8sI9u5Q",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1277,7 +1583,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2108003",
           "videotype": "youtube",
           "video": "e7Z2XrFA-Ls",
-          "versions": ["3.9"]
+          "versions": [
+            "3.9"
+          ]
         },
         {
           "type": "minions",
@@ -1285,7 +1593,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2683618",
           "videotype": "youtube",
           "video": "Z3wLq8LhNjA",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "minions",
@@ -1293,7 +1603,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2672562",
           "videotype": "youtube",
           "video": "n6qXjIN8DFw",
-          "versions": ["3.11"]
+          "versions": [
+            "3.11"
+          ]
         },
         {
           "type": "minions",
@@ -1301,7 +1613,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2717409",
           "videotype": "youtube",
           "video": "n6qXjIN8DFw",
-          "versions": ["3.10"]
+          "versions": [
+            "3.10"
+          ]
         },
         {
           "type": "minions",
@@ -1309,7 +1623,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2663727",
           "videotype": "youtube",
           "video": "qsEFWt9t4z0",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1317,7 +1633,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2642810",
           "videotype": "youtube",
           "video": "lzoZJ87BR9A",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1325,7 +1643,9 @@
           "url": "https://www.poe-vault.com/guides/dominating-blow-guardian-build-guide",
           "videotype": "youtube",
           "video": "Bkmt5sm3xe8",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1333,7 +1653,9 @@
           "url": "https://balormage.com/build-guides/dominatingblow/",
           "videotype": "youtube",
           "video": "GVVdB3XSnfQ",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1341,7 +1663,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2859994",
           "videotype": "youtube",
           "video": "OxVV7nB2JMU",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "minions",
@@ -1349,7 +1673,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2866966",
           "videotype": "youtube",
           "video": "e5XwreajgZU",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "minions",
@@ -1357,7 +1683,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2984662",
           "videotype": "youtube",
           "video": "pHy92ZM3h4k",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "minions",
@@ -1365,7 +1693,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2997696",
           "videotype": "youtube",
           "video": "v6oBaIIrTZI",
-          "versions": ["3.13"]
+          "versions": [
+            "3.13"
+          ]
         },
         {
           "type": "minions",
@@ -1373,7 +1703,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2995833",
           "videotype": "youtube",
           "video": "0Yg4zEdFUDs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1381,7 +1713,9 @@
           "url": "https://www.poe-vault.com/guides/ghazzy-summon-raging-spirits-necromancer-build-guide",
           "videotype": "youtube",
           "video": "ejzwhD7V3lA",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1389,7 +1723,9 @@
           "url": "https://www.poe-vault.com/guides/animate-weapon-necromancer-build-guide",
           "videotype": "youtube",
           "video": "oEPmTAEasWE",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1397,7 +1733,9 @@
           "url": "https://www.poe-vault.com/guides/soulwrest-necromancer-build-guide",
           "videotype": "youtube",
           "video": "Gxtoq57Vqwo",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1405,7 +1743,9 @@
           "url": "https://www.poe-vault.com/guides/lich-queen-skeleton-summoner-build-guide",
           "videotype": "youtube",
           "video": "AOMxbgMQX04",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1413,7 +1753,9 @@
           "url": "https://www.poe-vault.com/guides/dark-pact-necromancer-build-guide",
           "videotype": "youtube",
           "video": "yi9hT_xw_UA",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1421,7 +1763,9 @@
           "url": "https://www.poe-vault.com/guides/the-spectre-summoner-build-guide",
           "videotype": "youtube",
           "video": "qdwNK2IkYuM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1429,7 +1773,9 @@
           "url": "https://www.poe-vault.com/guides/cold-convert-golem-elementalist-build-guide",
           "videotype": "youtube",
           "video": "KIOo21hgssg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1437,7 +1783,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2717739",
           "videotype": "youtube",
           "video": "Uo61k104dLg",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1445,7 +1793,9 @@
           "url": "https://www.youtube.com/watch?v=P_5HNsMGiIM",
           "videotype": "youtube",
           "video": "P_5HNsMGiIM",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "minions",
@@ -1453,7 +1803,9 @@
           "url": "https://www.youtube.com/watch?v=PDg7-dbeTYo",
           "videotype": "youtube",
           "video": "PDg7-dbeTYo",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     },
@@ -1466,7 +1818,9 @@
           "url": "https://www.youtube.com/watch?v=yAG_rOsxxAI",
           "videotype": "youtube",
           "video": "yAG_rOsxxAI",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "misc",
@@ -1474,7 +1828,9 @@
           "url": "https://www.youtube.com/watch?v=FLEWbOwexHs",
           "videotype": "youtube",
           "video": "FLEWbOwexHs",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "misc",
@@ -1482,7 +1838,9 @@
           "url": "https://www.youtube.com/watch?v=xJ7I8ZtIPsE",
           "videotype": "youtube",
           "video": "xJ7I8ZtIPsE",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         },
         {
           "type": "misc",
@@ -1497,7 +1855,9 @@
           "url": "https://www.pathofexile.com/forum/view-thread/2606288",
           "videotype": "",
           "video": "",
-          "versions": ["3.14"]
+          "versions": [
+            "3.14"
+          ]
         }
       ]
     }
