@@ -9,13 +9,13 @@
     </h3>
     <md-dialog :md-active.sync="showDialog">
       <md-dialog-title>{{ buildData.title }}</md-dialog-title>
-      <md-tabs md-dynamic-height>
+      <md-tabs md-dynamic-height md-active-tab="tab-edit">
         <md-tab md-label="View">
           <h2 class="build__type">
             Type: {{ buildType }}
           </h2>
         </md-tab>
-        <md-tab md-label="Edit">
+        <md-tab id="tab-edit" md-label="Edit">
           <form novalidate class="md-layout" @submit.prevent="formSubmit">
             <md-field :class="{'md-invalid': $v.newBuildData.title.$error}">
               <label for="build-title">Build title</label>
@@ -105,6 +105,8 @@ export default {
       this.$v.$touch()
       if (!this.$v.$invalid) {
         this.buildData = Object.assign({}, this.newBuildData)
+        this.$emit('update:build', this.buildData)
+        this.showDialog = false
       }
     }
   },

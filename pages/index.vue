@@ -34,12 +34,14 @@
       <md-app-content>
         <section v-for="buildtype in buildList" :key="buildtype.type">
           <h2>{{ typeName(buildtype.type) }}</h2>
-          <draggable tag="ol" :list="buildtype.builds">
-            <li v-for="build in buildtype.builds" :key="build.url">
+          <draggable v-model="buildtype.builds" tag="ol">
+            <li v-for="(build, index) in buildtype.builds" :key="build.url">
               <Build
                 :build="build"
                 :build-type="typeName(buildtype.type)"
                 :outdated="outdated(build.versions)"
+                :build-list="buildList"
+                @update:build="updateBuild($event, buildtype.type, index)"
               />
             </li>
           </draggable>
@@ -53,6 +55,10 @@
 import draggable from 'vuedraggable'
 import Build from '@/components/Build'
 
+const saveToData = async (buildList) => {
+  await this.$http.$post('/api/save', buildList)
+}
+
 export default {
   components: {
     draggable,
@@ -62,7 +68,7 @@ export default {
     const data = await $http.$get('/api/load')
     return {
       types: data.types,
-      buildList: data.buildlist,
+      buildList: data.buildList,
       currentVersion: data.currentVersion
     }
   },
@@ -84,14 +90,46 @@ export default {
         return true
       }
     },
-    async saveBuilds () {
-      const buildListFull = {
-        currentVersion: this.currentVersion,
-        types: this.types,
-        buildlist: this.buildList
+    /**
+     * @param {object} event
+     * @param {string} type
+     * @param {number} index
+     */
+    updateBuild (event, type, index) {
+      const typeIndex = this.buildList.findIndex((element) => {
+        return element.type === type
+      })
+      this.buildList[typeIndex].builds[index] = event
+    },
+    saveBuilds () {
+      // Validation Start
+      const duplicateUrls = []
+      let flatBuildList = []
+      this.buildList.forEach((buildcat) => {
+        flatBuildList = flatBuildList.concat(buildcat.builds)
+      })
+      const map = {}
+      for (let i = 0; i < flatBuildList.length; i++) {
+        // check if object contains entry with this element as key
+        if (map[flatBuildList[i].url]) {
+          duplicateUrls.push(flatBuildList[i].title)
+          // terminate the loop
+          break
+        }
+        // add entry in object with the element as key
+        map[flatBuildList[i].url] = true
       }
-      // console.log(buildlistObj)
-      await this.$http.$post('/api/save', buildListFull)
+      console.log(duplicateUrls)
+      // Validation End
+
+      if (duplicateUrls.length === 0) {
+        const buildListFull = {
+          currentVersion: this.currentVersion,
+          types: this.types,
+          buildList: this.buildList
+        }
+        saveToData(buildListFull)
+      }
     }
   }
 }
