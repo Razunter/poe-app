@@ -48,16 +48,22 @@
         </section>
       </md-app-content>
     </md-app>
+    <md-snackbar
+      :md-duration="toast.duration"
+      :md-active.sync="toast.show"
+      md-persistent
+    >
+      <span v-html="toast.message" />
+      <md-button class="md-primary" @click="toast.show = false">
+        Close
+      </md-button>
+    </md-snackbar>
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
 import Build from '@/components/Build'
-
-const saveToData = async (buildList) => {
-  await this.$http.$post('/api/save', buildList)
-}
 
 export default {
   components: {
@@ -76,7 +82,12 @@ export default {
     return {
       types: {},
       buildList: [],
-      currentVersion: ''
+      currentVersion: '',
+      toast: {
+        show: false,
+        duration: 4000,
+        message: ''
+      }
     }
   },
   methods: {
@@ -111,15 +122,14 @@ export default {
       const map = {}
       for (let i = 0; i < flatBuildList.length; i++) {
         // check if object contains entry with this element as key
-        if (map[flatBuildList[i].url]) {
-          duplicateUrls.push(flatBuildList[i].title)
+        if (Number.isInteger(map[flatBuildList[i].url])) {
+          duplicateUrls.push([flatBuildList[i].title, flatBuildList[map[flatBuildList[i].url]].title])
           // terminate the loop
           break
         }
         // add entry in object with the element as key
-        map[flatBuildList[i].url] = true
+        map[flatBuildList[i].url] = i
       }
-      console.log(duplicateUrls)
       // Validation End
 
       if (duplicateUrls.length === 0) {
@@ -128,7 +138,27 @@ export default {
           types: this.types,
           buildList: this.buildList
         }
-        saveToData(buildListFull)
+
+        async function saveToData (buildList, $http) {
+          await $http.$post('/api/save', buildList)
+        }
+
+        saveToData(buildListFull, this.$http)
+        this.toast = {
+          duration: 4000,
+          show: true,
+          message: 'Saved'
+        }
+      } else {
+        let log = ''
+        duplicateUrls.forEach((elem) => {
+          log += '<p>' + elem.join('<br />') + '</p>'
+        })
+        this.toast = {
+          show: true,
+          duration: Infinity,
+          message: '<strong>Duplicate URLs detected:</strong><br />' + log
+        }
       }
     }
   }
@@ -148,5 +178,9 @@ export default {
 
 .md-toolbar.md-theme-default.md-primary {
   background: #35495e;
+}
+
+.md-snackbar {
+  max-height: unset;
 }
 </style>
