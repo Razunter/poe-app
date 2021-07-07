@@ -4,9 +4,17 @@
     :class="{ 'build--outdated' : outdated }"
     @click="showDialog = true"
   >
-    <h3 class="build__title">
-      {{ buildData.title }}
-    </h3>
+    <div class="build__row">
+      <h3 class="build__title">
+        {{ buildData.title }}
+      </h3>
+      <div class="build__videotype">
+        {{ buildData.videotype }}
+      </div>
+      <div v-if="buildData.versions" class="build__version">
+        {{ buildData.versions[buildData.versions.length - 1] }}
+      </div>
+    </div>
     <md-dialog :md-active.sync="showDialog">
       <md-dialog-title>{{ buildData.title }}</md-dialog-title>
       <md-tabs md-dynamic-height md-active-tab="tab-edit">
@@ -125,9 +133,25 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .build {
   cursor: pointer;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: .5rem;
+
+  &__row {
+    display: grid;
+    grid-template-columns: auto min-content 3em;
+  }
+
+  &__title {
+    margin: 0 2rem 0 0;
+  }
+
+  &__videotype {
+    margin: 0 2rem;
+  }
 }
 
 .build--outdated {

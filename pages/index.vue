@@ -32,15 +32,24 @@
         </md-list>
       </md-app-drawer>
       <md-app-content>
-        <section v-for="buildtype in buildList" :key="buildtype.type">
-          <h2>{{ typeName(buildtype.type) }}</h2>
+        <section
+          v-for="buildtype in buildList"
+          :key="buildtype.type"
+          class="buildlist"
+        >
+          <h2 class="buildlist__group__title">
+            {{ typeName(buildtype.type) }}
+          </h2>
           <draggable v-model="buildtype.builds" tag="ol">
-            <li v-for="(build, index) in buildtype.builds" :key="build.url">
+            <li
+              v-for="(build, index) in buildtype.builds"
+              :key="build.url"
+              class="buildlist__item"
+            >
               <Build
                 :build="build"
                 :build-type="typeName(buildtype.type)"
                 :outdated="outdated(build.versions)"
-                :build-list="buildList"
                 @update:build="updateBuild($event, buildtype.type, index)"
               />
             </li>
@@ -53,7 +62,7 @@
       :md-active.sync="toast.show"
       md-persistent
     >
-      <span v-html="toast.message" />
+      <span v-html="toast.message" /> <!-- eslint-disable-line -->
       <md-button class="md-primary" @click="toast.show = false">
         Close
       </md-button>
@@ -165,7 +174,11 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+body {
+  font-size: 18px;
+}
+
 .container {
   margin: 0 auto;
   width: 1920px;
@@ -182,5 +195,11 @@ export default {
 
 .md-snackbar {
   max-height: unset;
+}
+</style>
+
+<style lang="scss" scoped>
+.buildlist__item + .buildlist__item {
+  margin-top: 1rem;
 }
 </style>
