@@ -10,7 +10,7 @@
         </md-toolbar>
 
         <md-list>
-          <md-list-item>
+          <md-list-item @click="sortBuilds">
             <md-icon>reorder</md-icon>
             <span class="md-list-item-text">Sort</span>
           </md-list-item>
@@ -69,11 +69,30 @@ export default {
     draggable,
     Build
   },
-  async asyncData ({ $http }) {
+  async asyncData ({
+    $http,
+    store
+  }) {
     const data = await $http.$get('/api/load')
+    const buildList = data.buildList
+    buildList.forEach((buildCat) => {
+      buildCat.builds.forEach((build) => {
+        if (!build.author) {
+          build.author = ''
+        }
+      })
+    })
+    // const allAuthors = new Set()
+    buildList.forEach((buildCat) => {
+      buildCat.builds.forEach((build) => {
+        if (build.author) {
+          store.commit('add', build.author)
+        }
+      })
+    })
     return {
       types: data.types,
-      buildList: data.buildList,
+      buildList,
       currentVersion: data.currentVersion
     }
   },
@@ -110,6 +129,34 @@ export default {
         return element.type === type
       })
       this.buildList[typeIndex].builds[index] = event
+      if (event.author) {
+        this.$store.commit('add', event.author)
+      }
+    },
+    sortBuilds () {
+      this.buildList.forEach((buildcat) => {
+        buildcat.builds.sort((buildA, buildB) => {
+          let sortValue = 0
+          // Sort by version
+          if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
+            sortValue = 1
+          } else if (!this.outdated(buildA.versions) && this.outdated(buildB.versions)) {
+            sortValue = -1
+          }
+          // Sort by author
+          if (buildA.author || buildB.author) {
+            if (buildA.author && buildB.author && buildA.author !== buildB.author) {
+              sortValue += buildA.author[0] > buildB.author[0] ? 1 : -1
+            }
+            if (buildA.author && !buildB.author) {
+              sortValue += 1
+            } else if (!buildA.author && buildB.author) {
+              sortValue += -1
+            }
+          }
+          return sortValue
+        })
+      })
     },
     saveBuilds () {
       // Validation Start

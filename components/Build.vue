@@ -7,6 +7,9 @@
   >
     <div class="build__row">
       <h3 class="build__title">
+        <template v-if="buildData.author">
+          <span class="build__author">{{ buildData.author }}</span> -
+        </template>
         {{ buildData.title }}
       </h3>
       <div class="build__videotype">
@@ -16,7 +19,7 @@
         {{ buildData.versions[buildData.versions.length - 1] }}
       </div>
     </div>
-    <md-dialog :md-active.sync="showDialog">
+    <md-dialog :md-active.sync="showDialog" @md-clicked-outside="resetData">
       <md-dialog-title>{{ buildData.title }}</md-dialog-title>
       <md-tabs md-dynamic-height md-active-tab="tab-edit">
         <md-tab md-label="View">
@@ -41,6 +44,12 @@
                 Required
               </span>
             </md-field>
+            <md-autocomplete
+              v-model="newBuildData.author"
+              :md-options="authors()"
+            >
+              <label>Author</label>
+            </md-autocomplete>
             <md-field :class="{'md-invalid': $v.newBuildData.url.$error}">
               <label for="build-url">Build URL</label>
               <md-input
@@ -103,7 +112,8 @@ export default {
           url: String,
           videotype: String,
           video: String,
-          versions: Array
+          versions: Array,
+          author: String
         }
       }
     }
@@ -116,6 +126,9 @@ export default {
     }
   },
   methods: {
+    authors () {
+      return Array.from(this.$store.state.authors)
+    },
     formSubmit () {
       this.$v.$touch()
       if (!this.$v.$invalid) {
@@ -123,6 +136,9 @@ export default {
         this.$emit('update:build', this.buildData)
         this.showDialog = false
       }
+    },
+    resetData () {
+      this.newBuildData = Object.assign({}, this.buildData)
     }
   },
   validations: {
@@ -167,5 +183,11 @@ export default {
 
 .build--outdated {
   opacity: .6;
+}
+</style>
+
+<style>
+.md-menu-content {
+  z-index: 12;
 }
 </style>
