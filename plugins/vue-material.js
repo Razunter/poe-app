@@ -11,7 +11,8 @@ import {
   MdList,
   MdToolbar,
   MdTabs,
-  MdSnackbar
+  MdSnackbar,
+  MdChips
 } from 'vue-material/dist/components'
 
 import 'vue-material/dist/vue-material.min.css'
@@ -28,3 +29,4 @@ Vue.use(MdDialog)
 Vue.use(MdField)
 Vue.use(MdTabs)
 Vue.use(MdSnackbar)
+Vue.use(MdChips)

@@ -62,6 +62,12 @@
                 Must be an URL
               </span>
             </md-field>
+            <md-chips
+              v-model="newBuildData.versions"
+              md-placeholder="Add version..."
+            >
+              <label>Supported versions</label>
+            </md-chips>
             <md-button class="md-primary" type="submit">
               Save
             </md-button>
