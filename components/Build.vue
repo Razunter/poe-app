@@ -2,6 +2,7 @@
   <article
     class="build"
     :class="{ 'build--outdated' : outdated }"
+    tabindex="0"
     @click="showDialog = true"
   >
     <div class="build__row">
@@ -136,9 +137,13 @@ export default {
 <style lang="scss" scoped>
 .build {
   cursor: pointer;
-  padding: 1rem;
+  padding: .75rem 1rem;
   border: 1px solid #ccc;
   border-radius: .5rem;
+
+  &:hover, &:focus {
+    background: rgba(255, 255, 255, .1);
+  }
 
   &__row {
     display: grid;
