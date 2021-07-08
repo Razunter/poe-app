@@ -39,6 +39,7 @@
                 id="build-title"
                 v-model.trim="newBuildData.title"
                 name="build-title"
+                autocomplete="false"
                 @input="$v.newBuildData.title.$touch()"
               />
               <span

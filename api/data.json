@@ -214,25 +214,25 @@
         },
         {
           "type": "melee",
-          "title": "This is Badger - This Build Still DESTROYS Bosses - General's Cry Perforate Champion Build Guide",
+          "title": "This Build Still DESTROYS Bosses - General's Cry Perforate Champion Build Guide",
           "url": "https://www.youtube.com/watch?v=l3uH7CnByK4",
           "videotype": "youtube",
           "video": "l3uH7CnByK4",
           "versions": [
             "3.14"
           ],
-          "author": ""
+          "author": "Badger"
         },
         {
           "type": "melee",
-          "title": "Octavian - Starter Build Idea - Vaal Ground Slam Slayer",
-          "url": "https://www.youtube.com/watch?v=HqocypE_DRg",
+          "title": "Steel Skills Still Strong Starter Guide",
+          "url": "https://www.youtube.com/watch?v=3xdSBrDFij4",
           "videotype": "youtube",
-          "video": "HqocypE_DRg",
+          "video": "3xdSBrDFij4",
           "versions": [
             "3.14"
           ],
-          "author": ""
+          "author": "DonTheCrown"
         },
         {
           "type": "melee",
@@ -269,14 +269,14 @@
         },
         {
           "type": "melee",
-          "title": "Steel Skills Still Strong Starter Guide",
-          "url": "https://www.youtube.com/watch?v=3xdSBrDFij4",
+          "title": "Starter Build Idea - Vaal Ground Slam Slayer",
+          "url": "https://www.youtube.com/watch?v=HqocypE_DRg",
           "videotype": "youtube",
-          "video": "3xdSBrDFij4",
+          "video": "HqocypE_DRg",
           "versions": [
             "3.14"
           ],
-          "author": "DonTheCrown"
+          "author": "Octavian"
         },
         {
           "type": "melee",
@@ -757,54 +757,23 @@
         },
         {
           "type": "caster",
-          "title": "GhazzyTV - Chaos DoT Trickster",
-          "url": "https://www.poe-vault.com/guides/chaos-dot-trickster-build-guide",
-          "videotype": "youtube",
-          "video": "_ijk7e--U8k",
+          "title": "Velyna's LowLife Storm Brand ⚡ 7m DPS | Leaguestart Section | Guardian | All Content",
+          "url": "https://www.pathofexile.com/forum/view-thread/2890856",
+          "videotype": "twitch",
+          "video": "https://www.twitch.tv/videos/763607741",
           "versions": [
             "3.14"
           ],
+          "videothumb": "https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/b629699dc306b69660ba_velyna_30502710747_2656257170//thumb/thumb763607741-%{width}x%{height}.jpg",
+          "videoid": "763607741",
           "author": ""
         },
         {
           "type": "caster",
-          "title": "GhazzyTV - Cold Snap Vortex Occultist",
-          "url": "https://www.poe-vault.com/guides/cold-snap-vortex-occultist-build-guide",
-          "videotype": "youtube",
-          "video": "jqH3a4VhoyE",
-          "versions": [
-            "3.14"
-          ],
-          "author": ""
-        },
-        {
-          "type": "caster",
-          "title": "GhazzyTV - Coldslinger Occultist",
-          "url": "https://www.poe-vault.com/guides/coldslinger-occultist-build-guide",
-          "videotype": "youtube",
-          "video": "P9lBVu-z92w",
-          "versions": [
-            "3.14"
-          ],
-          "author": ""
-        },
-        {
-          "type": "caster",
-          "title": "GhazzyTV - Blade Blast Bladefall Poison Assassin",
-          "url": "https://www.poe-vault.com/guides/blade-blast-bladefall-poison-assassin-build-guide",
-          "videotype": "youtube",
-          "video": "-iiztsITtzM",
-          "versions": [
-            "3.14"
-          ],
-          "author": ""
-        },
-        {
-          "type": "caster",
-          "title": "GhazzyTV - Flame Wall Spellslinger Elementalist",
-          "url": "https://www.poe-vault.com/guides/flame-wall-spellslinger-elementalist-build-guide",
-          "videotype": "youtube",
-          "video": "jy1qXlTe6NA",
+          "title": "SSF Friendly Poison BF/BB Assassin Levelling Guide | Blast Through Levelling",
+          "url": "https://www.pathofexile.com/forum/view-thread/3063150",
+          "videotype": "",
+          "video": "",
           "versions": [
             "3.14"
           ],
@@ -823,28 +792,6 @@
         },
         {
           "type": "caster",
-          "title": "Poison Bladefall / Blade Blast Assassin",
-          "url": "https://www.pathofexile.com/forum/view-thread/3108817",
-          "videotype": "youtube",
-          "video": "gk5Ypqfzjhs",
-          "versions": [
-            "3.14"
-          ],
-          "author": "Zizaran"
-        },
-        {
-          "type": "caster",
-          "title": "Exsanguinate Ascendant | Gladiator + Necromancer | Spellslinger, Selfcast & Lowlife",
-          "url": "https://www.pathofexile.com/forum/view-thread/3102014",
-          "videotype": "youtube",
-          "video": "Hjl6yoh72mw",
-          "versions": [
-            "3.14"
-          ],
-          "author": "Zizaran"
-        },
-        {
-          "type": "caster",
           "title": "UNETHICAL Amounts of Damage - Blade Blast Inquisitor League Start Guide",
           "url": "https://www.youtube.com/watch?v=ZaFRN0dsTp8",
           "videotype": "youtube",
@@ -853,30 +800,6 @@
             "3.14"
           ],
           "author": "Big Ducks"
-        },
-        {
-          "type": "caster",
-          "title": "Velyna's LowLife Storm Brand ⚡ 7m DPS | Leaguestart Section | Guardian | All Content",
-          "url": "https://www.pathofexile.com/forum/view-thread/2890856",
-          "videotype": "twitch",
-          "video": "https://www.twitch.tv/videos/763607741",
-          "versions": [
-            "3.14"
-          ],
-          "videothumb": "https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/b629699dc306b69660ba_velyna_30502710747_2656257170//thumb/thumb763607741-%{width}x%{height}.jpg",
-          "videoid": "763607741",
-          "author": ""
-        },
-        {
-          "type": "caster",
-          "title": "ESSENCE DRAIN CONTAGION Trickster League Starter",
-          "url": "https://www.youtube.com/watch?v=3npA1n10PpQ",
-          "videotype": "youtube",
-          "video": "3npA1n10PpQ",
-          "versions": [
-            "3.14"
-          ],
-          "author": "Zizaran"
         },
         {
           "type": "caster",
@@ -902,14 +825,91 @@
         },
         {
           "type": "caster",
-          "title": "SSF Friendly Poison BF/BB Assassin Levelling Guide | Blast Through Levelling",
-          "url": "https://www.pathofexile.com/forum/view-thread/3063150",
-          "videotype": "",
-          "video": "",
+          "title": "Chaos DoT Trickster",
+          "url": "https://www.poe-vault.com/guides/chaos-dot-trickster-build-guide",
+          "videotype": "youtube",
+          "video": "_ijk7e--U8k",
           "versions": [
             "3.14"
           ],
-          "author": ""
+          "author": "GhazzyTV"
+        },
+        {
+          "type": "caster",
+          "title": "Cold Snap Vortex Occultist",
+          "url": "https://www.poe-vault.com/guides/cold-snap-vortex-occultist-build-guide",
+          "videotype": "youtube",
+          "video": "jqH3a4VhoyE",
+          "versions": [
+            "3.14"
+          ],
+          "author": "GhazzyTV"
+        },
+        {
+          "type": "caster",
+          "title": "Coldslinger Occultist",
+          "url": "https://www.poe-vault.com/guides/coldslinger-occultist-build-guide",
+          "videotype": "youtube",
+          "video": "P9lBVu-z92w",
+          "versions": [
+            "3.14"
+          ],
+          "author": "GhazzyTV"
+        },
+        {
+          "type": "caster",
+          "title": "Blade Blast Bladefall Poison Assassin",
+          "url": "https://www.poe-vault.com/guides/blade-blast-bladefall-poison-assassin-build-guide",
+          "videotype": "youtube",
+          "video": "-iiztsITtzM",
+          "versions": [
+            "3.14"
+          ],
+          "author": "GhazzyTV"
+        },
+        {
+          "type": "caster",
+          "title": "Flame Wall Spellslinger Elementalist",
+          "url": "https://www.poe-vault.com/guides/flame-wall-spellslinger-elementalist-build-guide",
+          "videotype": "youtube",
+          "video": "jy1qXlTe6NA",
+          "versions": [
+            "3.14"
+          ],
+          "author": "GhazzyTV"
+        },
+        {
+          "type": "caster",
+          "title": "Poison Bladefall / Blade Blast Assassin",
+          "url": "https://www.pathofexile.com/forum/view-thread/3108817",
+          "videotype": "youtube",
+          "video": "gk5Ypqfzjhs",
+          "versions": [
+            "3.14"
+          ],
+          "author": "Zizaran"
+        },
+        {
+          "type": "caster",
+          "title": "Exsanguinate Ascendant | Gladiator + Necromancer | Spellslinger, Selfcast & Lowlife",
+          "url": "https://www.pathofexile.com/forum/view-thread/3102014",
+          "videotype": "youtube",
+          "video": "Hjl6yoh72mw",
+          "versions": [
+            "3.14"
+          ],
+          "author": "Zizaran"
+        },
+        {
+          "type": "caster",
+          "title": "ESSENCE DRAIN CONTAGION Trickster League Starter",
+          "url": "https://www.youtube.com/watch?v=3npA1n10PpQ",
+          "videotype": "youtube",
+          "video": "3npA1n10PpQ",
+          "versions": [
+            "3.14"
+          ],
+          "author": "Zizaran"
         },
         {
           "type": "caster",
@@ -1248,17 +1248,6 @@
         },
         {
           "type": "ranged",
-          "title": "STILL a super solid farmer - Toxic Rain Raider League Starter",
-          "url": "https://www.youtube.com/watch?v=6uVj-OXy-Gs",
-          "videotype": "youtube",
-          "video": "6uVj-OXy-Gs",
-          "versions": [
-            "3.14"
-          ],
-          "author": "Zizaran"
-        },
-        {
-          "type": "ranged",
           "title": "FIRE KB + BURNING ARROW - Best Clear and Easiest Burning Arrow League Start",
           "url": "https://www.youtube.com/watch?v=CSye-pb5V3Y",
           "videotype": "youtube",
@@ -1267,6 +1256,17 @@
             "3.14"
           ],
           "author": "Tripolar Bear"
+        },
+        {
+          "type": "ranged",
+          "title": "STILL a super solid farmer - Toxic Rain Raider League Starter",
+          "url": "https://www.youtube.com/watch?v=6uVj-OXy-Gs",
+          "videotype": "youtube",
+          "video": "6uVj-OXy-Gs",
+          "versions": [
+            "3.14"
+          ],
+          "author": "Zizaran"
         },
         {
           "type": "ranged",
@@ -1341,14 +1341,14 @@
       "builds": [
         {
           "type": "totems",
-          "title": "Hierophant Freezing Pulse Totems",
+          "title": "Wallach's Hierophant Freezing Pulse Totems",
           "url": "https://www.pathofexile.com/forum/view-thread/2685450",
           "videotype": "youtube",
           "video": "K8ZDMNoUl1w",
           "versions": [
             "3.14"
           ],
-          "author": "Wallach"
+          "author": ""
         },
         {
           "type": "totems",
@@ -1540,17 +1540,6 @@
         },
         {
           "type": "mines",
-          "title": "BEST Early League Bossing - Purifying Flame Mines Saboteur League Start Guide",
-          "url": "https://www.youtube.com/watch?v=d0kne5HmUmA",
-          "videotype": "youtube",
-          "video": "4Vr_-0t1v2Y",
-          "versions": [
-            "3.14"
-          ],
-          "author": "Big Ducks"
-        },
-        {
-          "type": "mines",
           "title": "Ice Trap Saboteur is INSANE - Freeze Bosses ONE BUTTON",
           "url": "https://www.youtube.com/watch?v=okFDtR-6_pg",
           "videotype": "youtube",
@@ -1559,6 +1548,17 @@
             "3.14"
           ],
           "author": " Tripolar Bear"
+        },
+        {
+          "type": "mines",
+          "title": "BEST Early League Bossing - Purifying Flame Mines Saboteur League Start Guide",
+          "url": "https://www.youtube.com/watch?v=d0kne5HmUmA",
+          "videotype": "youtube",
+          "video": "4Vr_-0t1v2Y",
+          "versions": [
+            "3.14"
+          ],
+          "author": "Big Ducks"
         },
         {
           "type": "mines",
@@ -1710,14 +1710,25 @@
         },
         {
           "type": "minions",
-          "title": "Dominating Blow Guardian",
-          "url": "https://www.poe-vault.com/guides/dominating-blow-guardian-build-guide",
+          "title": "SRS Bomber | League Start to Endgame | All Content",
+          "url": "https://www.pathofexile.com/forum/view-thread/2995833",
           "videotype": "youtube",
-          "video": "Bkmt5sm3xe8",
+          "video": "0Yg4zEdFUDs",
           "versions": [
             "3.14"
           ],
-          "author": "GhazzyTV"
+          "author": ""
+        },
+        {
+          "type": "minions",
+          "title": "Moosseolini's Holy Relics Guardian",
+          "url": "https://www.pathofexile.com/forum/view-thread/2717739",
+          "videotype": "youtube",
+          "video": "Uo61k104dLg",
+          "versions": [
+            "3.14"
+          ],
+          "author": ""
         },
         {
           "type": "minions",
@@ -1732,14 +1743,14 @@
         },
         {
           "type": "minions",
-          "title": "SRS Bomber | League Start to Endgame | All Content",
-          "url": "https://www.pathofexile.com/forum/view-thread/2995833",
+          "title": "Dominating Blow Guardian",
+          "url": "https://www.poe-vault.com/guides/dominating-blow-guardian-build-guide",
           "videotype": "youtube",
-          "video": "0Yg4zEdFUDs",
+          "video": "Bkmt5sm3xe8",
           "versions": [
             "3.14"
           ],
-          "author": ""
+          "author": "GhazzyTV"
         },
         {
           "type": "minions",
@@ -1817,17 +1828,6 @@
             "3.14"
           ],
           "author": "GhazzyTV"
-        },
-        {
-          "type": "minions",
-          "title": "Moosseolini's Holy Relics Guardian",
-          "url": "https://www.pathofexile.com/forum/view-thread/2717739",
-          "videotype": "youtube",
-          "video": "Uo61k104dLg",
-          "versions": [
-            "3.14"
-          ],
-          "author": ""
         },
         {
           "type": "minions",
