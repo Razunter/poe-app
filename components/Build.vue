@@ -28,7 +28,11 @@
           </h2>
         </md-tab>
         <md-tab id="tab-edit" md-label="Edit">
-          <form novalidate class="md-layout" @submit.prevent="formSubmit">
+          <form
+            novalidate
+            class="md-layout"
+            @submit.prevent="formSubmit"
+          >
             <md-field :class="{'md-invalid': $v.newBuildData.title.$error}">
               <label for="build-title">Build title</label>
               <md-input
@@ -74,8 +78,16 @@
             <md-chips
               v-model="newBuildData.versions"
               md-placeholder="Add version..."
+              :class="{'md-invalid': $v.newBuildData.versions.$error}"
+              :md-auto-insert="true"
             >
               <label>Supported versions</label>
+              <span
+                v-if="!$v.newBuildData.versions.required"
+                class="md-error"
+              >
+                Required
+              </span>
             </md-chips>
             <md-button class="md-primary" type="submit">
               Save
@@ -119,10 +131,14 @@ export default {
     }
   },
   data () {
+    const buildData = this.build
+    if (!buildData.versions) {
+      buildData.versions = []
+    }
     return {
       showDialog: false,
-      buildData: this.build,
-      newBuildData: Object.assign({}, this.build)
+      buildData,
+      newBuildData: Object.assign({}, buildData)
     }
   },
   computed: {
@@ -150,8 +166,6 @@ export default {
         required,
         url
       },
-      videotype: { required },
-      video: { required },
       versions: { required }
     }
   }
