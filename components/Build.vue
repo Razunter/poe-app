@@ -46,7 +46,7 @@
             </md-field>
             <md-autocomplete
               v-model="newBuildData.author"
-              :md-options="authors()"
+              :md-options="authors"
             >
               <label>Author</label>
             </md-autocomplete>
@@ -125,10 +125,12 @@ export default {
       newBuildData: Object.assign({}, this.build)
     }
   },
-  methods: {
+  computed: {
     authors () {
       return Array.from(this.$store.state.authors)
-    },
+    }
+  },
+  methods: {
     formSubmit () {
       this.$v.$touch()
       if (!this.$v.$invalid) {
