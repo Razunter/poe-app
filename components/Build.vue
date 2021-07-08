@@ -190,6 +190,11 @@ export default {
 
   &__title {
     margin: 0 2rem 0 0;
+    font-weight: 400;
+  }
+
+  &__author {
+    font-weight: 600;
   }
 
   &__videotype {
