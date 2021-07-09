@@ -643,7 +643,8 @@
           "versions": [
             "3.14"
           ],
-          "author": ""
+          "author": "",
+          "pin": true
         },
         {
           "type": "caster",

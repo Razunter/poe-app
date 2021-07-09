@@ -79,6 +79,10 @@
                       @input="$v.newBuildData.versions.$touch()"
                       @blur="$v.newBuildData.versions.$touch()"
                     />
+                    <v-switch
+                      v-model="newBuildData.pin"
+                      label="Pin build"
+                    />
                     <v-btn class="mr-4" type="submit">
                       Save
                     </v-btn>
@@ -128,7 +132,8 @@ export default {
           videotype: String,
           video: String,
           versions: Array,
-          author: String
+          author: String,
+          pin: Boolean
         }
       }
     }
@@ -241,6 +246,10 @@ export default {
 
 .theme--dark.error--text {
   color: red;
+
+  .v-messages__message {
+    color: red;
+  }
 }
 
 .build--outdated {
