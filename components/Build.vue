@@ -72,6 +72,7 @@
                       v-model="newBuildData.versions"
                       label="Supported versions"
                       placeholder="Add version..."
+                      :error-messages="versionsErrors"
                       multiple
                       required
                       chips
@@ -103,7 +104,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, url } from 'vuelidate/lib/validators'
+import { decimal, required, url } from 'vuelidate/lib/validators'
 
 export default {
   mixins: [validationMixin],
@@ -164,6 +165,17 @@ export default {
       !this.$v.newBuildData.url.required && errors.push('URL is required.')
       !this.$v.newBuildData.url.url && errors.push('Must be an URL.')
       return errors
+    },
+    versionsErrors () {
+      const errors = []
+      if (!this.$v.newBuildData.versions.$dirty) {
+        return errors
+      }
+      console.log(this.newBuildData.versions)
+      console.log(this.$v.newBuildData.versions)
+      !this.$v.newBuildData.versions.required && errors.push('Version is required.')
+      this.$v.newBuildData.versions.$each.$invalid && errors.push('Must be a decimal number.')
+      return errors
     }
   },
   methods: {
@@ -186,7 +198,10 @@ export default {
         required,
         url
       },
-      versions: { required }
+      versions: {
+        required,
+        $each: { decimal }
+      }
     }
   }
 }
@@ -222,6 +237,10 @@ export default {
   &__videotype {
     margin: 0 2rem;
   }
+}
+
+.theme--dark.error--text {
+  color: red;
 }
 
 .build--outdated {
