@@ -19,84 +19,85 @@
         {{ buildData.versions[buildData.versions.length - 1] }}
       </div>
     </div>
-    <md-dialog :md-active.sync="showDialog" @md-clicked-outside="resetData">
-      <md-dialog-title>{{ buildData.title }}</md-dialog-title>
-      <md-tabs md-dynamic-height md-active-tab="tab-edit">
-        <md-tab md-label="View">
-          <h2 class="build__type">
-            Type: {{ buildType }}
-          </h2>
-        </md-tab>
-        <md-tab id="tab-edit" md-label="Edit">
-          <form
-            novalidate
-            class="md-layout"
-            @submit.prevent="formSubmit"
-          >
-            <md-field :class="{'md-invalid': $v.newBuildData.title.$error}">
-              <label for="build-title">Build title</label>
-              <md-input
-                id="build-title"
-                v-model.trim="newBuildData.title"
-                name="build-title"
-                autocomplete="false"
-                @input="$v.newBuildData.title.$touch()"
-              />
-              <span
-                v-if="!$v.newBuildData.title.required"
-                class="md-error"
-              >
-                Required
-              </span>
-            </md-field>
-            <md-autocomplete
-              v-model="newBuildData.author"
-              :md-options="authors"
-            >
-              <label>Author</label>
-            </md-autocomplete>
-            <md-field :class="{'md-invalid': $v.newBuildData.url.$error}">
-              <label for="build-url">Build URL</label>
-              <md-input
-                id="build-url"
-                v-model.trim="newBuildData.url"
-                name="build-url"
-                @input="$v.newBuildData.url.$touch()"
-              />
-              <span
-                v-if="!$v.newBuildData.url.required"
-                class="md-error"
-              >
-                Required
-              </span>
-              <span
-                v-else-if="!$v.newBuildData.url.url"
-                class="md-error"
-              >
-                Must be an URL
-              </span>
-            </md-field>
-            <md-chips
-              v-model="newBuildData.versions"
-              md-placeholder="Add version..."
-              :class="{'md-invalid': $v.newBuildData.versions.$error}"
-              :md-auto-insert="true"
-            >
-              <label>Supported versions</label>
-              <span
-                v-if="!$v.newBuildData.versions.required"
-                class="md-error"
-              >
-                Required
-              </span>
-            </md-chips>
-            <md-button class="md-primary" type="submit">
-              Save
-            </md-button>
-          </form>
-        </md-tab>
-      </md-tabs>
-    </md-dialog>
+    <v-dialog
+      v-model="showDialog"
+      max-width="800px"
+      scrollable
+      @click:outside="resetData"
+    >
+      <v-card>
+        <v-card-title>{{ buildData.title }}</v-card-title>
+        <v-card-text>
+          <v-tabs v-model="tab">
+            <v-tab key="edit">
+              Edit
+            </v-tab>
+            <v-tab key="view">
+              View
+            </v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="tab">
+            <v-tab-item key="edit">
+              <v-card flat>
+                <v-card-text>
+                  <form
+                    novalidate
+                    class="md-layout"
+                    @submit.prevent="formSubmit"
+                  >
+                    <v-text-field
+                      v-model.trim="newBuildData.title"
+                      label="Build title"
+                      :error-messages="titleErrors"
+                      required
+                      autocomplete="false"
+                      @input="$v.newBuildData.title.$touch()"
+                      @blur="$v.newBuildData.title.$touch()"
+                    />
+                    <v-combobox
+                      v-model="newBuildData.author"
+                      :items="authors"
+                      clearable
+                      label="Author"
+                    />
+                    <v-text-field
+                      v-model.trim="newBuildData.url"
+                      label="Build URL"
+                      :error-messages="urlErrors"
+                      required
+                      @input="$v.newBuildData.url.$touch()"
+                      @blur="$v.newBuildData.url.$touch()"
+                    />
+                    <v-combobox
+                      v-model="newBuildData.versions"
+                      label="Supported versions"
+                      placeholder="Add version..."
+                      multiple
+                      required
+                      chips
+                      @input="$v.newBuildData.versions.$touch()"
+                      @blur="$v.newBuildData.versions.$touch()"
+                    />
+                    <v-btn class="mr-4" type="submit">
+                      Save
+                    </v-btn>
+                  </form>
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
+            <v-tab-item key="view">
+              <v-card flat>
+                <v-card-text>
+                  <h2 class="build__type">
+                    Type: {{ buildType }}
+                  </h2>
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </article>
 </template>
 
@@ -137,6 +138,7 @@ export default {
       buildData.versions = []
     }
     return {
+      tab: null,
       showDialog: false,
       buildData,
       newBuildData: Object.assign({}, buildData)
@@ -145,6 +147,23 @@ export default {
   computed: {
     authors () {
       return Array.from(this.$store.state.authors)
+    },
+    titleErrors () {
+      const errors = []
+      if (!this.$v.newBuildData.title.$dirty) {
+        return errors
+      }
+      !this.$v.newBuildData.title.required && errors.push('Title is required.')
+      return errors
+    },
+    urlErrors () {
+      const errors = []
+      if (!this.$v.newBuildData.url.$dirty) {
+        return errors
+      }
+      !this.$v.newBuildData.url.required && errors.push('URL is required.')
+      !this.$v.newBuildData.url.url && errors.push('Must be an URL.')
+      return errors
     }
   },
   methods: {
@@ -179,6 +198,8 @@ export default {
   padding: .75rem 1rem;
   border: 1px solid #ccc;
   border-radius: .5rem;
+  width: 100%;
+  color: #fff;
 
   &:hover, &:focus {
     background: rgba(255, 255, 255, .1);
@@ -205,11 +226,5 @@ export default {
 
 .build--outdated {
   opacity: .6;
-}
-</style>
-
-<style>
-.md-menu-content {
-  z-index: 12;
 }
 </style>

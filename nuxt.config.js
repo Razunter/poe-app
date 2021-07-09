@@ -42,7 +42,6 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    '@/plugins/vue-material',
     {
       src: '~/plugins/vuelidate.js',
       mode: 'client'
@@ -60,7 +59,15 @@ export default {
   */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
+    ['@nuxtjs/vuetify', {
+      treeShake: true,
+      customVariables: ['~/assets/variables.scss'],
+      theme: {
+        dark: true,
+        disable: true
+      }
+    }]
   ],
 
   /*
