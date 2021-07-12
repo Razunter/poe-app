@@ -195,6 +195,11 @@ export default {
             }
           }
 
+          // Sort by version
+          const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
+          const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+          sortValue -= compareVersions(buildAVersionLatest, buildBVersionLatest)
+
           // Sort pinned
           if (buildA.pin && !buildB.pin) {
             sortValue += -10
@@ -226,13 +231,6 @@ export default {
       // Validation End
 
       if (duplicateUrls.length === 0) {
-        // Sort versions
-        this.buildList.forEach((buildCat) => {
-          buildCat.builds.forEach((build) => {
-            build.versions = build.versions.sort(compareVersions)
-          })
-        })
-
         const buildListFull = {
           currentVersion: this.currentVersion,
           types: this.types,
