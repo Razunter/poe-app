@@ -58,7 +58,7 @@
           <v-tab
             v-for="(buildType, buildKey) in types"
             :key="buildKey"
-            :to="'#'+buildKey"
+            @click="$vuetify.goTo('#'+buildKey)"
           >
             {{ buildType }}
           </v-tab>
@@ -179,7 +179,6 @@ export default {
           builds: filteredCat
         })
       })
-      console.log(filteredBuilds)
       return filteredBuilds
     }
   },
