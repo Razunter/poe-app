@@ -15,6 +15,7 @@
     "compare-versions": "^3.6.0",
     "express": "latest",
     "fibers": "^5.0.0",
+    "lodash.random": "^3.2.0",
     "modern-normalize": "^1.1.0",
     "nuxt": "latest",
     "postcss": "^8.3.5",

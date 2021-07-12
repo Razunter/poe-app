@@ -15,12 +15,18 @@
       >
         <v-list-item @click="sortBuilds">
           <v-list-item-icon>
-            <v-icon>mdi-reorder-horizontal</v-icon>
+            <v-icon>mdi-sort-ascending</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>Sort</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <button-randomize
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+          @update:buildList="sortBuilds"
+        />
 
         <v-list-item @click="saveBuilds">
           <v-list-item-icon>
@@ -175,6 +181,13 @@ export default {
             } else if (!buildA.author && buildB.author) {
               sortValue += -1
             }
+          }
+
+          // Sort pinned
+          if (buildA.pin && !buildB.pin) {
+            sortValue += -10
+          } else if (!buildA.pin && buildB.pin) {
+            sortValue += 10
           }
           return sortValue
         })
