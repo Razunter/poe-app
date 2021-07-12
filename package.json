@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxt/http": "latest",
+    "compare-versions": "^3.6.0",
     "express": "latest",
     "fibers": "^5.0.0",
     "modern-normalize": "^1.1.0",

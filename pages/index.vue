@@ -84,6 +84,7 @@
 <script>
 import draggable from 'vuedraggable'
 import Build from '@/components/Build'
+import compareVersions from 'compare-versions'
 
 export default {
   components: {
@@ -183,8 +184,8 @@ export default {
       // Validation Start
       const duplicateUrls = []
       let flatBuildList = []
-      this.buildList.forEach((buildcat) => {
-        flatBuildList = flatBuildList.concat(buildcat.builds)
+      this.buildList.forEach((buildCat) => {
+        flatBuildList = flatBuildList.concat(buildCat.builds)
       })
       const map = {}
       for (let i = 0; i < flatBuildList.length; i++) {
@@ -200,22 +201,28 @@ export default {
       // Validation End
 
       if (duplicateUrls.length === 0) {
+        // Sort versions
+        this.buildList.forEach((buildCat) => {
+          buildCat.builds.forEach((build) => {
+            build.versions = build.versions.sort(compareVersions)
+          })
+        })
+
         const buildListFull = {
           currentVersion: this.currentVersion,
           types: this.types,
           buildList: this.buildList
-        }
+        };
 
-        async function saveToData (buildList, $http) {
+        (async function (buildList, $http) {
           await $http.$post('/api/save', buildList)
-        }
-
-        saveToData(buildListFull, this.$http)
-        this.toast = {
-          duration: 4000,
-          show: true,
-          message: 'Saved'
-        }
+        })(buildListFull, this.$http).then(() => {
+          this.toast = {
+            duration: 4000,
+            show: true,
+            message: 'Saved'
+          }
+        })
       } else {
         let log = ''
         duplicateUrls.forEach((elem) => {
