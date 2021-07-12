@@ -40,6 +40,18 @@
     </v-navigation-drawer>
     <v-app-bar app>
       Razunter's PoE Builds admin panel
+
+      <template #extension>
+        <v-tabs show-arrows>
+          <v-tab
+            v-for="(buildType, buildKey) in types"
+            :key="buildKey"
+            :to="'#'+buildKey"
+          >
+            {{ buildType }}
+          </v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
     <v-main>
       <v-card
@@ -47,7 +59,7 @@
         :key="buildtype.type"
         class="buildlist"
       >
-        <v-card-title class="buildlist__group__title">
+        <v-card-title :id="buildtype.type" class="buildlist__group__title">
           {{ typeName(buildtype.type) }}
         </v-card-title>
         <v-card-text>
@@ -55,7 +67,7 @@
             <transition-group name="buildlist-tr" tag="ol">
               <li
                 v-for="(build, index) in buildtype.builds"
-                :key="build.url"
+                :key="build.title + build.url"
                 class="buildlist__item"
               >
                 <Build
