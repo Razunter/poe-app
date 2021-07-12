@@ -161,7 +161,7 @@ export default {
           let sortValue = 0
           // Sort by version
           if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
-            sortValue = 1
+            sortValue = 1000
           } else if (!this.outdated(buildA.versions) && this.outdated(buildB.versions)) {
             sortValue = -1
           }
