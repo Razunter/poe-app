@@ -37,9 +37,21 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <v-divider />
+
+      <v-card outlined width="100%">
+        <v-card-title>Filters:</v-card-title>
+        <v-card-text>
+          <v-switch
+            v-model="filters.showOutdated"
+            label="Show outdated"
+          />
+        </v-card-text>
+      </v-card>
     </v-navigation-drawer>
     <v-app-bar app>
-      Razunter's PoE Builds admin panel
+      <v-app-bar-title>Razunter's PoE Builds admin panel</v-app-bar-title>
 
       <template #extension>
         <v-tabs show-arrows>
@@ -55,7 +67,7 @@
     </v-app-bar>
     <v-main>
       <v-card
-        v-for="buildtype in buildList"
+        v-for="buildtype in filteredBuilds"
         :key="buildtype.type"
         class="buildlist"
       >
@@ -145,7 +157,30 @@ export default {
         show: false,
         duration: 4000,
         message: ''
+      },
+      filters: {
+        showOutdated: true
       }
+    }
+  },
+  computed: {
+    filteredBuilds () {
+      const filteredBuilds = []
+      this.buildList.forEach((buildCat) => {
+        const filteredCat = buildCat.builds.filter((build) => {
+          if (!this.filters.showOutdated) {
+            return !this.outdated(build.versions)
+          } else {
+            return true
+          }
+        })
+        filteredBuilds.push({
+          type: buildCat.type,
+          builds: filteredCat
+        })
+      })
+      console.log(filteredBuilds)
+      return filteredBuilds
     }
   },
   methods: {
