@@ -123,6 +123,7 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { decimal, required, url } from 'vuelidate/lib/validators'
+import compareVersions from 'compare-versions'
 
 export default {
   mixins: [validationMixin],
@@ -217,6 +218,7 @@ export default {
     formSubmit () {
       this.$v.$touch()
       if (!this.$v.$invalid) {
+        this.newBuildData.versions = this.newBuildData.versions.sort(compareVersions)
         this.buildData = Object.assign({}, this.newBuildData)
         this.$emit('update:build', this.buildData)
         this.showDialog = false
