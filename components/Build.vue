@@ -20,6 +20,7 @@
       </div>
     </div>
     <v-dialog
+      v-if="showDialog"
       v-model="showDialog"
       max-width="1000px"
       scrollable
