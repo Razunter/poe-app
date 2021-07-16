@@ -94,6 +94,7 @@
                   :build-type="typeName(buildtype.type)"
                   :outdated="outdated(build.versions)"
                   @update:build="updateBuild($event, buildtype.type, index)"
+                  @update:delete="deleteBuild(buildtype.type, index)"
                 />
               </li>
             </transition-group>
@@ -215,6 +216,12 @@ export default {
       if (event.author) {
         this.$store.commit('add', event.author)
       }
+    },
+    deleteBuild (buildType, index) {
+      const typeIndex = this.buildList.findIndex((element) => {
+        return element.type === buildType
+      })
+      this.buildList[typeIndex].builds.splice(index, 1)
     },
     sortBuilds () {
       this.buildList.forEach((buildcat) => {

@@ -85,11 +85,17 @@
               v-model="newBuildData.pin"
               label="Pin build"
             />
-            <v-btn type="submit">
-              Save
-            </v-btn>
+            <input type="submit" value="" hidden>
           </form>
         </v-card-text>
+        <v-card-actions>
+          <v-btn color="blue" @click="formSubmit">
+            Save
+          </v-btn>
+          <v-btn color="red" @click="$emit('update:delete'); showDialog = false;">
+            Delete
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </article>
