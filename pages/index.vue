@@ -268,8 +268,14 @@ export default {
           }
           // Sort by author
           if (buildA.author || buildB.author) {
-            if (buildA.author && buildB.author && buildA.author !== buildB.author) {
-              sortValue += buildA.author[0] > buildB.author[0] ? 1 : -1
+            if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
+              let authorWeight = buildA.author[0] > buildB.author[0] ? 1 : -1
+              if (buildA.author === 'Zizaran') {
+                authorWeight = -3
+              } else if (buildB.author === 'Zizaran') {
+                authorWeight = 3
+              }
+              sortValue += authorWeight
             }
             if (buildA.author && !buildB.author) {
               sortValue += 1
@@ -299,9 +305,9 @@ export default {
 
           // Sort by url type
           if (buildA.url.indexOf('youtube.com') > 0 && !buildB.url.indexOf('youtube.com') > 0) {
-            sortValue += 10
+            sortValue += 5
           } else if (!buildA.url.indexOf('youtube.com') > 0 && buildB.url.indexOf('youtube.com') > 0) {
-            sortValue += -10
+            sortValue += -5
           }
 
           return sortValue
