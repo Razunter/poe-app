@@ -13,6 +13,13 @@
       <v-list
         nav
       >
+        <button-settings
+          :versions.sync="versions"
+          :current-version.sync="currentVersion"
+        />
+
+        <v-divider />
+
         <v-list-item @click="sortBuilds">
           <v-list-item-icon>
             <v-icon>mdi-sort-ascending</v-icon>
@@ -145,6 +152,7 @@ export default {
     return {
       types: data.types,
       buildList,
+      versions: data.versions,
       currentVersion: data.currentVersion
     }
   },
@@ -153,6 +161,7 @@ export default {
       types: {},
       buildList: [],
       currentVersion: '',
+      versions: [],
       toast: {
         show: false,
         duration: 4000,
@@ -267,6 +276,7 @@ export default {
       if (duplicateUrls.length === 0) {
         const buildListFull = {
           currentVersion: this.currentVersion,
+          versions: this.versions,
           types: this.types,
           buildList: this.buildList
         };

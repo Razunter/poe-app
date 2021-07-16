@@ -21,7 +21,7 @@
     </div>
     <v-dialog
       v-model="showDialog"
-      max-width="800px"
+      max-width="1000px"
       scrollable
       @click:outside="resetData"
     >
@@ -97,7 +97,7 @@
                       v-model="newBuildData.pin"
                       label="Pin build"
                     />
-                    <v-btn class="mr-4" type="submit">
+                    <v-btn type="submit">
                       Save
                     </v-btn>
                   </form>
@@ -207,8 +207,6 @@ export default {
       if (!this.$v.newBuildData.versions.$dirty) {
         return errors
       }
-      console.log(this.newBuildData.versions)
-      console.log(this.$v.newBuildData.versions)
       !this.$v.newBuildData.versions.required && errors.push('Version is required.')
       this.$v.newBuildData.versions.$each.$invalid && errors.push('Must be a decimal number.')
       return errors
