@@ -26,7 +26,7 @@
       @click:outside="resetData"
     >
       <v-card>
-        <v-card-title>{{ buildData.title }}</v-card-title>
+        <v-card-title>Edit build</v-card-title>
         <v-card-text>
           <form
             novalidate

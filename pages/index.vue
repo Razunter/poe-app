@@ -81,15 +81,21 @@
         <v-card-title :id="buildtype.type" class="buildlist__group__title">
           {{ typeName(buildtype.type) }}
         </v-card-title>
+        <v-card-actions>
+          <v-btn color="green" @click="addBuild(buildtype.type)">
+            Add build
+          </v-btn>
+        </v-card-actions>
         <v-card-text>
           <draggable v-model="buildtype.builds">
             <transition-group name="buildlist-tr" tag="ol">
               <li
                 v-for="(build, index) in buildtype.builds"
-                :key="build.title + build.url"
+                :key="build.url + index"
                 class="buildlist__item"
               >
                 <Build
+                  :ref="`build-${buildtype.type}-${index}`"
                   :build="build"
                   :build-type="typeName(buildtype.type)"
                   :outdated="outdated(build.versions)"
@@ -123,6 +129,31 @@
 import draggable from 'vuedraggable'
 import Build from '@/components/Build'
 import compareVersions from 'compare-versions'
+
+const getBuildTypeBuilds = (buildList, buildType) => {
+  const buildTypeIndex = buildList.findIndex((element) => {
+    return element.type === buildType
+  })
+  return buildList[buildTypeIndex].builds
+}
+
+function BuildObj ({
+  title = '',
+  url = '',
+  video = '',
+  videothumb = '',
+  versions = [],
+  author = '',
+  pin = ''
+}) {
+  this.title = title
+  this.url = url
+  this.video = video
+  this.videothumb = videothumb
+  this.versions = versions
+  this.author = author
+  this.pin = pin
+}
 
 export default {
   components: {
@@ -209,19 +240,21 @@ export default {
      * @param {number} index
      */
     updateBuild (event, type, index) {
-      const typeIndex = this.buildList.findIndex((element) => {
-        return element.type === type
-      })
-      this.buildList[typeIndex].builds[index] = event
+      getBuildTypeBuilds(this.buildList, type)[index] = event
       if (event.author) {
         this.$store.commit('add', event.author)
       }
     },
     deleteBuild (buildType, index) {
-      const typeIndex = this.buildList.findIndex((element) => {
-        return element.type === buildType
+      getBuildTypeBuilds(this.buildList, buildType).splice(index, 1)
+    },
+    addBuild (buildType) {
+      getBuildTypeBuilds(this.buildList, buildType).unshift(new BuildObj({
+        versions: [this.currentVersion]
+      }))
+      this.$nextTick(() => {
+        this.$refs[`build-${buildType}-0`][0].showDialog = true
       })
-      this.buildList[typeIndex].builds.splice(index, 1)
     },
     sortBuilds () {
       this.buildList.forEach((buildcat) => {
