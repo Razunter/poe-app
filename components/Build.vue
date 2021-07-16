@@ -28,92 +28,67 @@
       <v-card>
         <v-card-title>{{ buildData.title }}</v-card-title>
         <v-card-text>
-          <v-tabs v-model="tab">
-            <v-tab key="edit">
-              Edit
-            </v-tab>
-            <v-tab key="view">
-              View
-            </v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab">
-            <v-tab-item key="edit">
-              <v-card flat>
-                <v-card-text>
-                  <form
-                    novalidate
-                    class="md-layout"
-                    @submit.prevent="formSubmit"
-                  >
-                    <v-text-field
-                      v-model.trim="newBuildData.title"
-                      label="Build title"
-                      :error-messages="titleErrors"
-                      required
-                      autocomplete="false"
-                      @input="$v.newBuildData.title.$touch()"
-                      @blur="$v.newBuildData.title.$touch()"
-                    />
-                    <v-combobox
-                      v-model="newBuildData.author"
-                      :items="authors"
-                      clearable
-                      label="Author"
-                    />
-                    <v-text-field
-                      v-model.trim="newBuildData.url"
-                      label="Build URL"
-                      :error-messages="urlErrors"
-                      required
-                      @input="$v.newBuildData.url.$touch()"
-                      @blur="$v.newBuildData.url.$touch()"
-                    />
-                    <v-text-field
-                      v-model.trim="newBuildData.video"
-                      label="Video URL"
-                      :error-messages="videoErrors"
-                      @input="$v.newBuildData.video.$touch()"
-                      @blur="$v.newBuildData.video.$touch()"
-                    />
-                    <v-text-field
-                      v-model.trim="newBuildData.videothumb"
-                      label="Video Thumbnail URL"
-                      :error-messages="videoThumbErrors"
-                      @input="$v.newBuildData.videothumb.$touch()"
-                      @blur="$v.newBuildData.videothumb.$touch()"
-                    />
-                    <v-combobox
-                      v-model="newBuildData.versions"
-                      label="Supported versions"
-                      placeholder="Add version..."
-                      :error-messages="versionsErrors"
-                      multiple
-                      required
-                      chips
-                      @input="$v.newBuildData.versions.$touch()"
-                      @blur="$v.newBuildData.versions.$touch()"
-                    />
-                    <v-switch
-                      v-model="newBuildData.pin"
-                      label="Pin build"
-                    />
-                    <v-btn type="submit">
-                      Save
-                    </v-btn>
-                  </form>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item key="view">
-              <v-card flat>
-                <v-card-text>
-                  <h2 class="build__type">
-                    Type: {{ buildType }}
-                  </h2>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-          </v-tabs-items>
+          <form
+            novalidate
+            class="md-layout"
+            @submit.prevent="formSubmit"
+          >
+            <v-text-field
+              v-model.trim="newBuildData.title"
+              label="Build title"
+              :error-messages="titleErrors"
+              required
+              autocomplete="false"
+              @input="$v.newBuildData.title.$touch()"
+              @blur="$v.newBuildData.title.$touch()"
+            />
+            <v-combobox
+              v-model="newBuildData.author"
+              :items="authors"
+              clearable
+              label="Author"
+            />
+            <v-text-field
+              v-model.trim="newBuildData.url"
+              label="Build URL"
+              :error-messages="urlErrors"
+              required
+              @input="$v.newBuildData.url.$touch()"
+              @blur="$v.newBuildData.url.$touch()"
+            />
+            <v-text-field
+              v-model.trim="newBuildData.video"
+              label="Video URL"
+              :error-messages="videoErrors"
+              @input="$v.newBuildData.video.$touch()"
+              @blur="$v.newBuildData.video.$touch()"
+            />
+            <v-text-field
+              v-model.trim="newBuildData.videothumb"
+              label="Video Thumbnail URL"
+              :error-messages="videoThumbErrors"
+              @input="$v.newBuildData.videothumb.$touch()"
+              @blur="$v.newBuildData.videothumb.$touch()"
+            />
+            <v-combobox
+              v-model="newBuildData.versions"
+              label="Supported versions"
+              placeholder="Add version..."
+              :error-messages="versionsErrors"
+              multiple
+              required
+              chips
+              @input="$v.newBuildData.versions.$touch()"
+              @blur="$v.newBuildData.versions.$touch()"
+            />
+            <v-switch
+              v-model="newBuildData.pin"
+              label="Pin build"
+            />
+            <v-btn type="submit">
+              Save
+            </v-btn>
+          </form>
         </v-card-text>
       </v-card>
     </v-dialog>
