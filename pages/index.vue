@@ -200,7 +200,7 @@ export default {
         message: ''
       },
       filters: {
-        showOutdated: true
+        showOutdated: false
       }
     }
   },
@@ -285,10 +285,25 @@ export default {
 
           // Sort pinned
           if (buildA.pin && !buildB.pin) {
-            sortValue += -10
+            sortValue += -100
           } else if (!buildA.pin && buildB.pin) {
+            sortValue += 100
+          }
+
+          // Sort by video
+          if (buildA.video && !buildB.video) {
+            sortValue += -10
+          } else if (!buildA.video && buildB.video) {
             sortValue += 10
           }
+
+          // Sort by url type
+          if (buildA.url.indexOf('youtube.com') > 0 && !buildB.url.indexOf('youtube.com') > 0) {
+            sortValue += 10
+          } else if (!buildA.url.indexOf('youtube.com') > 0 && buildB.url.indexOf('youtube.com') > 0) {
+            sortValue += -10
+          }
+
           return sortValue
         })
       })
