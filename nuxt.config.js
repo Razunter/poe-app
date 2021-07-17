@@ -76,8 +76,13 @@ export default {
   modules: [
     // Doc: https://http.nuxtjs.org
     '@nuxt/http',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    '@nuxtjs/toast'
   ],
+
+  toast: {
+    position: 'bottom-center'
+  },
 
   /*
   ** Server Middleware

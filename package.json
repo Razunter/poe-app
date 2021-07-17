@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxt/http": "latest",
+    "@nuxtjs/toast": "^3.3.1",
     "compare-versions": "^3.6.0",
     "express": "latest",
     "fibers": "^5.0.0",

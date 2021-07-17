@@ -113,20 +113,6 @@
         </v-card-text>
       </v-card>
     </v-main>
-    <v-snackbar
-      v-model="toast.show"
-      app
-      multi-line
-      :timeout="toast.duration"
-      vertical
-    >
-      <span v-html="toast.message" /> <!-- eslint-disable-line -->
-      <template #action="{ attrs }">
-        <v-btn text v-bind="attrs" @click="toast.show = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </v-app>
 </template>
 
@@ -199,11 +185,6 @@ export default {
       buildList: [],
       currentVersion: '',
       versions: [],
-      toast: {
-        show: false,
-        duration: 4000,
-        message: ''
-      },
       filters: {
         showOutdated: false
       }
@@ -348,24 +329,29 @@ export default {
         };
 
         (async function (buildList, $http) {
-          await $http.$post('/api/save', buildList)
-        })(buildListFull, this.$http).then(() => {
-          this.toast = {
-            duration: 4000,
-            show: true,
-            message: 'Saved'
-          }
+          return await $http.$post('/api/save', buildList)
+        })(buildListFull, this.$http).then((response) => {
+          this.$toast.success(response)
         })
       } else {
         let log = ''
         duplicateUrls.forEach((elem) => {
           log += '<p>' + elem.join('<br />') + '</p>'
         })
-        this.toast = {
-          show: true,
-          duration: -1,
-          message: '<strong>Duplicate URLs detected:</strong><br />' + log
-        }
+        this.$toast.error('<strong>Duplicate URLs detected:</strong><br />' + log, {
+          duration: Infinity,
+          action: {
+            text: 'Close',
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0)
+            }
+          }
+        })
+        // this.toast = {
+        //   show: true,
+        //   duration: -1,
+        //   message: '<strong>Duplicate URLs detected:</strong><br />' + log
+        // }
       }
     }
   }
@@ -375,6 +361,24 @@ export default {
 <style lang="scss">
 .buildlist-tr-move {
   transition: transform .5s;
+}
+
+.toasted-container .toasted {
+  display: block;
+
+  .action {
+    display: inline-block;
+    background: #fff;
+    color: #000;
+  }
+}
+
+.toasted .primary, .toasted.toasted-primary {
+  font-size: 16px;
+
+  &.error {
+    background: #ba2f25;
+  }
 }
 </style>
 

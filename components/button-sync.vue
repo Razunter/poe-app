@@ -56,15 +56,23 @@ export default {
               if (versionNew !== null) {
                 if (!build.versions.includes(versionNew[0])) {
                   build.versions.push(versionNew[0])
-                  console.log(`Updated: ${build.title}\n${build.url}`)
+                  this.$toast.success(`Updated: ${build.title}\n${build.url}`)
                 }
               } else {
-                console.error('not found: ' + build.url)
+                this.$toast.error('Build or version not found: ' + build.title, {
+                  duration: Infinity,
+                  action: {
+                    text: 'Close',
+                    onClick: (e, toastObject) => {
+                      toastObject.goAway(0)
+                    }
+                  }
+                })
               }
             })
-              .catch(function (error) {
+              .catch((error) => {
                 // handle error
-                console.log(error)
+                this.$toast.error(error)
               })
           }
 
@@ -73,7 +81,15 @@ export default {
             const videoID = build.video.substr(build.video.lastIndexOf('/') + 1)
             const video = await apiClient.helix.videos.getVideoById(videoID)
             if (!video) {
-              console.log('Twitch video not found: ' + build.video)
+              this.$toast.error('Twitch video not found: ' + build.video, {
+                duration: Infinity,
+                action: {
+                  text: 'Close',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0)
+                  }
+                }
+              })
               return false
             }
             build.videothumb = video.thumbnailUrl
