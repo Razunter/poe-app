@@ -20,6 +20,11 @@
 
         <v-divider />
 
+        <button-sync
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+        />
+
         <v-list-item @click="sortBuilds">
           <v-list-item-icon>
             <v-icon>mdi-sort-ascending</v-icon>

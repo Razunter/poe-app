@@ -75,7 +75,8 @@ export default {
   */
   modules: [
     // Doc: https://http.nuxtjs.org
-    '@nuxt/http'
+    '@nuxt/http',
+    '@nuxtjs/proxy'
   ],
 
   /*
@@ -85,6 +86,16 @@ export default {
     '/api': '~/api'
   },
 
+  http: {
+    proxy: true
+  },
+
+  proxy: {
+    '/forum/': {
+      target: 'https://www.pathofexile.com'
+      // pathRewrite: { '^/forum/': '' }
+    }
+  },
   /*
   ** For deployment you might want to edit host and port
   */

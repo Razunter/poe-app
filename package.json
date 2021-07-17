@@ -29,13 +29,17 @@
     "@nuxtjs/eslint-config": "^6.0.1",
     "@nuxtjs/eslint-config-typescript": "^6.0.1",
     "@nuxtjs/eslint-module": "^3.0.2",
+    "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/vuetify": "^1.12.1",
     "babel-eslint": "^10.1.0",
+    "cheerio": "^1.0.0-rc.10",
     "eslint": "^7.30.0",
     "eslint-plugin-nuxt": "^2.0.0",
     "postcss-assets": "^6.0.0",
     "postcss-inline-svg": "^5.0.0",
     "postcss-preset-env": "^6.7.0",
-    "postcss-sort-media-queries": "^3.11.12"
+    "postcss-sort-media-queries": "^3.11.12",
+    "twitch": "^4.6.2",
+    "twitch-auth": "^4.6.2"
   }
 }
