@@ -141,7 +141,6 @@ export default {
       buildData.versions = []
     }
     return {
-      tab: null,
       showDialog: false,
       buildData,
       newBuildData: Object.assign({}, buildData)
