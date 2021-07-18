@@ -64,13 +64,6 @@
               @input="$v.newBuildData.video.$touch()"
               @blur="$v.newBuildData.video.$touch()"
             />
-            <v-text-field
-              v-model.trim="newBuildData.videothumb"
-              label="Video Thumbnail URL"
-              :error-messages="videoThumbErrors"
-              @input="$v.newBuildData.videothumb.$touch()"
-              @blur="$v.newBuildData.videothumb.$touch()"
-            />
             <v-combobox
               v-model="newBuildData.versions"
               label="Supported versions"
@@ -127,7 +120,7 @@ export default {
           title: String,
           url: String,
           video: String,
-          videothumb: String,
+          videothumb: Object,
           versions: Array,
           author: String,
           pin: Boolean
@@ -175,14 +168,6 @@ export default {
       !this.$v.newBuildData.video.url && errors.push('Must be an URL.')
       return errors
     },
-    videoThumbErrors () {
-      const errors = []
-      if (!this.$v.newBuildData.videothumb.$dirty) {
-        return errors
-      }
-      !this.$v.newBuildData.videothumb.url && errors.push('Must be an URL.')
-      return errors
-    },
     versionsErrors () {
       const errors = []
       if (!this.$v.newBuildData.versions.$dirty) {
@@ -217,9 +202,6 @@ export default {
       versions: {
         required,
         $each: { decimal }
-      },
-      videothumb: {
-        url
       },
       video: {
         url

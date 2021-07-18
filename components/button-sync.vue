@@ -16,6 +16,7 @@ const cheerio = require('cheerio')
 
 const clientId = 'y6os8vq0rmevgsgrm3ktlgncgjqkn9'
 const clientSecret = 'oelwmcf3bykgliz9ogxd5ba9n4xfrj'
+const YTapiKey = 'AIzaSyCDyK-x9J6LK9TbVpKg69MtTNuN4pTfWnU'
 const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret)
 const apiClient = new ApiClient({ authProvider })
 
@@ -41,25 +42,85 @@ export default {
       }
     },
     syncBuilds () {
-      this.buildList.forEach(async (buildCat) => {
-        // noinspection ES6MissingAwait
-        await buildCat.builds.forEach(async (build) => {
-          // noinspection ES6MissingAwait
-          if (this.outdated(build.versions) && build.url.indexOf('pathofexile.com') > 0) {
-            const addr = build.url.substring(build.url.indexOf('/forum/') + 7)
-            await this.$http.$get('/forum/' + addr).then((response) => {
-              const $ = cheerio.load(response.data)
-              const title = $('title').text()
-              const regex = /[0-9].[0-9]+/gu
-              const versionNew = regex.exec(title)
-              regex.lastIndex = 0
-              if (versionNew !== null) {
-                if (!build.versions.includes(versionNew[0])) {
-                  build.versions.push(versionNew[0])
-                  this.$toast.success(`Updated: ${build.title}\n${build.url}`)
+      this.buildList.forEach((buildCat) => {
+        buildCat.builds.forEach(async (build) => {
+          // PoE Forum
+          const asyncPoEforum = async () => {
+            if (this.outdated(build.versions) && build.url.indexOf('pathofexile.com') > 0) {
+              const addr = build.url.substring(build.url.indexOf('/forum/') + 7)
+              await this.$http.$get('/forum/' + addr).then((response) => {
+                const $ = cheerio.load(response)
+                const title = $('title').text()
+                const regex = /[0-9].[0-9]+/gu
+                const versionNew = regex.exec(title)
+                regex.lastIndex = 0
+                if (versionNew !== null) {
+                  if (!build.versions.includes(versionNew[0])) {
+                    build.versions.push(versionNew[0])
+                    this.$toast.success(`Updated: ${build.title}\n${build.url}`)
+                  }
+                } else {
+                  this.$toast.error('Build or version not found: ' + build.title, {
+                    duration: Infinity,
+                    action: {
+                      text: 'Close',
+                      onClick: (e, toastObject) => {
+                        toastObject.goAway(0)
+                      }
+                    }
+                  })
                 }
-              } else {
-                this.$toast.error('Build or version not found: ' + build.title, {
+              })
+                .catch((error) => {
+                  // handle error
+                  this.$toast.error(error)
+                })
+            }
+          }
+
+          // YT
+          const asyncYt = async () => {
+            if (build.video.indexOf('youtube.com') > 0 && !build.videothumb) {
+              const videoID = build.video.substr(build.video.lastIndexOf('?v=') + 3)
+              await this.$http.$get(`/youtube/v3/videos?id=${videoID}&key=${YTapiKey}&part=snippet`).then((response) => {
+                if (response.items.length > 0) {
+                  const thumbs = response.items[0].snippet.thumbnails
+                  build.videothumb = {
+                    '480w': thumbs.high.url
+                  }
+                  if (thumbs.standard) {
+                    build.videothumb['640w'] = thumbs.standard.url
+                  }
+                  if (thumbs.maxres) {
+                    build.videothumb['1280w'] = thumbs.maxres.url
+                  }
+                } else {
+                  build.video = ''
+                  build.videothumb = {}
+                  this.$toast.error('YouTube video not found: ' + build.title, {
+                    duration: Infinity,
+                    action: {
+                      text: 'Close',
+                      onClick: (e, toastObject) => {
+                        toastObject.goAway(0)
+                      }
+                    }
+                  })
+                }
+              }).catch((error) => {
+                // handle error
+                this.$toast.error(error)
+              })
+            }
+          }
+
+          // Twitch
+          const asyncTwitch = async () => {
+            if (build.video.indexOf('twitch.tv') > 0 && !build.videothumb) {
+              const videoID = build.video.substr(build.video.lastIndexOf('/') + 1)
+              const video = await apiClient.helix.videos.getVideoById(videoID)
+              if (!video) {
+                this.$toast.error('Twitch video not found: ' + build.video, {
                   duration: Infinity,
                   action: {
                     text: 'Close',
@@ -68,34 +129,20 @@ export default {
                     }
                   }
                 })
+                return false
               }
-            })
-              .catch((error) => {
-                // handle error
-                this.$toast.error(error)
-              })
+              build.videothumb = {
+                '480w': video.thumbnailUrl.replace('%{width}', '480').replace('%{height}', '360'),
+                '640w': video.thumbnailUrl.replace('%{width}', '640').replace('%{height}', '480'),
+                '1280w': video.thumbnailUrl.replace('%{width}', '1280').replace('%{height}', '720')
+              }
+            }
           }
 
-          // Twitch
-          if (build.video.indexOf('twitch.tv') > 0 && !build.videothumb) {
-            const videoID = build.video.substr(build.video.lastIndexOf('/') + 1)
-            const video = await apiClient.helix.videos.getVideoById(videoID)
-            if (!video) {
-              this.$toast.error('Twitch video not found: ' + build.video, {
-                duration: Infinity,
-                action: {
-                  text: 'Close',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0)
-                  }
-                }
-              })
-              return false
-            }
-            build.videothumb = video.thumbnailUrl
-          }
+          await Promise.all([asyncPoEforum(), asyncYt(), asyncTwitch()])
         })
       })
+      this.$toast.success('Sync complete')
       this.$emit('update:buildList', this.buildList)
     }
   }

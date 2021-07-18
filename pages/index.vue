@@ -132,7 +132,7 @@ function BuildObj ({
   title = '',
   url = '',
   video = '',
-  videothumb = '',
+  videothumb = {},
   versions = [],
   author = '',
   pin = ''
@@ -375,6 +375,7 @@ export default {
 
 .toasted .primary, .toasted.toasted-primary {
   font-size: 16px;
+  user-select: auto !important;
 
   &.error {
     background: #ba2f25;

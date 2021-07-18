@@ -96,10 +96,8 @@ export default {
   },
 
   proxy: {
-    '/forum/': {
-      target: 'https://www.pathofexile.com'
-      // pathRewrite: { '^/forum/': '' }
-    }
+    '/forum/': 'https://www.pathofexile.com',
+    '/youtube/': 'https://www.googleapis.com'
   },
   /*
   ** For deployment you might want to edit host and port
