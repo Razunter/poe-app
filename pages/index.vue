@@ -289,6 +289,14 @@ export default {
             sortValue += 10
           }
 
+          if (buildA.videothumb && buildB.videothumb) {
+            if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
+              sortValue += -5
+            } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
+              sortValue += 5
+            }
+          }
+
           // Sort by url type
           if (buildA.url.indexOf('youtube.com') > 0 && !buildB.url.indexOf('youtube.com') > 0) {
             sortValue += 5
