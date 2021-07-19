@@ -337,7 +337,11 @@ export default {
           buildCat.builds.forEach((build, buildIndex) => {
             const cleanBuild = new BuildObj(build)
             for (const param in cleanBuild) {
-              if (!cleanBuild[param]) {
+              if (typeof cleanBuild[param] === 'object') {
+                if (Object.keys(cleanBuild[param]).length === 0 && cleanBuild[param].constructor === Object) {
+                  delete cleanBuild[param]
+                }
+              } else if (!cleanBuild[param]) {
                 delete cleanBuild[param]
               }
             }
