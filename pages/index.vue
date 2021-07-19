@@ -329,7 +329,9 @@ export default {
       // Validation End
 
       if (duplicateUrls.length === 0) {
+        // Cleanup & skipRF
         const buildListFinal = Array.from(this.buildList)
+        const rfBuilds = new Set()
 
         buildListFinal.forEach((buildCat, catIndex) => {
           buildCat.builds.forEach((build, buildIndex) => {
@@ -340,8 +342,20 @@ export default {
               }
             }
             buildListFinal[catIndex].builds[buildIndex] = cleanBuild
+
+            if (buildCat.type === 'rf') {
+              for (const version of build.versions) {
+                rfBuilds.add(version)
+              }
+            }
           })
         })
+
+        for (const version of this.versions) {
+          if (!rfBuilds.has(version.version)) {
+            version.skiprf = true
+          }
+        }
 
         const buildListFull = {
           currentVersion: this.currentVersion,

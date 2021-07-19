@@ -15,7 +15,8 @@
     },
     {
       "name": "Delirium",
-      "version": "3.10"
+      "version": "3.10",
+      "skiprf": true
     },
     {
       "name": "Harvest",
@@ -27,7 +28,8 @@
     },
     {
       "name": "Echoes of the Atlas & Ritual",
-      "version": "3.13"
+      "version": "3.13",
+      "skiprf": true
     },
     {
       "name": "Ultimatum",
@@ -39,7 +41,8 @@
       "name": "Expedition",
       "wip": true,
       "url": "https://www.pathofexile.com/expedition",
-      "note": "Massive balance changes, be wary!"
+      "note": "Massive balance changes, be wary!",
+      "skiprf": true
     }
   ],
   "types": {
