@@ -329,11 +329,25 @@ export default {
       // Validation End
 
       if (duplicateUrls.length === 0) {
+        const buildListFinal = Array.from(this.buildList)
+
+        buildListFinal.forEach((buildCat, catIndex) => {
+          buildCat.builds.forEach((build, buildIndex) => {
+            const cleanBuild = new BuildObj(build)
+            for (const param in cleanBuild) {
+              if (!cleanBuild[param]) {
+                delete cleanBuild[param]
+              }
+            }
+            buildListFinal[catIndex].builds[buildIndex] = cleanBuild
+          })
+        })
+
         const buildListFull = {
           currentVersion: this.currentVersion,
           versions: this.versions,
           types: this.types,
-          buildList: this.buildList
+          buildList: buildListFinal
         };
 
         (async function (buildList, $http) {
