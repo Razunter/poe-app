@@ -263,11 +263,11 @@ export default {
               }
               sortValue += authorWeight
             }
-            if (buildA.author && !buildB.author) {
-              sortValue += 1
-            } else if (!buildA.author && buildB.author) {
-              sortValue += -1
-            }
+            // if (buildA.author && !buildB.author) {
+            //   sortValue += 1
+            // } else if (!buildA.author && buildB.author) {
+            //   sortValue += -1
+            // }
           }
 
           // Sort by version
