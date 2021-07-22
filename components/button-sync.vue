@@ -73,7 +73,41 @@ export default {
               })
                 .catch((error) => {
                   // handle error
-                  this.$toast.error(error)
+                  this.$toast.error(error.message + '<br />' + build.name)
+                })
+            }
+          }
+
+          // PoE-vault
+          const asyncPoEvault = async () => {
+            if (this.outdated(build.versions) && build.url.indexOf('poe-vault.com') > 0) {
+              const addr = build.url.substring(build.url.indexOf('/guides/') + 8)
+              await this.$http.$get('/guides/' + addr).then((response) => {
+                const $ = cheerio.load(response)
+                const title = $('title').text()
+                const regex = /[0-9].[0-9]+/gu
+                const versionNew = regex.exec(title)
+                regex.lastIndex = 0
+                if (versionNew !== null) {
+                  if (!build.versions.includes(versionNew[0])) {
+                    build.versions.push(versionNew[0])
+                    this.$toast.success(`Updated: ${build.title}\n${build.url}`)
+                  }
+                } else {
+                  this.$toast.error('Build or version not found: ' + build.title, {
+                    duration: Infinity,
+                    action: {
+                      text: 'Close',
+                      onClick: (e, toastObject) => {
+                        toastObject.goAway(0)
+                      }
+                    }
+                  })
+                }
+              })
+                .catch((error) => {
+                  // handle error
+                  this.$toast.error(error.message + '<br />' + build.name)
                 })
             }
           }
@@ -115,7 +149,7 @@ export default {
                   }
                 }).catch((error) => {
                   // handle error
-                  this.$toast.error(error)
+                  this.$toast.error(error.message + '<br />' + build.name)
                 })
               }
             }
@@ -146,7 +180,7 @@ export default {
             }
           }
 
-          await Promise.all([asyncPoEforum(), asyncYt(), asyncTwitch()])
+          await Promise.all([asyncPoEforum(), asyncPoEvault(), asyncYt(), asyncTwitch()])
         })
       })
       this.$toast.success('Sync complete')

@@ -97,7 +97,8 @@ export default {
 
   proxy: {
     '/forum/': 'https://www.pathofexile.com',
-    '/youtube/': 'https://www.googleapis.com'
+    '/youtube/': 'https://www.googleapis.com',
+    '/guides/': 'https://www.poe-vault.com'
   },
   /*
   ** For deployment you might want to edit host and port
