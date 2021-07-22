@@ -134,7 +134,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -245,7 +246,8 @@
           "versions": [
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -288,7 +290,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -301,7 +304,8 @@
             "1280w": "https://i.ytimg.com/vi/H1eLo15p5hU/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -595,7 +599,8 @@
             "3.10",
             "3.11",
             "3.12",
-            "3.13"
+            "3.13",
+            "3.15"
           ]
         },
         {
@@ -614,7 +619,8 @@
             "3.10",
             "3.11",
             "3.12",
-            "3.13"
+            "3.13",
+            "3.15"
           ]
         },
         {
@@ -919,7 +925,8 @@
           "versions": [
             "3.8",
             "3.9",
-            "3.10"
+            "3.10",
+            "3.11"
           ]
         },
         {
@@ -986,7 +993,8 @@
             "1280w": "https://i.ytimg.com/vi/4Bo9Txz4OH0/maxresdefault.jpg"
           },
           "versions": [
-            "3.8"
+            "3.8",
+            "3.9"
           ]
         },
         {
@@ -1077,7 +1085,8 @@
             "1280w": "https://i.ytimg.com/vi/VajdUxccUAw/maxresdefault.jpg"
           },
           "versions": [
-            "3.7"
+            "3.7",
+            "3.9"
           ]
         },
         {
@@ -1194,14 +1203,16 @@
             "480w": "https://i.ytimg.com/vi/EcnVdLz45lU/hqdefault.jpg"
           },
           "versions": [
-            "3.8"
+            "3.8",
+            "3.14"
           ]
         },
         {
           "title": "(WIP!) Rivalen's Young, Wild Strikin' and Free | 'Natural Wild Strike Berserker | 8M+ DPS",
           "url": "https://www.pathofexile.com/forum/view-thread/3009645",
           "versions": [
-            "3.13"
+            "3.13",
+            "3.14"
           ]
         },
         {
@@ -1216,7 +1227,8 @@
           "title": "Devon's Poisoning Lawnmower | Poison CoC Cyclone | All content viable",
           "url": "https://www.pathofexile.com/forum/view-thread/2628159",
           "versions": [
-            "3.8"
+            "3.8",
+            "3.9"
           ]
         },
         {
@@ -1237,7 +1249,8 @@
           "title": "1M+ (880k+ Shaper) Sunder Gladiator (Budget friendly!)",
           "url": "https://www.pathofexile.com/forum/view-thread/1979204",
           "versions": [
-            "3.7"
+            "3.7",
+            "3.10"
           ]
         }
       ]
@@ -1392,7 +1405,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -1444,7 +1458,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -2351,7 +2366,8 @@
             "1280w": "https://i.ytimg.com/vi/4eMEXCi8rbk/maxresdefault.jpg"
           },
           "versions": [
-            "3.7"
+            "3.7",
+            "3.10"
           ]
         },
         {
@@ -2423,7 +2439,8 @@
           "title": "SSF Friendly Poison BF/BB Assassin Levelling Guide | Blast Through Levelling",
           "url": "https://www.pathofexile.com/forum/view-thread/3063150",
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -2507,7 +2524,8 @@
           "title": "Divine Ire Inquisitor [HC viable][SSF viable]",
           "url": "https://www.pathofexile.com/forum/view-thread/2451652",
           "versions": [
-            "3.7"
+            "3.7",
+            "3.11"
           ]
         },
         {
@@ -2612,7 +2630,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -2651,7 +2670,8 @@
             "1280w": "https://i.ytimg.com/vi/lpZGDkspRGg/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -2919,7 +2939,8 @@
           },
           "versions": [
             "3.7",
-            "3.8"
+            "3.8",
+            "3.9"
           ]
         },
         {
@@ -2932,7 +2953,8 @@
             "1280w": "https://i.ytimg.com/vi/DsD-NUDKSOs/maxresdefault.jpg"
           },
           "versions": [
-            "3.8"
+            "3.8",
+            "3.9"
           ]
         },
         {
@@ -2951,6 +2973,9 @@
           "title": "Fyregrass' Comprehensive Freezing Pulse Totems Guide - Act 1 to Maven 9",
           "url": "https://www.pathofexile.com/forum/view-thread/3145014",
           "video": "https://www.youtube.com/watch?v=CJZnJDylFl4",
+          "videothumb": {
+            "480w": "https://i.ytimg.com/vi/CJZnJDylFl4/hqdefault.jpg"
+          },
           "versions": [
             "3.15"
           ]
@@ -2988,7 +3013,8 @@
             "3.9",
             "3.10",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3186,7 +3212,8 @@
             "1280w": "https://i.ytimg.com/vi/98pqZI-gLC0/maxresdefault.jpg"
           },
           "versions": [
-            "3.7"
+            "3.7",
+            "3.6"
           ]
         },
         {
@@ -3375,7 +3402,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3388,7 +3416,8 @@
             "1280w": "https://i.ytimg.com/vi/tyF7C-2F-NE/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3581,7 +3610,8 @@
           },
           "versions": [
             "3.7",
-            "3.8"
+            "3.8",
+            "3.13"
           ]
         },
         {
@@ -3692,7 +3722,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3739,7 +3770,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -4138,7 +4170,8 @@
           },
           "versions": [
             "3.7",
-            "3.8"
+            "3.8",
+            "3.10"
           ]
         },
         {
@@ -4152,7 +4185,8 @@
           },
           "versions": [
             "3.7",
-            "3.8"
+            "3.8",
+            "3.13"
           ]
         },
         {
@@ -4166,7 +4200,8 @@
           },
           "versions": [
             "3.7",
-            "3.8"
+            "3.8",
+            "3.13"
           ]
         },
         {
@@ -4218,7 +4253,8 @@
             "1280w": "https://i.ytimg.com/vi/iTzrZhO09pc/maxresdefault.jpg"
           },
           "versions": [
-            "3.7"
+            "3.7",
+            "3.8"
           ]
         },
         {
@@ -4262,7 +4298,8 @@
           "versions": [
             "3.10",
             "3.11",
-            "3.12"
+            "3.12",
+            "3.15"
           ]
         },
         {
@@ -4306,14 +4343,6 @@
           "title": "VOIDFORGE Chains of Command (75/75 block, 6K+ life), Cheap 20M dps, all content.",
           "url": "https://www.pathofexile.com/forum/view-thread/2784989",
           "versions": [
-            "3.10"
-          ]
-        },
-        {
-          "title": "Beginner's Build: Soulwrest Summoner",
-          "url": "https://www.pathofexile.com/forum/view-thread/2239049",
-          "versions": [
-            "3.9",
             "3.10"
           ]
         },
