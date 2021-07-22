@@ -5,6 +5,12 @@
     </v-list-item-icon>
     <v-list-item-content>
       <v-list-item-title>Sync builds</v-list-item-title>
+      <v-progress-linear
+        v-if="progressbar > 0 && progressbar < 100"
+        :value="progressbar"
+        background-color="white"
+        color="green"
+      />
     </v-list-item-content>
   </v-list-item>
 </template>
@@ -33,6 +39,11 @@ export default {
       default: ''
     }
   },
+  data () {
+    return {
+      progressbar: 0
+    }
+  },
   methods: {
     outdated (versions) {
       if (versions) {
@@ -42,7 +53,12 @@ export default {
       }
     },
     syncBuilds () {
-      this.$nuxt.$loading.start()
+      this.progressbar = 0
+      let totalBuildCount = 0
+      let buildCount = 0
+      for (const buildCat of this.buildList) {
+        totalBuildCount += buildCat.builds.length
+      }
       const asyncForEachCat = async (buildList) => {
         for (const buildCat of buildList) {
           const asyncForEach = async (buildCat) => {
@@ -85,7 +101,7 @@ export default {
                   })
                     .catch((error) => {
                       // handle error
-                      this.$toast.error(error.message + '<br />' + build.name)
+                      this.$toast.error(error.message + '<br />' + build.title)
                     })
                 }
               }
@@ -127,7 +143,7 @@ export default {
                       }
                     }).catch((error) => {
                       // handle error
-                      this.$toast.error(error.message + '<br />' + build.name)
+                      this.$toast.error(error.message + '<br />' + build.title)
                     })
                   }
                 }
@@ -159,6 +175,8 @@ export default {
               }
 
               await Promise.all([asyncPoEforumvault(), asyncYt(), asyncTwitch()])
+              buildCount++
+              this.progressbar = 100 - Math.floor((totalBuildCount - buildCount) / totalBuildCount * 100)
             }
           }
           await asyncForEach(buildCat)
@@ -166,7 +184,7 @@ export default {
         return null
       }
       asyncForEachCat(this.buildList).then(() => {
-        this.$nuxt.$loading.finish()
+        this.progressbar = 100
         this.$toast.success('Sync complete')
         this.$emit('update:buildList', this.buildList)
       })

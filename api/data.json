@@ -96,7 +96,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -199,7 +200,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -1204,7 +1206,8 @@
           },
           "versions": [
             "3.8",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -1351,7 +1354,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -1418,7 +1422,8 @@
             "1280w": "https://i.ytimg.com/vi/s5hW-6gV5JI/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -2571,7 +2576,8 @@
             "1280w": "https://i.ytimg.com/vi/N80uwaimHRM/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3548,6 +3554,11 @@
           "title": "3.15 Kay's Summoner // Spectres / Spiders / SRS / Skeletons / Herald of Purity",
           "url": "https://www.pathofexile.com/forum/view-thread/2181275",
           "video": "https://www.youtube.com/watch?v=ugb-qOsbigY",
+          "videothumb": {
+            "480w": "https://i.ytimg.com/vi/ugb-qOsbigY/hqdefault.jpg",
+            "640w": "https://i.ytimg.com/vi/ugb-qOsbigY/sddefault.jpg",
+            "1280w": "https://i.ytimg.com/vi/ugb-qOsbigY/maxresdefault.jpg"
+          },
           "versions": [
             "3.7",
             "3.8",
@@ -3587,7 +3598,8 @@
             "1280w": "https://i.ytimg.com/vi/0Yg4zEdFUDs/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
@@ -3650,7 +3662,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -3680,7 +3693,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -3695,7 +3709,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -3710,7 +3725,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -3725,7 +3741,8 @@
           },
           "versions": [
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -3739,7 +3756,8 @@
             "1280w": "https://i.ytimg.com/vi/qdwNK2IkYuM/maxresdefault.jpg"
           },
           "versions": [
-            "3.14"
+            "3.14",
+            "3.15"
           ],
           "author": "GhazzyTV"
         },
@@ -4089,7 +4107,8 @@
             "3.11",
             "3.12",
             "3.13",
-            "3.14"
+            "3.14",
+            "3.15"
           ]
         },
         {
