@@ -112,6 +112,8 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+    // analyze:true,
+    extractCSS: true,
     postcss: {
       // Add plugin names as key and arguments as value
       // Install them before as dependencies with npm or yarn
