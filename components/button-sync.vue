@@ -80,37 +80,44 @@ export default {
 
           // YT
           const asyncYt = async () => {
-            if (build.video.indexOf('youtube.com') > 0 && !build.videothumb) {
+            if (build.video.indexOf('youtube.com') > 0) {
               const videoID = build.video.substr(build.video.lastIndexOf('?v=') + 3)
-              await this.$http.$get(`/youtube/v3/videos?id=${videoID}&key=${YTapiKey}&part=snippet`).then((response) => {
-                if (response.items.length > 0) {
-                  const thumbs = response.items[0].snippet.thumbnails
-                  build.videothumb = {
-                    '480w': thumbs.high.url
-                  }
-                  if (thumbs.standard) {
-                    build.videothumb['640w'] = thumbs.standard.url
-                  }
-                  if (thumbs.maxres) {
-                    build.videothumb['1280w'] = thumbs.maxres.url
-                  }
-                } else {
-                  build.video = ''
-                  build.videothumb = {}
-                  this.$toast.error('YouTube video not found: ' + build.title, {
-                    duration: Infinity,
-                    action: {
-                      text: 'Close',
-                      onClick: (e, toastObject) => {
-                        toastObject.goAway(0)
-                      }
+
+              if (build.videothumb && build.videothumb['480w'].indexOf(videoID) > 0) {
+                build.videothumb = {}
+              }
+
+              if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
+                await this.$http.$get(`/youtube/v3/videos?id=${videoID}&key=${YTapiKey}&part=snippet`).then((response) => {
+                  if (response.items.length > 0) {
+                    const thumbs = response.items[0].snippet.thumbnails
+                    build.videothumb = {
+                      '480w': thumbs.high.url
                     }
-                  })
-                }
-              }).catch((error) => {
-                // handle error
-                this.$toast.error(error)
-              })
+                    if (thumbs.standard) {
+                      build.videothumb['640w'] = thumbs.standard.url
+                    }
+                    if (thumbs.maxres) {
+                      build.videothumb['1280w'] = thumbs.maxres.url
+                    }
+                  } else {
+                    build.video = ''
+                    build.videothumb = {}
+                    this.$toast.error('YouTube video not found: ' + build.title, {
+                      duration: Infinity,
+                      action: {
+                        text: 'Close',
+                        onClick: (e, toastObject) => {
+                          toastObject.goAway(0)
+                        }
+                      }
+                    })
+                  }
+                }).catch((error) => {
+                  // handle error
+                  this.$toast.error(error)
+                })
+              }
             }
           }
 
