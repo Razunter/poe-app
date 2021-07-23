@@ -283,10 +283,10 @@ export default {
           }
 
           // Sort by url type
-          if (buildA.url.indexOf('youtube.com') > 0 && !buildB.url.indexOf('youtube.com') > 0) {
-            sortValue += 5
-          } else if (!buildA.url.indexOf('youtube.com') > 0 && buildB.url.indexOf('youtube.com') > 0) {
-            sortValue += -5
+          if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
+            sortValue += -50
+          } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
+            sortValue += 50
           }
 
           return sortValue
