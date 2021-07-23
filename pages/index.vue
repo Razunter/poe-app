@@ -23,6 +23,7 @@
         <button-sync
           :build-list.sync="buildList"
           :current-version="currentVersion"
+          @update:buildList="sortBuilds"
         />
 
         <v-list-item @click="sortBuilds">
@@ -251,26 +252,19 @@ export default {
               return 1
             }
           }).thenBy((buildA, buildB) => {
-            // Sort by video
-            if (buildA.video && !buildB.video) {
-              return -1
-            } else if (!buildA.video && buildB.video) {
+            // Author name
+            if (buildA.author && buildB.author) {
+              if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
+                return 1
+              } else {
+                return -1
+              }
+            } else if (buildA.author && !buildB.author) {
               return 1
-            }
-          }).thenBy((buildA, buildB) => {
-            // Sort by url type
-            if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
-              return -1
-            } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
-              return 1
-            }
-          }).thenBy((buildA, buildB) => {
-            // Sort by YouTube url
-            if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
-              return 1
-            } else if (!buildA.url.includes('youtube.com') && buildB.url.includes('youtube.com')) {
+            } else if (!buildA.author && buildB.author) {
               return -1
             }
+            return 0
           }).thenBy((buildA, buildB) => {
             if (buildA.videothumb && buildB.videothumb) {
               if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
@@ -279,29 +273,47 @@ export default {
                 return 1
               }
             }
-          }).thenBy((buildA, buildB) => {
-            // Author name
-            if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
-              if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
-                return 1
-              } else {
-                return -1
-              }
-            }
           })
         )
         buildcat.builds.sort((buildA, buildB) => {
-          if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
-            if (buildA.author === 'Zizaran') {
+          // Sort by url type
+          if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
+            return -1
+          } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
+            return 1
+          }
+          return 0
+        })
+        buildcat.builds.sort((buildA, buildB) => {
+          // Sort by YouTube url
+          if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
+            return 1
+          } else if (!buildA.url.includes('youtube.com') && buildB.url.includes('youtube.com')) {
+            return -1
+          }
+          return 0
+        })
+        buildcat.builds.sort((buildA, buildB) => {
+          if (buildA.author && buildB.author) {
+            if (buildA.author === 'Zizaran' && buildB.author !== 'Zizaran' && !buildB.url.includes('pathofexile.com')) {
               return -1
-            } else if (buildB.author === 'Zizaran') {
+            } else if (buildB.author === 'Zizaran' && buildA.author !== 'Zizaran' && !buildA.url.includes('pathofexile.com')) {
               return 1
             }
-            if (buildA.author === 'GhazzyTV') {
+            if (buildA.author === 'GhazzyTV' && buildB.author !== 'GhazzyTV' && !buildB.url.includes('pathofexile.com')) {
               return 1
-            } else if (buildB.author === 'GhazzyTV') {
+            } else if (buildB.author === 'GhazzyTV' && buildA.author !== 'GhazzyTV' && !buildA.url.includes('pathofexile.com')) {
               return -1
             }
+          }
+          return 0
+        })
+        buildcat.builds.sort((buildA, buildB) => {
+          // Sort by video
+          if (buildA.video && !buildB.video) {
+            return -1
+          } else if (!buildA.video && buildB.video) {
+            return 1
           }
           return 0
         })
