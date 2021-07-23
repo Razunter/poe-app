@@ -177,12 +177,12 @@ export default {
             })
           }))
         }
-        Promise.allSettled(buildPromises).then(() => {
-          this.progressbar = 100
-          this.$toast.success('Sync complete')
-          this.$emit('update:buildList', this.buildList)
-        })
       }
+      Promise.allSettled(buildPromises).then(() => {
+        this.progressbar = 100
+        this.$toast.success('Sync complete')
+        this.$emit('update:buildList', this.buildList)
+      })
     }
   }
 }
