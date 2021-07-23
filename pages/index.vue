@@ -79,7 +79,7 @@
     </v-app-bar>
     <v-main>
       <v-card
-        v-for="buildtype in filteredBuilds"
+        v-for="buildtype in buildList"
         :key="buildtype.type"
         class="buildlist"
       >
@@ -94,20 +94,24 @@
         <v-card-text>
           <draggable v-model="buildtype.builds">
             <transition-group name="buildlist-tr" tag="ol">
-              <li
+              <template
                 v-for="(build, index) in buildtype.builds"
-                :key="build.url + index"
-                class="buildlist__item"
               >
-                <Build
-                  :ref="`build-${buildtype.type}-${index}`"
-                  :build="build"
-                  :build-type="typeName(buildtype.type)"
-                  :outdated="outdated(build.versions)"
-                  @update:build="updateBuild($event, buildtype.type, index)"
-                  @update:delete="deleteBuild(buildtype.type, index)"
-                />
-              </li>
+                <li
+                  v-if="(filters.showOutdated && outdated(build.versions)) || !outdated(build.versions)"
+                  :key="build.url + index"
+                  class="buildlist__item"
+                >
+                  <Build
+                    :ref="`build-${buildtype.type}-${index}`"
+                    :build="build"
+                    :build-type="typeName(buildtype.type)"
+                    :outdated="outdated(build.versions)"
+                    @update:build="updateBuild($event, buildtype.type, index)"
+                    @update:delete="deleteBuild(buildtype.type, index)"
+                  />
+                </li>
+              </template>
             </transition-group>
           </draggable>
         </v-card-text>
@@ -188,25 +192,6 @@ export default {
       filters: {
         showOutdated: false
       }
-    }
-  },
-  computed: {
-    filteredBuilds () {
-      const filteredBuilds = []
-      this.buildList.forEach((buildCat) => {
-        const filteredCat = buildCat.builds.filter((build) => {
-          if (!this.filters.showOutdated) {
-            return !this.outdated(build.versions)
-          } else {
-            return true
-          }
-        })
-        filteredBuilds.push({
-          type: buildCat.type,
-          builds: filteredCat
-        })
-      })
-      return filteredBuilds
     }
   },
   methods: {
