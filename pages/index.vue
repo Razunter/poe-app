@@ -124,6 +124,7 @@
 import draggable from 'vuedraggable'
 import Build from '@/components/Build'
 import compareVersions from 'compare-versions'
+import { firstBy } from 'thenby'
 
 const getBuildTypeBuilds = (buildList, buildType) => {
   const buildTypeIndex = buildList.findIndex((element) => {
@@ -229,74 +230,80 @@ export default {
     },
     sortBuilds () {
       this.buildList.forEach((buildcat) => {
-        buildcat.builds.sort((buildA, buildB) => {
-          let sortValue = 0
-          // Sort by version
-          if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
-            sortValue = 1000
-          } else if (!this.outdated(buildA.versions) && this.outdated(buildB.versions)) {
-            sortValue = -1
-          }
-          // Sort by author
-          if (buildA.author || buildB.author) {
-            if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
-              let authorWeight = buildA.author.toUpperCase() > buildB.author.toUpperCase() ? 1 : -1
-              if (buildA.author === 'Zizaran') {
-                authorWeight = -10
-              } else if (buildB.author === 'Zizaran') {
-                authorWeight = 10
+        buildcat.builds.sort(
+          // Outdated
+          firstBy((buildA, buildB) => {
+            if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
+              return 1
+            } else if (!this.outdated(buildA.versions) && this.outdated(buildB.versions)) {
+              return -1
+            }
+          }).thenBy((buildA, buildB) => {
+            // Sort by version
+            const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
+            const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+            return compareVersions(buildAVersionLatest, buildBVersionLatest)
+          }).thenBy((buildA, buildB) => {
+            // Sort pinned
+            if (buildA.pin && !buildB.pin) {
+              return -1
+            } else if (!buildA.pin && buildB.pin) {
+              return 1
+            }
+          }).thenBy((buildA, buildB) => {
+            // Sort by video
+            if (buildA.video && !buildB.video) {
+              return -1
+            } else if (!buildA.video && buildB.video) {
+              return 1
+            }
+          }).thenBy((buildA, buildB) => {
+            // Sort by url type
+            if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
+              return -1
+            } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
+              return 1
+            }
+          }).thenBy((buildA, buildB) => {
+            // Sort by YouTube url
+            if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
+              return 1
+            } else if (!buildA.url.includes('youtube.com') && buildB.url.includes('youtube.com')) {
+              return -1
+            }
+          }).thenBy((buildA, buildB) => {
+            if (buildA.videothumb && buildB.videothumb) {
+              if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
+                return -1
+              } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
+                return 1
               }
-              sortValue += authorWeight
             }
-            // if (buildA.author && !buildB.author) {
-            //   sortValue += 1
-            // } else if (!buildA.author && buildB.author) {
-            //   sortValue += -1
-            // }
-          }
-
-          // Sort by version
-          const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
-          const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
-          sortValue -= compareVersions(buildAVersionLatest, buildBVersionLatest)
-
-          // Sort pinned
-          if (buildA.pin && !buildB.pin) {
-            sortValue += -100
-          } else if (!buildA.pin && buildB.pin) {
-            sortValue += 100
-          }
-
-          // Sort by video
-          if (buildA.video && !buildB.video) {
-            sortValue += -1000
-          } else if (!buildA.video && buildB.video) {
-            sortValue += 1000
-          }
-
-          if (buildA.videothumb && buildB.videothumb) {
-            if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
-              sortValue += -5
-            } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
-              sortValue += 5
+          }).thenBy((buildA, buildB) => {
+            // Author name
+            if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
+              if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
+                return 1
+              } else {
+                return -1
+              }
+            }
+          })
+        )
+        buildcat.builds.sort((buildA, buildB) => {
+          if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
+            if (buildA.author === 'Zizaran') {
+              return -1
+            } else if (buildB.author === 'Zizaran') {
+              return 1
+            }
+            if (buildA.author === 'GhazzyTV') {
+              return 1
+            } else if (buildB.author === 'GhazzyTV') {
+              return -1
             }
           }
-
-          // Sort by url type
-          if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
-            sortValue += -50
-          } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
-            sortValue += 50
-          }
-
-          // Sort by YouTube url
-          if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
-            sortValue += 10
-          } else if (!buildA.url.includes('youtube.com') && buildB.url.includes('youtube.com')) {
-            sortValue += -10
-          }
-
-          return sortValue
+          return 0
         })
       })
     },
