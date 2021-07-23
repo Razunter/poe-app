@@ -269,9 +269,9 @@ export default {
 
           // Sort by video
           if (buildA.video && !buildB.video) {
-            sortValue += -10
+            sortValue += -1000
           } else if (!buildA.video && buildB.video) {
-            sortValue += 10
+            sortValue += 1000
           }
 
           if (buildA.videothumb && buildB.videothumb) {
