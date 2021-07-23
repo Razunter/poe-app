@@ -240,11 +240,11 @@ export default {
           // Sort by author
           if (buildA.author || buildB.author) {
             if ((buildA.author && buildB.author) && (buildA.author !== buildB.author)) {
-              let authorWeight = buildA.author[0] > buildB.author[0] ? 1 : -1
+              let authorWeight = buildA.author.toUpperCase() > buildB.author.toUpperCase() ? 1 : -1
               if (buildA.author === 'Zizaran') {
-                authorWeight = -3
+                authorWeight = -10
               } else if (buildB.author === 'Zizaran') {
-                authorWeight = 3
+                authorWeight = 10
               }
               sortValue += authorWeight
             }
@@ -287,6 +287,13 @@ export default {
             sortValue += -50
           } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
             sortValue += 50
+          }
+
+          // Sort by YouTube url
+          if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
+            sortValue += 10
+          } else if (!buildA.url.includes('youtube.com') && buildB.url.includes('youtube.com')) {
+            sortValue += -10
           }
 
           return sortValue
