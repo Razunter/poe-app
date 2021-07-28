@@ -12,11 +12,33 @@
         </template>
         {{ buildData.title }}
       </h3>
-      <div class="build__videotype">
-        {{ buildData.videotype }}
-      </div>
       <div v-if="buildData.versions" class="build__version">
         {{ buildData.versions[buildData.versions.length - 1] }}
+      </div>
+      <div class="build__url">
+        {{ buildData.url }}
+      </div>
+      <div class="build__info">
+        <span :class="buildData.video && 'active'" class="build__video">V</span>
+        <span
+          :class="(buildData.videothumb && buildData.videothumb['480w']) && 'active'"
+          class="build_videothumb--480w"
+        >
+          T-480w
+        </span>
+        <span
+          :class="(buildData.videothumb && buildData.videothumb['640w']) && 'active'"
+          class="build_videothumb--640w"
+        >
+          T-640w
+        </span>
+        <span
+          :class="(buildData.videothumb && buildData.videothumb['1280w']) && 'active'"
+          class="build_videothumb--1280w"
+        >
+          T-1280w
+        </span>
+        <span :class="buildData.pin && 'active'" class="build__pinned">P</span>
       </div>
     </div>
     <v-dialog
@@ -86,7 +108,10 @@
           <v-btn color="blue" @click="formSubmit">
             Save
           </v-btn>
-          <v-btn color="red" @click="$emit('update:delete'); showDialog = false;">
+          <v-btn
+            color="red"
+            @click="$emit('update:delete'); showDialog = false;"
+          >
             Delete
           </v-btn>
         </v-card-actions>
@@ -226,7 +251,7 @@ export default {
 
   &__row {
     display: grid;
-    grid-template-columns: auto min-content 3em;
+    grid-template-columns: auto min-content;
   }
 
   &__title {
@@ -238,8 +263,30 @@ export default {
     font-weight: 600;
   }
 
-  &__videotype {
-    margin: 0 2rem;
+  &__version {
+    text-align: right;
+  }
+
+  &__url {
+    font-size: .8em;
+    color: gray;
+  }
+
+  &__info {
+    display: flex;
+    gap: 1em;
+  }
+
+  &__info {
+    font-size: .8em;
+
+    span {
+      color: gray;
+
+      &.active {
+        color: forestgreen;
+      }
+    }
   }
 }
 
