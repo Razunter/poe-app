@@ -99,7 +99,7 @@
                 v-for="(build, index) in buildtype.builds"
               >
                 <li
-                  v-if="(filters.showOutdated && outdated(build.versions)) || !outdated(build.versions)"
+                  v-show="(filters.showOutdated && outdated(build.versions)) || !outdated(build.versions)"
                   :key="build.url + index"
                   class="buildlist__item"
                 >
