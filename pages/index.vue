@@ -41,6 +41,12 @@
           @update:buildList="sortBuilds"
         />
 
+        <button-cleanup
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+          @update:buildList="saveBuilds"
+        />
+
         <v-list-item @click="saveBuilds">
           <v-list-item-icon>
             <v-icon>mdi-content-save</v-icon>
@@ -366,10 +372,8 @@ export default {
           })
         })
 
-        for (const version of this.versions) {
-          if (!rfBuilds.has(version.version)) {
-            version.skiprf = true
-          }
+        if (!rfBuilds.has(this.currentVersion)) {
+          this.versions[this.versions.length - 1].skiprf = true
         }
 
         const buildListFull = {
