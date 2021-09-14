@@ -129,9 +129,9 @@
 
 <script>
 import draggable from 'vuedraggable'
-import Build from '@/components/Build'
 import compareVersions from 'compare-versions'
 import { firstBy } from 'thenby'
+import Build from '@/components/Build'
 
 const getBuildTypeBuilds = (buildList, buildType) => {
   const buildTypeIndex = buildList.findIndex((element) => {
