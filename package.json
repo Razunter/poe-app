@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@nuxt/http": "latest",
-    "@nuxtjs/composition-api": "^0.29.0",
+    "@nuxtjs/composition-api": "^0.29.3",
     "@nuxtjs/toast": "^3.3.1",
     "compare-versions": "^3.6.0",
     "express": "latest",
@@ -20,9 +20,9 @@
     "lodash.random": "^3.2.0",
     "modern-normalize": "^1.1.0",
     "nuxt": "latest",
-    "postcss": "^8.3.6",
+    "postcss": "^8.3.9",
     "postcss-loader": "^4.2.0",
-    "sass": "^1.40.0",
+    "sass": "^1.43.2",
     "sass-loader": "^10.1.1",
     "vuedraggable": "^2.24.3",
     "vuelidate": "^0.7.6"
