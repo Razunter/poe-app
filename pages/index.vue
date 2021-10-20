@@ -387,7 +387,7 @@ export default {
         (async function (buildList, $http) {
           return await $http.$post('/api/save', buildList)
         })(buildListFull, this.$http).then((response) => {
-          this.$toast.success(response)
+          this.$toast.success(response, { duration: 3000 })
         })
       } else {
         let log = ''
