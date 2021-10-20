@@ -147,7 +147,8 @@ function BuildObj ({
   videothumb = {},
   versions = [],
   author = '',
-  pin = ''
+  pin = '',
+  skip = ''
 }) {
   this.title = title
   this.url = url
@@ -156,6 +157,7 @@ function BuildObj ({
   this.versions = versions
   this.author = author
   this.pin = pin
+  this.skip = skip
 }
 
 export default {
@@ -176,7 +178,6 @@ export default {
         }
       })
     })
-    // const allAuthors = new Set()
     buildList.forEach((buildCat) => {
       buildCat.builds.forEach((build) => {
         if (build.author) {

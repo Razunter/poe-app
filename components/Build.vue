@@ -1,7 +1,7 @@
 <template>
   <article
     class="build"
-    :class="{ 'build--outdated' : outdated }"
+    :class="{ 'build--outdated' : outdated, 'build--skip' : buildData.skip }"
     tabindex="0"
     @click="showDialog = true"
   >
@@ -78,7 +78,13 @@
               required
               @input="$v.newBuildData.url.$touch()"
               @blur="$v.newBuildData.url.$touch()"
-            />
+            >
+              <a slot="append" :href="newBuildData.url" target="_blank">
+                <v-icon>
+                  mdi-open-in-new
+                </v-icon>
+              </a>
+            </v-text-field>
             <v-text-field
               v-model.trim="newBuildData.video"
               label="Video URL"
@@ -100,6 +106,10 @@
             <v-switch
               v-model="newBuildData.pin"
               label="Pin build"
+            />
+            <v-switch
+              v-model="newBuildData.skip"
+              label="Skip build"
             />
             <input type="submit" value="" hidden>
           </form>
@@ -148,7 +158,8 @@ export default {
           videothumb: Object,
           versions: Array,
           author: String,
-          pin: Boolean
+          pin: Boolean,
+          skip: Boolean
         }
       }
     }
@@ -300,5 +311,9 @@ export default {
 
 .build--outdated {
   opacity: .6;
+}
+
+.build--skip {
+  border-color: #cb4141;
 }
 </style>
