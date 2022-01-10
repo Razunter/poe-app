@@ -20,10 +20,10 @@ const { ApiClient } = require('twitch')
 const { ClientCredentialsAuthProvider } = require('twitch-auth')
 const cheerio = require('cheerio')
 
-const clientId = 'y6os8vq0rmevgsgrm3ktlgncgjqkn9'
-const clientSecret = 'oelwmcf3bykgliz9ogxd5ba9n4xfrj'
-const YTapiKey = 'AIzaSyCDyK-x9J6LK9TbVpKg69MtTNuN4pTfWnU'
-const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret)
+const TwitchClientId = process.env.TwitchClientId
+const TwitchClientSecret = process.env.TwitchClientSecret
+const YTapiKey = process.env.YTAPI
+const authProvider = new ClientCredentialsAuthProvider(TwitchClientId, TwitchClientSecret)
 const apiClient = new ApiClient({ authProvider })
 
 export default {
