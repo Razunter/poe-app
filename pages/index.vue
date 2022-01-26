@@ -166,10 +166,10 @@ export default {
     Build
   },
   async asyncData ({
-    $http,
+    $axios,
     store
   }) {
-    const data = await $http.$get('/api/load')
+    const data = await $axios.$get('/api/load')
     const buildList = data.buildList
     buildList.forEach((buildCat) => {
       buildCat.builds.forEach((build) => {
@@ -384,9 +384,9 @@ export default {
           buildList: buildListFinal
         };
 
-        (async function (buildList, $http) {
-          return await $http.$post('/api/save', buildList)
-        })(buildListFull, this.$http).then((response) => {
+        (async function (buildList, $axios) {
+          return await $axios.$post('/api/save', buildList)
+        })(buildListFull, this.$axios).then((response) => {
           this.$toast.success(response, { duration: 3000 })
         })
       } else {

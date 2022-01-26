@@ -16,15 +16,7 @@
 </template>
 
 <script>
-const { ApiClient } = require('@twurple/api')
-const { ClientCredentialsAuthProvider } = require('@twurple/auth')
-const cheerio = require('cheerio')
-
-const TwitchClientId = process.env.TwitchClientId
-const TwitchClientSecret = process.env.TwitchClientSecret
-const YTapiKey = process.env.YTAPI
-const authProvider = new ClientCredentialsAuthProvider(TwitchClientId, TwitchClientSecret)
-const apiClient = new ApiClient({ authProvider })
+import { load as CheerioLoad } from 'cheerio'
 
 export default {
   props: {
@@ -71,8 +63,8 @@ export default {
               } else {
                 return null
               }
-              await this.$http.$get(apiAddr).then((response) => {
-                const $ = cheerio.load(response)
+              await this.$axios.$get(apiAddr).then((response) => {
+                const $ = CheerioLoad(response)
                 const title = $('title').text()
                 const regex = /[0-9].[0-9]+/gu
                 const versionNew = regex.exec(title)
@@ -104,14 +96,16 @@ export default {
           // YT
           const asyncYt = async () => {
             if (build.video && build.video.indexOf('youtube.com') > 0) {
-              const videoID = build.video.substr(build.video.lastIndexOf('?v=') + 3)
+              const videoID = build.video.substring(build.video.lastIndexOf('?v=') + 3)
 
               if (build.videothumb && build.videothumb['480w'] && !build.videothumb['480w'].includes(videoID)) {
                 build.videothumb = {}
               }
 
               if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
-                await this.$http.$get(`/youtube/v3/videos?id=${videoID}&key=${YTapiKey}&part=snippet`).then((response) => {
+                await this.$axios.$get('/proxy/youtube', {
+                  data: { videoID }
+                }).then((response) => {
                   if (response.items.length > 0) {
                     const thumbs = response.items[0].snippet.thumbnails
                     build.videothumb = {
@@ -147,8 +141,10 @@ export default {
           // Twitch
           const asyncTwitch = async () => {
             if (build.video && build.video.includes('twitch.tv') && !build.videothumb) {
-              const videoID = build.video.substr(build.video.lastIndexOf('/') + 1)
-              const video = await apiClient.helix.videos.getVideoById(videoID)
+              const videoID = build.video.substring(build.video.lastIndexOf('/') + 1)
+              const video = await this.$axios.get('/proxy/twitch', {
+                data: { videoID }
+              })
               if (!video) {
                 this.$toast.error('Twitch video not found: ' + build.video, {
                   duration: Infinity,
@@ -170,7 +166,11 @@ export default {
           }
 
           buildPromises.push(new Promise((resolve, reject) => {
-            Promise.allSettled([asyncPoEforumvault(), asyncYt(), asyncTwitch()]).then(() => {
+            Promise.allSettled([
+              asyncPoEforumvault(),
+              asyncYt(),
+              asyncTwitch()
+            ]).then(() => {
               buildCount++
               this.progressbar = 100 - Math.floor((buildPromises.length - buildCount) / buildPromises.length * 100)
               resolve()

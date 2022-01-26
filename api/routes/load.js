@@ -4,7 +4,7 @@ import { Router } from 'express'
 
 const router = Router()
 
-const jsonPath = 'w:\\web\\_own\\poe-app-frontend\\src\\_data\\'
+const jsonPath = path.normalize(process.env.jsonPath)
 
 // Test route
 router.use('/load', (req, res) => {

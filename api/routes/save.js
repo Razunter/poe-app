@@ -1,11 +1,11 @@
-const fs = require('fs')
+import fs from 'fs'
 import path from 'path'
+import express from 'express'
+import bodyParser from 'body-parser'
 
-const express = require('express')
 const app = express()
-const bodyParser = require('body-parser')
 
-const jsonPath = 'w:\\web\\_own\\poe-app-frontend\\src\\_data\\'
+const jsonPath = path.normalize(process.env.jsonPath)
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({

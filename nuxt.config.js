@@ -1,4 +1,12 @@
-export default {
+import { defineNuxtConfig } from '@nuxt/bridge'
+
+export default defineNuxtConfig({
+  alias: {
+    tslib: 'tslib/tslib.es6.js'
+  },
+
+  bridge: {},
+
   /*
   ** Nuxt target
   ** See https://nuxtjs.org/api/configuration-target
@@ -59,7 +67,6 @@ export default {
   */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/composition-api/module',
     '@nuxtjs/eslint-module',
     ['@nuxtjs/vuetify', {
       treeShake: true,
@@ -75,8 +82,7 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://http.nuxtjs.org
-    '@nuxt/http',
+    '@nuxtjs/axios',
     '@nuxtjs/proxy',
     '@nuxtjs/toast'
   ],
@@ -134,4 +140,4 @@ export default {
       }
     }
   }
-}
+})
