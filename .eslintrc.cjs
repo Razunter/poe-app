@@ -4,11 +4,11 @@ module.exports = {
     browser: true,
     node: true
   },
-  parser: '@babel/eslint-parser',
   parserOptions: {
     requireConfigFile: false
   },
   extends: [
+    'plugin:vue/recommended',
     '@nuxtjs',
     'plugin:nuxt/recommended'
   ],
