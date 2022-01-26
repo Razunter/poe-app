@@ -11,6 +11,8 @@ specifiers:
   '@nuxtjs/proxy': ^2.1.0
   '@nuxtjs/toast': ^3.3.1
   '@nuxtjs/vuetify': ^1.12.3
+  '@twurple/api': ^5.0.14
+  '@twurple/auth': ^5.0.14
   '@vue/composition-api': ^1.4.4
   body-parser: ^1.19.1
   cheerio: ^1.0.0-rc.10
@@ -33,8 +35,6 @@ specifiers:
   sass: ^1.49.0
   sass-loader: ^10.2.0
   thenby: ^1.3.4
-  twitch: ^4.6.7
-  twitch-auth: ^4.6.7
   typescript: ^4.5.5
   vue: 2.6.14
   vue-template-compiler: ^2.6.14
@@ -67,6 +67,8 @@ devDependencies:
   '@nuxtjs/eslint-module': 3.0.2_eslint@8.7.0+webpack@4.46.0
   '@nuxtjs/proxy': 2.1.0
   '@nuxtjs/vuetify': 1.12.3_3659ce76a80074eb38b3f60752c7dfe5
+  '@twurple/api': 5.0.14_@twurple+auth@5.0.14
+  '@twurple/auth': 5.0.14
   '@vue/composition-api': 1.4.4_vue@2.6.14
   body-parser: 1.19.1
   cheerio: 1.0.0-rc.10
@@ -79,8 +81,6 @@ devDependencies:
   postcss-preset-env: 7.2.3_postcss@8.4.5
   postcss-sort-media-queries: 4.2.1_postcss@8.4.5
   thenby: 1.3.4
-  twitch: 4.6.7
-  twitch-auth: 4.6.7
   typescript: 4.5.5
   vue: 2.6.14
   vue-template-compiler: 2.6.14
@@ -1281,8 +1281,8 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: false
 
-  /@d-fischer/cache-decorators/2.1.3:
-    resolution: {integrity: sha512-MlM8ipg5Exkc0Ok//sG83smBW4mLRL+/ZngfxYQ8IgxBjfpM3m2M+Y2X+a9St3EyJfYoVKHR8RWdICsU+W3gSA==}
+  /@d-fischer/cache-decorators/3.0.0:
+    resolution: {integrity: sha512-mYUCjrp5hJgimceC5bof3zzmElyxzW4ty+73IjY12wvxLAqsq0CbgLGspnJm6KgwEfGoeRnISZD4EXJidG3FvA==}
     dependencies:
       '@d-fischer/shared-utils': 3.2.0
       '@types/node': 14.18.9
@@ -1295,17 +1295,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: true
-
-  /@d-fischer/deprecate/2.0.2:
-    resolution: {integrity: sha512-wlw3HwEanJFJKctwLzhfOM6LKwR70FPfGZGoKOhWBKyOPXk+3a9Cc6S9zhm6tka7xKtpmfxVIReGUwPnMbIaZg==}
-    dev: true
-
-  /@d-fischer/logger/3.1.0:
-    resolution: {integrity: sha512-kNg9PjmiyH9DMr70mAWU+i+dy3+e1hI0lR+No5RJduQtexI247NmEzNd0pethpwm+1uA0MRf3w9QnqZ1PHKvyA==}
-    dependencies:
-      detect-node: 2.1.0
-      tslib: 2.3.1
     dev: true
 
   /@d-fischer/logger/4.1.1:
@@ -1913,6 +1902,55 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: false
+
+  /@twurple/api-call/5.0.14:
+    resolution: {integrity: sha512-5DZxqyLWi3pvoc6tFXpd45LXZsNNG9sl84gqrWAzXoTFkaTgxHRHDcCeP4bxKvap5U0ukM4xW7qrIAkAneIiSA==}
+    dependencies:
+      '@d-fischer/cross-fetch': 4.1.0
+      '@d-fischer/qs': 7.0.2
+      '@twurple/common': 5.0.14
+      '@types/node-fetch': 2.5.12
+      tslib: 2.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /@twurple/api/5.0.14_@twurple+auth@5.0.14:
+    resolution: {integrity: sha512-1qE3SoM+q4oGTo7u6ucozONK5aVNetl+7Yu05nwp5JZq15JfXvizU8I2AlC4pWcVv0HDFWPfRHw6HwUNpz/++g==}
+    peerDependencies:
+      '@twurple/auth': ^5.0.0
+    dependencies:
+      '@d-fischer/cache-decorators': 3.0.0
+      '@d-fischer/logger': 4.1.1
+      '@d-fischer/rate-limiter': 0.4.5
+      '@d-fischer/shared-utils': 3.2.0
+      '@twurple/api-call': 5.0.14
+      '@twurple/auth': 5.0.14
+      '@twurple/common': 5.0.14
+      tslib: 2.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /@twurple/auth/5.0.14:
+    resolution: {integrity: sha512-Y1u87HD2pE41uoEii17FCfxJ4PZfpH/FBLNr4SU7XCloCSp3MmrCImnXbiC3QVDRKHnIUEwd4zNStV3HTVFGGA==}
+    dependencies:
+      '@d-fischer/logger': 4.1.1
+      '@d-fischer/shared-utils': 3.2.0
+      '@twurple/api-call': 5.0.14
+      '@twurple/common': 5.0.14
+      tslib: 2.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /@twurple/common/5.0.14:
+    resolution: {integrity: sha512-Sp6HfUisgKpHXZTtXu7i4ym6jCFJFfIH0Y5ziR9nFRThChJniivPEbrNmsmtBVTSD7TMzpOqBY3JO7cBLxBs6g==}
+    dependencies:
+      '@d-fischer/shared-utils': 3.2.0
+      klona: 2.0.5
+      tslib: 2.3.1
+    dev: true
 
   /@types/eslint/7.29.0:
     resolution: {integrity: sha512-VNcvioYDH8/FxaeTKkM4/TiTwt6pBV9E3OfGmvaw8tPl0rrHCJ4Ll15HRT+pMiFAf/MLQvAzC+6RzUMEL9Ceng==}
@@ -9190,10 +9228,6 @@ packages:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
 
-  /top-package/1.0.1:
-    resolution: {integrity: sha512-tsuhQlHSigOTTvonxHXwqSKEVSnWMh2GvpTvXa5YmoyOwL5YvU4lTd/KNVZlKM5v7gqx44UEuQxyPQEpmaIHdg==}
-    dev: true
-
   /totalist/1.1.0:
     resolution: {integrity: sha512-gduQwd1rOdDMGxFG1gEvhV88Oirdo2p+KjoYFU7k2g+i7n6AFFbDQ5kMPUsW0pNbfQsB/cwXvT1i4Bue0s9g5g==}
     engines: {node: '>=6'}
@@ -9241,62 +9275,6 @@ packages:
 
   /tty-browserify/0.0.0:
     resolution: {integrity: sha1-oVe6QC2iTpv5V/mqadUk7tQpAaY=}
-
-  /twitch-api-call/4.6.7:
-    resolution: {integrity: sha512-JPiboygoHX3O2jdeWrmwW+VxpJbBYQJRg6+Th9GmqrsHivFFiyjBQproSMVJEgtrViGV1gHw6xlw1wHpoSU4Mw==}
-    deprecated: This package was renamed to @twurple/api-call. Please check out the migration guide at https://twurple.js.org/docs/migration/
-    dependencies:
-      '@d-fischer/cross-fetch': 4.1.0
-      '@d-fischer/qs': 7.0.2
-      '@types/node-fetch': 2.5.12
-      node-fetch: 2.6.7
-      tslib: 2.3.1
-      twitch-common: 4.6.7
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
-  /twitch-auth/4.6.7:
-    resolution: {integrity: sha512-9AkenhrZfXVdL1P2hJ7rLFKWOOGnkgf5isTJbjGD/GP2NYFYS+Oh8TYp8uyjW3/jQODIFuZeHPIhE6AIK5TVIA==}
-    deprecated: This package was renamed to @twurple/auth. Please check out the migration guide at https://twurple.js.org/docs/migration/
-    dependencies:
-      '@d-fischer/deprecate': 2.0.2
-      '@d-fischer/logger': 3.1.0
-      '@d-fischer/shared-utils': 3.2.0
-      tslib: 2.3.1
-      twitch-api-call: 4.6.7
-      twitch-common: 4.6.7
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
-  /twitch-common/4.6.7:
-    resolution: {integrity: sha512-Jwhp8bPnrzGjarPw/sA6jBLjjJnpNGptSJpZcKDzXXShFh2KxxRD7RwKPSLQS8st/SZ5iDwQs+jjSoWugOBJxg==}
-    deprecated: This package was renamed to @twurple/common. Please check out the migration guide at https://twurple.js.org/docs/migration/
-    dependencies:
-      '@d-fischer/logger': 3.1.0
-      '@d-fischer/shared-utils': 3.2.0
-      tslib: 2.3.1
-    dev: true
-
-  /twitch/4.6.7:
-    resolution: {integrity: sha512-inOFFLFhTcls/sskGcQWIfPgvhAF92fDo3uoGHdk0YRzo87NUHprvPE/LJJKh2IsysOPCmA1/mpnjReAgr5opA==}
-    deprecated: This package was renamed to @twurple/api. Please check out the migration guide at https://twurple.js.org/docs/migration/
-    requiresBuild: true
-    dependencies:
-      '@d-fischer/cache-decorators': 2.1.3
-      '@d-fischer/deprecate': 2.0.2
-      '@d-fischer/logger': 3.1.0
-      '@d-fischer/rate-limiter': 0.4.5
-      '@d-fischer/shared-utils': 3.2.0
-      top-package: 1.0.1
-      tslib: 2.3.1
-      twitch-api-call: 4.6.7
-      twitch-auth: 4.6.7
-      twitch-common: 4.6.7
-    transitivePeerDependencies:
-      - encoding
-    dev: true
 
   /type-check/0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}

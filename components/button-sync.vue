@@ -16,8 +16,8 @@
 </template>
 
 <script>
-const { ApiClient } = require('twitch')
-const { ClientCredentialsAuthProvider } = require('twitch-auth')
+const { ApiClient } = require('@twurple/api')
+const { ClientCredentialsAuthProvider } = require('@twurple/auth')
 const cheerio = require('cheerio')
 
 const TwitchClientId = process.env.TwitchClientId
