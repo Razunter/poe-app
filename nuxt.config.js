@@ -104,7 +104,6 @@ export default defineNuxtConfig({
 
   proxy: {
     '/forum/': 'https://www.pathofexile.com',
-    '/youtube/': 'https://www.googleapis.com',
     '/guides/': 'https://www.poe-vault.com'
   },
   /*

@@ -2,6 +2,8 @@ import express from 'express'
 // Require API routes
 import load from './routes/load'
 import save from './routes/save'
+import youtube from './routes/youtube'
+import twitch from './routes/twitch'
 
 // Create express instance
 const app = express()
@@ -9,6 +11,8 @@ const app = express()
 // Import API Routes
 app.use(load)
 app.use(save)
+app.use(youtube)
+app.use(twitch)
 
 export default app
 

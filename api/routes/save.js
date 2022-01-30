@@ -26,18 +26,18 @@ app.post('/save', (req, res) => {
   // Write versions
   fs.writeFile(path.join(jsonPath, 'versions.json'), JSON.stringify(versionsData, null, 2), function writeJSON (err) {
     if (err) {
-      res.end('Error: ' + err)
+      res.text('Error: ' + err)
     }
   })
 
   // Write data
   fs.writeFile(path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-') + '.json'), JSON.stringify(data, null, 2), function writeJSON (err) {
     if (err) {
-      res.end('Error: ' + err)
+      res.text('Error: ' + err)
     }
   })
 
-  res.end('file saved successfully')
+  res.text('file saved successfully')
 })
 
 export default app

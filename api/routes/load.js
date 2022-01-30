@@ -25,7 +25,7 @@ router.use('/load', (req, res) => {
         return
       }
       const data = JSON.parse(fileContents2)
-      res.end(JSON.stringify(Object.assign(data, versionsData)))
+      res.json(Object.assign(data, versionsData))
     })
   })
 })

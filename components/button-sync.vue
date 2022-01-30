@@ -103,8 +103,8 @@ export default {
               }
 
               if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
-                await this.$axios.$get('/proxy/youtube', {
-                  data: { videoID }
+                await this.$axios.$get('/api/youtube', {
+                  params: { videoID }
                 }).then((response) => {
                   if (response.items.length > 0) {
                     const thumbs = response.items[0].snippet.thumbnails
@@ -142,8 +142,8 @@ export default {
           const asyncTwitch = async () => {
             if (build.video && build.video.includes('twitch.tv') && !build.videothumb) {
               const videoID = build.video.substring(build.video.lastIndexOf('/') + 1)
-              const video = await this.$axios.get('/proxy/twitch', {
-                data: { videoID }
+              const video = await this.$axios.get('/api/twitch', {
+                params: { videoID }
               })
               if (!video) {
                 this.$toast.error('Twitch video not found: ' + build.video, {
