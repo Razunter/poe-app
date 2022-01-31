@@ -19,6 +19,9 @@
     "downlevelIteration": true,
     "baseUrl": ".",
     "types": [
+      "@types/node",
+      "@nuxt/vue-app",
+      "@nuxtjs/vuetify",
       "@nuxt/types",
       "@nuxtjs/axios"
     ]
