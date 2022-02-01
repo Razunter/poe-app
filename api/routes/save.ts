@@ -4,11 +4,11 @@ import path from 'path'
 import bodyParser from 'body-parser'
 import express from 'express'
 // eslint-disable-next-line import/no-unassigned-import
-import 'dotenv/config'
+// import 'dotenv/config'
 
 const app = express()
 
-const jsonPath = path.normalize(process.env.jsonPath ?? '')
+const jsonPath = path.normalize(import.meta.env.VITE_jsonPath as string)
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({

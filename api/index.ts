@@ -15,10 +15,10 @@ app.use(save)
 app.use(youtube)
 app.use(twitch)
 
-export default app
-
-const port = process.env.PORT ?? 3_601
-app.listen(port, () => {
+const port = 3_601
+app.listen(3_601, () => {
   // eslint-disable-next-line no-console
   console.log(`API server listening on port ${port}`)
 })
+
+export const viteNodeApp = app

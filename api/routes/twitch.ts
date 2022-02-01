@@ -3,12 +3,12 @@ import { ApiClient } from '@twurple/api'
 import { ClientCredentialsAuthProvider } from '@twurple/auth'
 import { Router } from 'express'
 // eslint-disable-next-line import/no-unassigned-import
-import 'dotenv/config'
+// import 'dotenv/config'
 
 const router = Router()
 
 router.use('/twitch', (request, ressponse) => {
-  const TwitchAuthProvider = new ClientCredentialsAuthProvider(process.env.TwitchClientId ?? '', process.env.TwitchClientSecret ?? '')
+  const TwitchAuthProvider = new ClientCredentialsAuthProvider(import.meta.env.VITE_TwitchClientId as string, import.meta.env.VITE_TwitchClientSecret as string)
   const TwitchApiClient = new ApiClient({ authProvider: TwitchAuthProvider })
 
   if (request.query.videoID) {
