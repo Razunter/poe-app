@@ -7,18 +7,18 @@ import { Router } from 'express'
 
 const router = Router()
 
-router.use('/twitch', (request, ressponse) => {
+router.use('/twitch', (request, response) => {
   const TwitchAuthProvider = new ClientCredentialsAuthProvider(import.meta.env.VITE_TwitchClientId as string, import.meta.env.VITE_TwitchClientSecret as string)
   const TwitchApiClient = new ApiClient({ authProvider: TwitchAuthProvider })
 
   if (request.query.videoID) {
     TwitchApiClient.videos.getVideoById(request.query.videoID as string).then((value) => {
-      ressponse.json(value)
+      response.json(value)
     }, (error) => {
-      ressponse.send('Error: ' + error)
+      response.send('Error: ' + error)
     })
   } else {
-    ressponse.send('Error: No VideoID')
+    response.send('Error: No VideoID')
   }
 })
 

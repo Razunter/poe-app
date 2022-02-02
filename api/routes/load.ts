@@ -11,7 +11,6 @@ const jsonPath = path.normalize(import.meta.env.VITE_jsonPath as string)
 
 // Test route
 router.use('/load', (request, response) => {
-  response.set('Access-Control-Allow-Origin', '*')
   fs.readFile(path.join(jsonPath, 'versions.json'), 'utf8', (error, fileContents) => {
     if (error) {
       // eslint-disable-next-line no-console

@@ -1,4 +1,5 @@
 // eslint-disable-next-line canonical/filename-match-exported
+import cors from 'cors'
 import express from 'express'
 // Require API routes
 import load from './routes/load'
@@ -8,6 +9,7 @@ import youtube from './routes/youtube'
 
 // Create express instance
 const app = express()
+app.use(cors())
 
 // Import API Routes
 app.use(load)

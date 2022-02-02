@@ -462,6 +462,9 @@ export default defineComponent({
           .then((response: { data: string }) => {
             this.toast.success(response.data, { timeout: 3_000 })
           })
+          .catch((error) => {
+            this.toast.error(error.message)
+          })
       } else {
         let log = ''
         for (const element of duplicateUrls) {
