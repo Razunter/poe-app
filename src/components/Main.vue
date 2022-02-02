@@ -45,7 +45,10 @@
       bordered
     >
       <q-list bordered>
-        <q-item-label header class="text-h6">
+        <q-item-label
+          header
+          class="text-h6"
+        >
           Actions
         </q-item-label>
 
@@ -56,11 +59,11 @@
 
         <q-separator spaced />
 
-        <!--        <ButtonSync-->
-        <!--          :build-list.sync="buildList"-->
-        <!--          :current-version="currentVersion"-->
-        <!--          @update:buildList="sortBuilds"-->
-        <!--        />-->
+        <ButtonSync
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+          @update:buildList="sortBuilds"
+        />
 
         <!--        <v-list-item @click="sortBuilds">-->
         <!--          <v-list-item-icon>-->
@@ -84,6 +87,7 @@
         <!--        />-->
 
         <q-separator spaced />
+
         <q-item
           v-ripple
           clickable
@@ -102,7 +106,10 @@
 
         <q-separator spaced />
 
-        <q-item-label header class="text-h6">
+        <q-item-label
+          header
+          class="text-h6"
+        >
           Filters:
         </q-item-label>
 
@@ -175,11 +182,12 @@
 import axios from 'axios'
 import compareVersions from 'compare-versions'
 import { firstBy } from 'thenby'
-import type { Ref} from 'vue'
+import type { Ref } from 'vue'
 import { defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import Build from '@/components/Build.vue'
 import ButtonSettings from '@/components/ButtonSettings.vue'
+import ButtonSync from '@/components/ButtonSync.vue'
 import { BuildClass } from '@/lib/BuildClass'
 import type { BuildList, BuildTypes, Versions } from '@/lib/dataTypes'
 import { useStore } from '@/store/authors'
@@ -198,7 +206,7 @@ export default defineComponent({
     // ButtonCleanup,
     // ButtonRandomize,
     ButtonSettings,
-    // ButtonSync,
+    ButtonSync,
   },
 
   async setup () {
