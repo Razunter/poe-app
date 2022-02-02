@@ -81,11 +81,11 @@
           </q-item-section>
         </q-item>
 
-        <!--        <ButtonRandomize-->
-        <!--          :build-list.sync="buildList"-->
-        <!--          :current-version="currentVersion"-->
-        <!--          @update:buildList="sortBuilds"-->
-        <!--        />-->
+        <ButtonRandomize
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+          @update:buildList="sortBuilds"
+        />
 
         <!--        <ButtonCleanup-->
         <!--          :build-list.sync="buildList"-->
@@ -193,6 +193,7 @@ import type { Ref } from 'vue'
 import { defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import Build from '@/components/Build.vue'
+import ButtonRandomize from '@/components/ButtonRandomize.vue'
 import ButtonSettings from '@/components/ButtonSettings.vue'
 import ButtonSync from '@/components/ButtonSync.vue'
 import { BuildClass } from '@/lib/BuildClass'
@@ -211,7 +212,7 @@ export default defineComponent({
   components: {
     Build,
     // ButtonCleanup,
-    // ButtonRandomize,
+    ButtonRandomize,
     ButtonSettings,
     ButtonSync,
   },

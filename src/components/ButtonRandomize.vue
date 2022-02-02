@@ -1,25 +1,34 @@
 <template>
-  <v-list-item @click="randomizeBuilds">
-    <v-list-item-icon>
-      <v-icon>mdi-sync</v-icon>
-    </v-list-item-icon>
-    <v-list-item-content>
-      <v-list-item-title>Randomize order</v-list-item-title>
-    </v-list-item-content>
-  </v-list-item>
+  <q-item
+    v-ripple
+    clickable
+    @click="randomizeBuilds"
+  >
+    <q-item-section avatar>
+      <q-icon
+        color="white"
+        name="mdi-sync"
+      />
+    </q-item-section>
+    <q-item-section>
+      Randomize order
+    </q-item-section>
+  </q-item>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { random } from 'lodash-es'
+import type { PropType } from 'vue'
+import { defineComponent } from 'vue'
+import type { BuildList } from '@/lib/dataTypes'
 
 export default defineComponent({
   props: {
     buildList: {
       default: () => {
-        return []
+        return [] as BuildList
       },
-      type: Array,
+      type: Array as PropType<BuildList>,
     },
     currentVersion: {
       type: String,
@@ -27,7 +36,7 @@ export default defineComponent({
     },
   },
   methods: {
-    outdated (versions) {
+    outdated (versions: string[]) {
       if (versions) {
         return !versions.includes(this.currentVersion)
       } else {
