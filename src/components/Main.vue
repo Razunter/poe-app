@@ -65,14 +65,21 @@
           @update:buildList="sortBuilds"
         />
 
-        <!--        <v-list-item @click="sortBuilds">-->
-        <!--          <v-list-item-icon>-->
-        <!--            <v-icon>mdi-sort-ascending</v-icon>-->
-        <!--          </v-list-item-icon>-->
-        <!--          <v-list-item-content>-->
-        <!--            <v-list-item-title>Sort</v-list-item-title>-->
-        <!--          </v-list-item-content>-->
-        <!--        </v-list-item>-->
+        <q-item
+          v-ripple
+          clickable
+          @click="sortBuilds"
+        >
+          <q-item-section avatar>
+            <q-icon
+              color="white"
+              name="mdi-sort-ascending"
+            />
+          </q-item-section>
+          <q-item-section>
+            Sort
+          </q-item-section>
+        </q-item>
 
         <!--        <ButtonRandomize-->
         <!--          :build-list.sync="buildList"-->
@@ -309,48 +316,48 @@ export default defineComponent({
             return 0
           })
             .thenBy<BuildClass>((buildA, buildB) => {
-            // Sort by version
-            const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
-            const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
-            return compareVersions(buildAVersionLatest, buildBVersionLatest)
-          })
+              // Sort by version
+              const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
+              const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+              return compareVersions(buildAVersionLatest, buildBVersionLatest)
+            })
             .thenBy<BuildClass>((buildA, buildB) => {
-            // Sort pinned
-            if (buildA.pin && !buildB.pin) {
-              return -1
-            } else if (!buildA.pin && buildB.pin) {
-              return 1
-            }
-
-            return 0
-          })
-            .thenBy<BuildClass>((buildA, buildB) => {
-            // Author name
-            if (buildA.author && buildB.author) {
-              if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
-                return 1
-              } else {
+              // Sort pinned
+              if (buildA.pin && !buildB.pin) {
                 return -1
-              }
-            } else if (buildA.author && !buildB.author) {
-              return 1
-            } else if (!buildA.author && buildB.author) {
-              return -1
-            }
-
-            return 0
-          })
-            .thenBy<BuildClass>((buildA, buildB) => {
-            if (buildA.videothumb && buildB.videothumb) {
-              if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
-                return -1
-              } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
+              } else if (!buildA.pin && buildB.pin) {
                 return 1
               }
-            }
 
-            return 0
-          }),
+              return 0
+            })
+            .thenBy<BuildClass>((buildA, buildB) => {
+              // Author name
+              if (buildA.author && buildB.author) {
+                if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
+                  return 1
+                } else {
+                  return -1
+                }
+              } else if (buildA.author && !buildB.author) {
+                return 1
+              } else if (!buildA.author && buildB.author) {
+                return -1
+              }
+
+              return 0
+            })
+            .thenBy<BuildClass>((buildA, buildB) => {
+              if (buildA.videothumb && buildB.videothumb) {
+                if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
+                  return -1
+                } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
+                  return 1
+                }
+              }
+
+              return 0
+            }),
         )
         buildcat.builds.sort((buildA: BuildClass, buildB: BuildClass) => {
           // Sort by url type

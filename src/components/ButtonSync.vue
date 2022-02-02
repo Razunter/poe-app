@@ -13,19 +13,20 @@
     <q-item-section>
       Sync builds
     </q-item-section>
+    <q-item-section v-if="progressbar > 0 && progressbar < 1">
+      <q-linear-progress
+        :value="progressbar"
+        color="white"
+        track-color="green"
+      />
+    </q-item-section>
   </q-item>
-  <q-linear-progress
-    v-if="progressbar > 0 && progressbar < 1"
-    :value="progressbar"
-    color="white"
-    track-color="green"
-  />
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { load as CheerioLoad } from 'cheerio'
-import type { PropType} from 'vue'
+import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import type { BuildList } from '@/lib/dataTypes'
