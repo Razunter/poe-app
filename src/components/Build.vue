@@ -203,9 +203,10 @@ export default defineComponent({
   border-radius: .5rem;
   width: 100%;
   color: #fff;
+  background: #151515;
 
   &:hover, &:focus {
-    background: #444;
+    background: #242424;
   }
 
   &__row {
