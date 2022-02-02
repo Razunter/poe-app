@@ -81,6 +81,7 @@
               clearable
               use-input
               new-value-mode="add-unique"
+              input-debounce="0"
               label="Author"
               bottom-slots
               @filter="filterFn"
