@@ -6,12 +6,12 @@
     @click="showDialog = true"
   >
     <div class="build__row">
-      <h3 class="build__title">
+      <h5 class="build__title">
         <template v-if="buildData.author">
           <span class="build__author">{{ buildData.author }}</span> -
         </template>
         {{ buildData.title }}
-      </h3>
+      </h5>
       <div
         v-if="buildData.versions"
         class="build__version"
@@ -47,108 +47,105 @@
         <span
           :class="buildData.pin && 'active'"
           class="build__pinned"
-        >P</span>
+        >
+          <q-icon name="mdi-pin" />
+        </span>
       </div>
     </div>
-    <v-dialog
+    <q-dialog
       v-if="showDialog"
       v-model="showDialog"
-      max-width="1000px"
-      scrollable="true"
       @click:outside="resetData"
     >
-      <v-card>
-        <v-card-title>Edit build</v-card-title>
-        <v-card-text>
-          <form
-            novalidate
-            class="md-layout"
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="text-h4">
+            Edit build
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-form
             @submit.prevent="formSubmit"
           >
-            <v-text-field
-              v-model.trim="v$.newBuildData.title.$model"
+            <q-input
+              v-model.trim="newBuildData.title"
               label="Build title"
-              :error-messages="v$.newBuildData.title.$errors"
               required
               autocomplete="false"
+              bottom-slots
+              :rules="[val => !!val || 'Field is required']"
             />
-            <v-combobox
+            <q-select
               v-model="newBuildData.author"
-              :items="authors"
+              :options="authors"
               clearable
               label="Author"
+              bottom-slots
             />
-            <v-text-field
-              v-model.trim="v$.newBuildData.url.$model"
+            <q-input
+              v-model.trim="newBuildData.url"
               label="Build URL"
-              :error-messages="v$.newBuildData.url.$errors"
               required
+              bottom-slots
+              :rules="[val => !!val || 'Field is required']"
             >
-              <a
-                slot="append"
-                :href="newBuildData.url"
-                target="_blank"
-              >
-                <v-icon>
-                  mdi-open-in-new
-                </v-icon>
-              </a>
-            </v-text-field>
-            <v-text-field
-              v-model.trim="v$.newBuildData.video.$model"
+              <template #append>
+                <q-btn :to="newBuildData.url" icon="mdi-open-in-new" target="_blank" flat />
+              </template>
+            </q-input>
+            <q-input
+              v-model.trim="newBuildData.video"
               label="Video URL"
-              :error-messages="v$.newBuildData.video.$errors"
+              bottom-slots
             />
-            <v-combobox
-              v-model="v$.newBuildData.versions.$model"
+            <q-select
+              v-model="newBuildData.versions"
               label="Supported versions"
+              new-value-mode="toggle"
               placeholder="Add version..."
-              :error-messages="v$.newBuildData.versions.$errors"
               multiple
               required
-              chips
+              use-input
+              use-chips
+              bottom-slots
+              :rules="[val => !!val || 'Field is required']"
             />
-            <v-switch
+            <q-toggle
               v-model="newBuildData.pin"
               label="Pin build"
+              bottom-slots
             />
-            <v-switch
+            <q-toggle
               v-model="newBuildData.skip"
               label="Skip build"
             />
-            <input
-              type="submit"
-              value=""
-              hidden
-            >
-          </form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
+          </q-form>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
             color="blue"
             @click="formSubmit"
           >
             Save
-          </v-btn>
-          <v-btn
+          </q-btn>
+          <q-btn
             color="red"
             @click="$emit('update:delete'); showDialog = false;"
           >
             Delete
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          </q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </article>
 </template>
 
 <script lang="ts">
-import { useVuelidate } from '@vuelidate/core'
-import { decimal, required, url } from '@vuelidate/validators'
 import compareVersions from 'compare-versions'
-import { defineComponent } from 'vue'
-import { BuildClass } from '../lib/BuildClass'
-import { useStore } from '../store/authors'
+import type { PropType } from 'vue'
+import { defineComponent, ref } from 'vue'
+import type { BuildClass } from '@/lib/BuildClass'
+import { useStore } from '@/store/authors'
 
 export default defineComponent({
   props: {
@@ -162,25 +159,20 @@ export default defineComponent({
       type: Boolean,
     },
     build: {
-      type: BuildClass,
+      type: Object as PropType<BuildClass>,
       required: true,
     },
   },
-  setup () {
-    return {
-      v$: useVuelidate(),
-    }
-  },
-  data () {
-    const buildData = this.build
+  setup (props) {
+    const buildData = props.build
     if (!buildData.versions) {
       buildData.versions = []
     }
 
     return {
-      showDialog: false,
-      buildData,
-      newBuildData: { ...buildData },
+      showDialog: ref(false),
+      buildData: ref(buildData),
+      newBuildData: ref({ ...buildData }),
     }
   },
   computed: {
@@ -191,32 +183,13 @@ export default defineComponent({
   },
   methods: {
     formSubmit () {
-      this.v$.$touch()
-      if (!this.v$.$invalid) {
-        this.newBuildData.versions = this.newBuildData.versions.sort(compareVersions)
-        this.buildData = { ...this.newBuildData }
-        this.$emit('update:build', this.buildData)
-        this.showDialog = false
-      }
+      this.newBuildData.versions.sort(compareVersions)
+      this.buildData = { ...this.newBuildData }
+      this.$emit('update:build', this.buildData)
+      this.showDialog = false
     },
     resetData () {
       this.newBuildData = { ...this.buildData }
-    },
-  },
-  validations: {
-    newBuildData: {
-      title: { required },
-      url: {
-        required,
-        url,
-      },
-      versions: {
-        required,
-        $each: { decimal },
-      },
-      video: {
-        url,
-      },
     },
   },
 })
@@ -226,13 +199,13 @@ export default defineComponent({
 .build {
   cursor: pointer;
   padding: .75rem 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   border-radius: .5rem;
   width: 100%;
   color: #fff;
 
   &:hover, &:focus {
-    background: rgba(255, 255, 255, .1);
+    background: #444;
   }
 
   &__row {

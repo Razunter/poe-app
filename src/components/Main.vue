@@ -1,113 +1,155 @@
 <template>
-  <v-app>
-    <v-navigation-drawer app>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            Actions
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider />
+  <q-layout view="lHh LpR fFf">
+    <q-header
+      elevated
+      class="bg-dark text-white"
+      height-hint="98"
+    >
+      <q-toolbar>
+        <q-btn
+          dense
+          flat
+          round
+          icon="mdi-menu"
+          @click="toggleLeftDrawer"
+        />
 
-      <v-list
-        :nav="true"
-      >
+        <q-toolbar-title>
+          Razunter's PoE Builds admin panel
+        </q-toolbar-title>
+
+        <q-btn
+          dense
+          flat
+          round
+          icon="mdi-menu"
+          @click="toggleRightDrawer"
+        />
+      </q-toolbar>
+
+      <q-tabs align="left">
+        <q-route-tab
+          v-for="(buildType, buildKey) in types"
+          :key="buildKey"
+          :label="buildType"
+          :href="'#'+buildKey"
+        />
+      </q-tabs>
+    </q-header>
+
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      side="left"
+      behavior="desktop"
+      bordered
+    >
+      <q-list bordered>
+        <q-item-label header class="text-h6">
+          Actions
+        </q-item-label>
+
         <ButtonSettings
           :versions.sync="versions"
           :current-version.sync="currentVersion"
         />
 
-        <v-divider />
+        <q-separator spaced />
 
-        <ButtonSync
-          :build-list.sync="buildList"
-          :current-version="currentVersion"
-          @update:buildList="sortBuilds"
-        />
+        <!--        <ButtonSync-->
+        <!--          :build-list.sync="buildList"-->
+        <!--          :current-version="currentVersion"-->
+        <!--          @update:buildList="sortBuilds"-->
+        <!--        />-->
 
-        <v-list-item @click="sortBuilds">
-          <v-list-item-icon>
-            <v-icon>mdi-sort-ascending</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Sort</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <!--        <v-list-item @click="sortBuilds">-->
+        <!--          <v-list-item-icon>-->
+        <!--            <v-icon>mdi-sort-ascending</v-icon>-->
+        <!--          </v-list-item-icon>-->
+        <!--          <v-list-item-content>-->
+        <!--            <v-list-item-title>Sort</v-list-item-title>-->
+        <!--          </v-list-item-content>-->
+        <!--        </v-list-item>-->
 
-        <ButtonRandomize
-          :build-list.sync="buildList"
-          :current-version="currentVersion"
-          @update:buildList="sortBuilds"
-        />
+        <!--        <ButtonRandomize-->
+        <!--          :build-list.sync="buildList"-->
+        <!--          :current-version="currentVersion"-->
+        <!--          @update:buildList="sortBuilds"-->
+        <!--        />-->
 
-        <ButtonCleanup
-          :build-list.sync="buildList"
-          :current-version="currentVersion"
-          @update:buildList="saveBuilds"
-        />
+        <!--        <ButtonCleanup-->
+        <!--          :build-list.sync="buildList"-->
+        <!--          :current-version="currentVersion"-->
+        <!--          @update:buildList="saveBuilds"-->
+        <!--        />-->
 
-        <v-list-item @click="saveBuilds">
-          <v-list-item-icon>
-            <v-icon>mdi-content-save</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Save</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+        <q-separator spaced />
+        <q-item
+          v-ripple
+          clickable
+          @click="saveBuilds"
+        >
+          <q-item-section avatar>
+            <q-icon
+              color="white"
+              name="mdi-content-save"
+            />
+          </q-item-section>
+          <q-item-section>
+            Save
+          </q-item-section>
+        </q-item>
 
-      <v-divider />
+        <q-separator spaced />
 
-      <v-card
-        outlined
-        width="100%"
-      >
-        <v-card-title>Filters:</v-card-title>
-        <v-card-text>
-          <v-switch
-            v-model="filters.showOutdated"
-            label="Show outdated"
-          />
-        </v-card-text>
-      </v-card>
-    </v-navigation-drawer>
-    <v-app-bar app>
-      <v-app-bar-title>Razunter's PoE Builds admin panel</v-app-bar-title>
+        <q-item-label header class="text-h6">
+          Filters:
+        </q-item-label>
 
-      <template #extension>
-        <v-btn-toggle>
-          <v-btn
-            v-for="(buildType, buildKey) in types"
-            :key="buildKey"
-            @click="$vuetify.goTo('#'+buildKey)"
-          >
-            {{ buildType }}
-          </v-btn>
-        </v-btn-toggle>
-      </template>
-    </v-app-bar>
-    <v-main>
-      <v-card
+        <q-item>
+          <q-item-section>
+            <q-item-label>Show outdated</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-toggle
+              v-model="filters.showOutdated"
+              val="Show outdated"
+            />
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
+
+    <q-drawer
+      v-model="rightDrawerOpen"
+      show-if-above
+      side="right"
+      behavior="desktop"
+      bordered
+    >
+      <!-- drawer content -->
+    </q-drawer>
+
+    <q-page-container>
+      <q-card
         v-for="buildtype in buildList"
         :key="buildtype.type"
         class="buildlist"
       >
-        <v-card-title
-          :id="buildtype.type"
-          class="buildlist__group__title"
-        >
-          {{ typeName(buildtype.type) }}
-        </v-card-title>
-        <v-card-actions>
-          <v-btn
-            color="green"
-            @click="addBuild(buildtype.type)"
-          >
-            Add build
-          </v-btn>
-        </v-card-actions>
-        <v-card-text>
+        <q-card-section>
+          <q-toolbar :id="buildtype.type">
+            <q-toolbar-title class="text-h4">
+              {{ typeName(buildtype.type) }}
+            </q-toolbar-title>
+            <q-btn
+              color="green"
+              @click="addBuild(buildtype.type)"
+            >
+              Add build
+            </q-btn>
+          </q-toolbar>
+        </q-card-section>
+        <q-card-section>
           <div
             v-for="(build, index) of buildtype.builds"
             v-show="(filters.showOutdated && outdated(build.versions)) || !outdated(build.versions)"
@@ -123,26 +165,31 @@
               @update:delete="deleteBuild(buildtype.type, index)"
             />
           </div>
-        </v-card-text>
-      </v-card>
-    </v-main>
-  </v-app>
+        </q-card-section>
+      </q-card>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script lang="ts">
 import axios from 'axios'
-import { defineComponent } from 'vue'
+import compareVersions from 'compare-versions'
+import { firstBy } from 'thenby'
+import type { Ref} from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import Build from '@/components/Build.vue'
+import ButtonSettings from '@/components/ButtonSettings.vue'
+import { BuildClass } from '@/lib/BuildClass'
 import type { BuildList, BuildTypes, Versions } from '@/lib/dataTypes'
 import { useStore } from '@/store/authors'
 
-// const getBuildTypeBuilds = (buildList: BuildList, buildType: string) => {
-//   const buildTypeIndex = buildList.findIndex((element) => {
-//     return element.type === buildType
-//   })
-//   return buildList[buildTypeIndex].builds
-// }
+const getBuildTypeBuilds = (buildList: BuildList, buildType: string) => {
+  const buildTypeIndex = buildList.findIndex((element) => {
+    return element.type === buildType
+  })
+  return buildList[buildTypeIndex].builds
+}
 
 export default defineComponent({
   name: 'MainComponent',
@@ -150,11 +197,14 @@ export default defineComponent({
     Build,
     // ButtonCleanup,
     // ButtonRandomize,
-    // ButtonSettings,
+    ButtonSettings,
     // ButtonSync,
   },
 
   async setup () {
+    const leftDrawerOpen = ref(false)
+    const rightDrawerOpen = ref(false)
+
     // Get toast interface
     const toast = useToast()
 
@@ -180,14 +230,23 @@ export default defineComponent({
     }
 
     return {
+      leftDrawerOpen,
+      toggleLeftDrawer () {
+        leftDrawerOpen.value = !leftDrawerOpen.value
+      },
+
+      rightDrawerOpen,
+      toggleRightDrawer () {
+        rightDrawerOpen.value = !rightDrawerOpen.value
+      },
       toast,
       types: data.types,
-      buildList,
-      versions: data.versions,
-      currentVersion: data.currentVersion,
-      filters: {
+      buildList: ref(buildList),
+      versions: ref(data.versions),
+      currentVersion: ref(data.currentVersion),
+      filters: ref({
         showOutdated: false,
-      },
+      }),
     } as AppData
   },
   methods: {
@@ -242,48 +301,48 @@ export default defineComponent({
             return 0
           })
             .thenBy<BuildClass>((buildA, buildB) => {
-              // Sort by version
-              const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
-              const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
-              return compareVersions(buildAVersionLatest, buildBVersionLatest)
-            })
+            // Sort by version
+            const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
+            const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+            return compareVersions(buildAVersionLatest, buildBVersionLatest)
+          })
             .thenBy<BuildClass>((buildA, buildB) => {
-              // Sort pinned
-              if (buildA.pin && !buildB.pin) {
-                return -1
-              } else if (!buildA.pin && buildB.pin) {
-                return 1
-              }
+            // Sort pinned
+            if (buildA.pin && !buildB.pin) {
+              return -1
+            } else if (!buildA.pin && buildB.pin) {
+              return 1
+            }
 
-              return 0
-            })
+            return 0
+          })
             .thenBy<BuildClass>((buildA, buildB) => {
-              // Author name
-              if (buildA.author && buildB.author) {
-                if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
-                  return 1
-                } else {
-                  return -1
-                }
-              } else if (buildA.author && !buildB.author) {
+            // Author name
+            if (buildA.author && buildB.author) {
+              if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
                 return 1
-              } else if (!buildA.author && buildB.author) {
+              } else {
                 return -1
               }
+            } else if (buildA.author && !buildB.author) {
+              return 1
+            } else if (!buildA.author && buildB.author) {
+              return -1
+            }
 
-              return 0
-            })
+            return 0
+          })
             .thenBy<BuildClass>((buildA, buildB) => {
-              if (buildA.videothumb && buildB.videothumb) {
-                if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
-                  return -1
-                } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
-                  return 1
-                }
+            if (buildA.videothumb && buildB.videothumb) {
+              if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
+                return -1
+              } else if (!buildA.videothumb['640w'] && buildB.videothumb['640w']) {
+                return 1
               }
+            }
 
-              return 0
-            }),
+            return 0
+          }),
         )
         buildcat.builds.sort((buildA: BuildClass, buildB: BuildClass) => {
           // Sort by url type
@@ -403,11 +462,17 @@ export default defineComponent({
 type AppData = {
   toast: ReturnType<typeof useToast>;
   types: BuildTypes;
-  buildList: BuildList;
-  currentVersion: string;
-  versions: Versions[];
-  filters: {
+  buildList: Ref<BuildList>;
+  currentVersion: Ref<string>;
+  versions: Ref<Versions[]>;
+  filters: Ref<{
     showOutdated: boolean;
-  };
+  }>;
 }
 </script>
+
+<style lang="scss" scoped>
+.buildlist__item + .buildlist__item {
+  margin-top: 1rem;
+}
+</style>

@@ -1,166 +1,171 @@
 <template>
-  <v-list-item @click="showDialog = true">
-    <v-list-item-icon>
-      <v-icon>mdi-cog</v-icon>
-    </v-list-item-icon>
-    <v-list-item-content>
-      <v-list-item-title>Settings</v-list-item-title>
-    </v-list-item-content>
+  <q-item
+    v-ripple
+    clickable
+    @click="showDialog = true"
+  >
+    <q-item-section avatar>
+      <q-icon
+        color="white"
+        name="mdi-cog"
+      />
+    </q-item-section>
+    <q-item-section>
+      Settings
+    </q-item-section>
 
-    <v-dialog
+    <q-dialog
       v-model="showDialog"
-      max-width="1000px"
-      scrollable="true"
+      @hide="reset()"
     >
-      <v-card>
-        <v-card-title>Versions config</v-card-title>
-        <v-card-text>
-          <form
-            novalidate
-            class="md-layout"
-            @submit.prevent="formSubmit"
-          >
-            <v-card>
-              <v-card-title>Current version</v-card-title>
-              <v-card-text>
-                <v-select
-                  v-model="v$.newCurrentVersion.$model"
-                  solo
-                  :items="allVersions"
-                  :error-messages="v$.newCurrentVersion.$errors"
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="text-h5">
+            Versions config
+          </div>
+        </q-card-section>
+
+        <div class="scroll" style="max-height: 60vh">
+          <q-card-section class="q-gutter-md">
+            <q-card bordered flat>
+              <q-card-section>
+                <div class="text-h6">
+                  Current version
+                </div>
+              </q-card-section>
+              <q-card-section>
+                <q-select
+                  v-model="newCurrentVersion"
+                  :options="allVersions"
                   label="Current version"
+                  :rules="[ val => !!val ?? 'Required' ]"
                 />
-              </v-card-text>
-            </v-card>
-            <v-card>
-              <v-card-title>Versions</v-card-title>
-              <v-card-actions>
-                <v-btn @click="addNew">
-                  Add new
-                </v-btn>
-              </v-card-actions>
-              <v-card-text
-                style="display: flex; flex-direction: column-reverse;"
-              >
-                <ValidateEach
-                  v-for="(version, index) in newVersions"
-                  :key="index"
-                  :state="version"
-                  :rules="validationRules"
-                >
-                  <template #default="{ v$ }">
-                    <v-card>
-                      <v-card-text>
-                        <v-text-field
-                          v-model.trim="v$.newVersions.version.$errors"
-                          label="Version number"
-                          :error-messages="v$.newVersions.version.$errors"
-                          required
-                          autocomplete="false"
-                        />
-                        <v-text-field
-                          v-model.trim="version.name"
-                          label="League name"
-                          :error-messages="nameErrors(index)"
-                          required
-                          autocomplete="false"
-                          @input="v$.newVersions.$each[index].name.$touch()"
-                          @blur="v$.newVersions.$each[index].name.$touch()"
-                        />
-                        <v-text-field
-                          v-model.trim="version.url"
-                          label="Version URL"
-                          :error-messages="urlErrors(index)"
-                          autocomplete="false"
-                          @input="v$.newVersions.$each[index].url.$touch()"
-                          @blur="v$.newVersions.$each[index].url.$touch()"
-                        />
-                        <v-switch
-                          v-model="version.wip"
-                          label="Work in progress"
-                        />
-                        <v-text-field
-                          v-model.trim="version.note"
-                          label="Note"
-                        />
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-btn>Delete</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </template>
-                </ValidateEach>
-              </v-card-text>
-            </v-card>
-          </form>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="formSubmit">
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-list-item>
+              </q-card-section>
+            </q-card>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-section>
+            <div class="text-h6">
+              Versions
+            </div>
+          </q-card-section>
+
+          <q-card-actions class="addNew-wrap">
+            <q-btn color="green" @click="addNew">
+              Add new
+            </q-btn>
+          </q-card-actions>
+
+          <q-separator spaced />
+
+          <q-card-section
+            style="display: flex; flex-direction: column-reverse;"
+            class="q-gutter-md"
+          >
+            <q-card
+              v-for="version in newVersions"
+              :key="version.version"
+              flat
+              bordered
+            >
+              <q-card-section>
+                <q-input
+                  v-model.trim="version.version"
+                  for="version"
+                  mask="#.##"
+                  maxlength="3"
+                  label="Version number"
+                  autocomplete="false"
+                  bottom-slots
+                  :rules="[val => !!val || 'Field is required']"
+                />
+                <q-input
+                  v-model.trim="version.name"
+                  for="name"
+                  label="League name"
+                  autocomplete="false"
+                  bottom-slots
+                />
+                <q-input
+                  v-model.trim="version.url"
+                  label="Version URL"
+                  type="url"
+                  autocomplete="false"
+                  bottom-slots
+                  :rules="[
+                    val => !!val || 'Field is required',
+                  ]"
+                />
+                <q-toggle
+                  v-model="version.wip"
+                  label="Work in progress"
+                  bottom-slots
+                />
+                <q-input
+                  v-model.trim="version.note"
+                  label="Note"
+                  bottom-slots
+                />
+              </q-card-section>
+              <q-card-actions align="right">
+                <q-btn color="red" @click="deleteVersion(version)">
+                  Delete
+                </q-btn>
+              </q-card-actions>
+            </q-card>
+          </q-card-section>
+        </div>
+
+        <q-card-actions
+          align="right"
+          class="text-primary"
+        >
+          <q-btn
+            v-close-popup
+            flat
+            label="Cancel"
+          />
+          <q-btn
+            color="green"
+            label="Save"
+            @click="formSubmit"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  </q-item>
 </template>
 
 <script lang="ts">
-import { ValidateEach } from '@vuelidate/components'
-import type { ValidationArgs } from '@vuelidate/core'
-import { useVuelidate } from '@vuelidate/core'
-import { decimal, required, url } from '@vuelidate/validators'
-import { defineComponent } from 'vue'
-import type { Versions } from '../lib/dataTypes'
+import type { PropType, Ref } from 'vue'
+import { defineComponent, ref } from 'vue'
+import type { Versions } from '@/lib/dataTypes'
 
 export default defineComponent({
-  components: {
-    ValidateEach,
-  },
-  setup (props) {
-    const validationRules = {
-      newVersions: {
-        name: {
-          required,
-        },
-        version: {
-          required,
-          decimal,
-        },
-        url: {
-          url,
-        },
-      },
-      newCurrentVersion: {
-        required,
-        decimal,
-      },
-    }
-
-    return {
-      validationRules,
-      v$: useVuelidate(),
-      newVersions: props.versions ? props.versions.concat() : [],
-      newCurrentVersion: props.currentVersion ? props.currentVersion.concat() : '',
-      showDialog: false,
-    } as {
-      validationRules: ValidationArgs;
-      v$: ReturnType<typeof useVuelidate>;
-      newVersions: Versions[];
-      newCurrentVersion: string;
-      showDialog: boolean;
-    }
-  },
   props: {
     versions: {
       default: () => {
-        return []
+        return [] as Versions[]
       },
-      type: Array,
+      type: Array as PropType<Versions[]>,
     },
     currentVersion: {
       type: String,
       default: '',
     },
+  },
+  setup (props) {
+    return {
+      newVersions: ref(props.versions ? props.versions.concat() : []),
+      newCurrentVersion: ref(props.currentVersion ? props.currentVersion.concat() : ''),
+      showDialog: ref(false),
+    } as {
+      newVersions: Ref<Versions[]>;
+      newCurrentVersion: Ref<string>;
+      showDialog: Ref<boolean>;
+    }
   },
   computed: {
     allVersions () {
@@ -169,56 +174,6 @@ export default defineComponent({
       })
       return allV.slice()
         .reverse()
-    },
-    nameErrors () {
-      return (index: number) => {
-        const errors: string[] = []
-        if (!this.v$.newVersions.$each[index].name.$dirty) {
-          return errors
-        }
-
-        // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-        !this.v$.newVersions.$each[index].name.required && errors.push('League name is required.')
-        return errors
-      }
-    },
-    urlErrors () {
-      return (index) => {
-        const errors = []
-        if (!this.v$.newVersions.$each[index].url.$dirty) {
-          return errors
-        }
-
-        // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-        !this.v$.newVersions.$each[index].url.url && errors.push('Must be an URL.')
-        return errors
-      }
-    },
-    versionErrors () {
-      return (index) => {
-        const errors = []
-        if (!this.v$.newVersions.$each[index].version.$dirty) {
-          return errors
-        }
-
-        // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-        !this.v$.newVersions.$each[index].version.required && errors.push('Version is required.')
-        // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-        this.v$.newVersions.$each[index].version.$invalid && errors.push('Must be a decimal number.')
-        return errors
-      }
-    },
-    currentVersionErrors () {
-      const errors = []
-      if (!this.v$.newCurrentVersion.$dirty) {
-        return errors
-      }
-
-      // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-      !this.v$.newCurrentVersion.required && errors.push('Current version is required.')
-      // eslint-disable-next-line @babel/no-unused-expressions, @typescript-eslint/no-unused-expressions
-      this.v$.newCurrentVersion.$invalid && errors.push('Must be a decimal number.')
-      return errors
     },
   },
   methods: {
@@ -231,14 +186,26 @@ export default defineComponent({
         note: '',
       } as Versions)
     },
+    deleteVersion (version: Versions) {
+      const index = this.newVersions.indexOf(version)
+      this.newVersions.splice(index)
+    },
     formSubmit () {
-      this.v$.$touch()
-      if (!this.v$.$invalid) {
-        this.$emit('update:versions', this.newVersions)
-        this.$emit('update:currentVersion', this.newCurrentVersion)
-        this.showDialog = false
-      }
+      this.$emit('update:versions', this.newVersions)
+      this.$emit('update:currentVersion', this.newCurrentVersion)
+      this.showDialog = false
+    },
+    reset () {
+      this.newVersions = this.versions ? this.versions.concat() : []
+      this.newCurrentVersion = this.currentVersion ? this.currentVersion.concat() : ''
     },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.addNew-wrap {
+  padding-left: $space-base;
+  padding-right: $space-base;
+}
+</style>
