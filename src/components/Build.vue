@@ -77,10 +77,13 @@
             />
             <q-select
               v-model="newBuildData.author"
-              :options="authors"
+              :options="authorsFiltered"
               clearable
+              use-input
+              new-value-mode="add-unique"
               label="Author"
               bottom-slots
+              @filter="filterFn"
             />
             <q-input
               v-model.trim="newBuildData.url"
@@ -90,7 +93,12 @@
               :rules="[val => !!val || 'Field is required']"
             >
               <template #append>
-                <q-btn :to="newBuildData.url" icon="mdi-open-in-new" target="_blank" flat />
+                <q-btn
+                  :to="newBuildData.url"
+                  icon="mdi-open-in-new"
+                  target="_blank"
+                  flat
+                />
               </template>
             </q-input>
             <q-input
@@ -169,17 +177,26 @@ export default defineComponent({
       buildData.versions = []
     }
 
+    const store = useStore()
+    const authors = Array.from(store.authors) as string[]
+    const authorsFiltered = ref(authors)
+
     return {
       showDialog: ref(false),
       buildData: ref(buildData),
       newBuildData: ref({ ...buildData }),
+      authors,
+      authorsFiltered,
+
+      filterFn (value: string, update: (argument: () => void) => void, abort: unknown) {
+        update(() => {
+          const needle = value.toLowerCase()
+          authorsFiltered.value = authors.filter((filterValue: string) => {
+            return filterValue.toLowerCase().includes(needle)
+          })
+        })
+      },
     }
-  },
-  computed: {
-    authors () {
-      const store = useStore()
-      return Array.from(store.authors)
-    },
   },
   methods: {
     formSubmit () {
