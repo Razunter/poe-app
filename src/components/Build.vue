@@ -95,10 +95,11 @@
             >
               <template #append>
                 <q-btn
-                  :to="newBuildData.url"
+                  :href="newBuildData.url"
                   icon="mdi-open-in-new"
                   target="_blank"
                   flat
+                  type="a"
                 />
               </template>
             </q-input>
