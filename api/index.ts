@@ -1,6 +1,7 @@
 // eslint-disable-next-line canonical/filename-match-exported
 import cors from 'cors'
 import express from 'express'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 // Require API routes
 import load from './routes/load'
 import save from './routes/save'
@@ -16,6 +17,14 @@ app.use(load)
 app.use(save)
 app.use(youtube)
 app.use(twitch)
+app.use('/forum/', createProxyMiddleware({
+  target: 'https://www.pathofexile.com',
+  changeOrigin: true,
+}))
+app.use('/guides/', createProxyMiddleware({
+  target: 'https://www.poe-vault.com',
+  changeOrigin: true,
+}))
 
 const port = 3_601
 app.listen(3_601, () => {

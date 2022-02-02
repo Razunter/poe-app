@@ -69,37 +69,45 @@ export default defineComponent({
           // PoE Forum & PoE-vault
           const asyncPoEforumvault = async () => {
             if (this.outdated(build.versions)) {
-              let apiAddress = ''
+              let apiAddress = 'http://localhost:3601'
               if (build.url.includes('pathofexile.com')) {
                 const address = build.url.slice(Math.max(0, build.url.indexOf('/forum/') + 7))
-                apiAddress = '/forum/' + address
+                apiAddress += '/forum/' + address
               } else if (build.url.includes('poe-vault.com')) {
                 const address = build.url.slice(Math.max(0, build.url.indexOf('/guides/') + 8))
-                apiAddress = '/guides/' + address
+                apiAddress += '/guides/' + address
               } else {
                 return true
               }
 
               await axios.get(apiAddress)
                 .then((response) => {
-                  const $ = CheerioLoad(response.data)
-                  const title = $('title')
-                    .text()
-                  const regex = /[\d].[\d]+/gu
-                  const versionNew = regex.exec(title)
-                  regex.lastIndex = 0
-                  if (versionNew === null) {
-                    this.toast.error('Build or version not found: ' + build.title, {
+                  if (typeof response.data === 'string' && response.data.startsWith('Error')) {
+                    this.toast.error(response.data + '\n' + build.title, {
                       timeout: false,
                     })
-                  } else if (!build.versions.includes(versionNew[0])) {
-                    build.versions.push(versionNew[0])
-                    this.toast.success(`Updated: ${build.title}\n${build.url}`)
+                  } else {
+                    const $ = CheerioLoad(response.data)
+                    const title = $('title')
+                      .text()
+                    const regex = /[\d].[\d]+/gu
+                    const versionNew = regex.exec(title)
+                    regex.lastIndex = 0
+                    if (versionNew === null) {
+                      this.toast.error('Build or version not found: ' + build.title, {
+                        timeout: false,
+                      })
+                    } else if (!build.versions.includes(versionNew[0])) {
+                      build.versions.push(versionNew[0])
+                      this.toast.success(`Updated: ${build.title}\n${build.url}`)
+                    }
                   }
                 })
                 .catch((error) => {
                   // handle error
-                  this.toast.error(error.message + '<br />' + build.title)
+                  this.toast.error(error.message + '\n' + build.title, {
+                    timeout: false,
+                  })
                 })
             }
 
@@ -116,7 +124,7 @@ export default defineComponent({
               }
 
               if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
-                await axios.get('/api/youtube', {
+                await axios.get('http://localhost:3601/youtube', {
                   params: { videoID },
                 })
                   .then(({ data }) => {
@@ -142,12 +150,14 @@ export default defineComponent({
                   })
                   .catch((error) => {
                     // handle error
-                    this.toast.error(error.message + '<br />' + build.title)
+                    this.toast.error(error.message + '\n' + build.title, {
+                      timeout: false,
+                    })
                   })
               }
             } else if (build.video?.includes('twitch.tv') && !build.videothumb) {
               const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('/') + 1))
-              const { data: video } = await axios.get('/api/twitch', {
+              const { data: video } = await axios.get('http://localhost:3601/twitch', {
                 params: { videoID },
               })
               if (!video) {
