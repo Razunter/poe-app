@@ -1,18 +1,27 @@
 <template>
-  <v-list-item @click="cleanupBuilds">
-    <v-list-item-icon>
-      <v-icon>mdi-delete</v-icon>
-    </v-list-item-icon>
-    <v-list-item-content>
-      <v-list-item-title>Cleanup</v-list-item-title>
-    </v-list-item-content>
-  </v-list-item>
+  <q-item
+    v-ripple
+    clickable
+    @click="cleanupBuilds"
+  >
+    <q-item-section avatar>
+      <q-icon
+        color="white"
+        name="mdi-delete"
+      />
+    </q-item-section>
+    <q-item-section>
+      Cleanup
+    </q-item-section>
+  </q-item>
 </template>
 
 <script lang="ts">
+import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import type { BuildList } from '@/lib/dataTypes'
 
-const versionInt = (versionString) => {
+const versionInt = (versionString: string) => {
   const vArray = versionString.split('.')
   for (const [index, vArrayItem] of vArray.entries()) {
     if (vArrayItem.length < 2) {
@@ -27,9 +36,9 @@ export default defineComponent({
   props: {
     buildList: {
       default: () => {
-        return []
+        return [] as BuildList
       },
-      type: Array,
+      type: Array as PropType<BuildList>,
     },
     currentVersion: {
       type: String,
@@ -37,7 +46,7 @@ export default defineComponent({
     },
   },
   methods: {
-    outdated (versions) {
+    outdated (versions: string[]) {
       if (versions) {
         return !versions.includes(this.currentVersion)
       } else {

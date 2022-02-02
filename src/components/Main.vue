@@ -87,11 +87,11 @@
           @update:buildList="sortBuilds"
         />
 
-        <!--        <ButtonCleanup-->
-        <!--          :build-list.sync="buildList"-->
-        <!--          :current-version="currentVersion"-->
-        <!--          @update:buildList="saveBuilds"-->
-        <!--        />-->
+        <ButtonCleanup
+          :build-list.sync="buildList"
+          :current-version="currentVersion"
+          @update:buildList="saveBuilds"
+        />
 
         <q-separator spaced />
 
@@ -193,6 +193,7 @@ import type { Ref } from 'vue'
 import { defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import Build from '@/components/Build.vue'
+import ButtonCleanup from '@/components/ButtonCleanup.vue'
 import ButtonRandomize from '@/components/ButtonRandomize.vue'
 import ButtonSettings from '@/components/ButtonSettings.vue'
 import ButtonSync from '@/components/ButtonSync.vue'
@@ -211,7 +212,7 @@ export default defineComponent({
   name: 'MainComponent',
   components: {
     Build,
-    // ButtonCleanup,
+    ButtonCleanup,
     ButtonRandomize,
     ButtonSettings,
     ButtonSync,
