@@ -447,9 +447,7 @@ export default defineComponent({
           }
         }
 
-        if (!rfBuilds.has(this.currentVersion)) {
-          this.versions[this.versions.length - 1].skiprf = true
-        }
+        this.versions[this.versions.length - 1].skiprf = !rfBuilds.has(this.currentVersion)
 
         const buildListFull = {
           currentVersion: this.currentVersion,
