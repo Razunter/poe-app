@@ -4,8 +4,18 @@ import { VitePluginNode } from 'vite-plugin-node'
 // https://vitejs.dev/config/
 export default defineConfig({
   root: './api',
+  build: {
+    lib: {
+      entry: './index.ts',
+      name: 'ExpressBackend',
+    },
+    outDir: '../dist-api',
+  },
   server: {
     // vite server configs, for details see [vite doc](https://vitejs.dev/config/#server-host)
+    port: 3_601,
+  },
+  preview: {
     port: 3_601,
   },
   plugins: [

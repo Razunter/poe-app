@@ -13,6 +13,12 @@ export default defineConfig({
       sassVariables: 'src/quasar-variables.sass',
     }),
   ],
+  server: {
+    port: 3_000,
+  },
+  preview: {
+    port: 3_000,
+  },
   // define: {'process.env': {}},
   resolve: {
     alias: [
