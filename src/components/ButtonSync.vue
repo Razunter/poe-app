@@ -186,7 +186,7 @@ export default defineComponent({
             void Promise.allSettled([asyncPoEforumvault(), asyncYtTwitch()])
               .then(() => {
                 buildCount++
-                this.progressbar = 1 - Math.floor((buildPromises.length - buildCount) / buildPromises.length)
+                this.progressbar = 1 - (buildPromises.length - buildCount) / buildPromises.length
                 resolve()
               })
           }))
