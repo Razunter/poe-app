@@ -60,8 +60,9 @@
         <q-separator spaced />
 
         <ButtonSync
-          v-model="buildList"
+          v-model:buildList="buildList"
           :current-version="currentVersion"
+          :all-versions="versions"
           @update:buildList="sortBuilds"
         />
 
@@ -82,13 +83,13 @@
         </q-item>
 
         <ButtonRandomize
-          v-model="buildList"
+          v-model:buildList="buildList"
           :current-version="currentVersion"
           @update:buildList="sortBuilds"
         />
 
         <ButtonCleanup
-          v-model="buildList"
+          v-model:buildList="buildList"
           :current-version="currentVersion"
           @update:buildList="saveBuilds"
         />
@@ -199,6 +200,7 @@ import ButtonSettings from '@/components/ButtonSettings.vue'
 import ButtonSync from '@/components/ButtonSync.vue'
 import { BuildClass } from '@/lib/BuildClass'
 import { type BuildList, type BuildTypes, type Versions } from '@/lib/dataTypes'
+import isOutdatedBuild from '@/lib/isOutdatedBuild'
 import { useStore } from '@/store/authors'
 
 const getBuildTypeBuilds = (buildList: BuildList, buildType: string) => {
@@ -271,19 +273,7 @@ export default defineComponent({
       return this.types[typeID]
     },
     outdated (versions: string[] | undefined) {
-      // If build version list has current => not outdated, else check for compatible
-      if (versions?.includes(this.currentVersion)) {
-        return false
-      } else {
-        const versionData = this.versions.find((version) => {
-          return version.version === this.currentVersion
-        })
-        if (versionData?.compatible && isArray(versionData.compatible)) {
-          return intersection(versionData.compatible, versions).length === 0
-        }
-      }
-
-      return true
+      return isOutdatedBuild(versions, this.currentVersion, this.versions)
     },
     /**
      * @param {object} event
@@ -315,36 +305,36 @@ export default defineComponent({
     sortBuilds () {
       for (const buildcat of this.buildList) {
         buildcat.builds.sort(
-          // Outdated
           /* eslint-disable @typescript-eslint/indent */
           firstBy<BuildClass>((buildA, buildB) => {
-            if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
+            // Outdated
+            if (isOutdatedBuild(buildA.versions, this.currentVersion, this.versions) && !isOutdatedBuild(buildB.versions, this.currentVersion, this.versions)) {
               return 1
-            } else if (!this.outdated(buildA.versions) && this.outdated(buildB.versions)) {
+            } else if (!isOutdatedBuild(buildA.versions, this.currentVersion, this.versions) && isOutdatedBuild(buildB.versions, this.currentVersion, this.versions)) {
               return -1
             }
 
             return 0
           })
-            .thenBy<BuildClass>((buildA, buildB) => {
-              // Sort by version
-              const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
-              const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
-              return compareVersions(buildAVersionLatest, buildBVersionLatest)
-            })
-            .thenBy<BuildClass>((buildA, buildB) => {
-              // Sort pinned
-              if (buildA.pin && !buildB.pin) {
-                return -1
-              } else if (!buildA.pin && buildB.pin) {
-                return 1
-              }
-
-              return 0
-            })
+            // eslint-disable-next-line complexity
             .thenBy<BuildClass>((buildA, buildB) => {
               // Author name
               if (buildA.author && buildB.author) {
+                if (buildA.author && buildB.author) {
+                  // Author bias
+                  if (buildA.author === 'Zizaran' && buildB.author !== 'Zizaran' && !buildB.url.includes('pathofexile.com')) {
+                    return -1
+                  } else if (buildB.author === 'Zizaran' && buildA.author !== 'Zizaran' && !buildA.url.includes('pathofexile.com')) {
+                    return 1
+                  }
+
+                  if (buildA.author === 'GhazzyTV' && buildB.author !== 'GhazzyTV' && !buildB.url.includes('pathofexile.com')) {
+                    return 1
+                  } else if (buildB.author === 'GhazzyTV' && buildA.author !== 'GhazzyTV' && !buildA.url.includes('pathofexile.com')) {
+                    return -1
+                  }
+                }
+
                 if (buildA.author.toUpperCase() > buildB.author.toUpperCase()) {
                   return 1
                 } else {
@@ -354,6 +344,16 @@ export default defineComponent({
                 return 1
               } else if (!buildA.author && buildB.author) {
                 return -1
+              }
+
+              return 0
+            })
+            .thenBy<BuildClass>((buildA, buildB) => {
+              // Sort pinned
+              if (buildA.pin && !buildB.pin) {
+                return -1
+              } else if (!buildA.pin && buildB.pin) {
+                return 1
               }
 
               return 0
@@ -392,23 +392,14 @@ export default defineComponent({
 
           return 0
         })
+
         buildcat.builds.sort((buildA: BuildClass, buildB: BuildClass) => {
-          if (buildA.author && buildB.author) {
-            if (buildA.author === 'Zizaran' && buildB.author !== 'Zizaran' && !buildB.url.includes('pathofexile.com')) {
-              return -1
-            } else if (buildB.author === 'Zizaran' && buildA.author !== 'Zizaran' && !buildA.url.includes('pathofexile.com')) {
-              return 1
-            }
-
-            if (buildA.author === 'GhazzyTV' && buildB.author !== 'GhazzyTV' && !buildB.url.includes('pathofexile.com')) {
-              return 1
-            } else if (buildB.author === 'GhazzyTV' && buildA.author !== 'GhazzyTV' && !buildA.url.includes('pathofexile.com')) {
-              return -1
-            }
-          }
-
-          return 0
+          // Sort by version
+          const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
+          const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+          return compareVersions(buildBVersionLatest, buildAVersionLatest)
         })
+
         buildcat.builds.sort((buildA: BuildClass, buildB: BuildClass) => {
           // Sort by video
           if (buildA.video && !buildB.video) {

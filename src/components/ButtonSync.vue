@@ -28,7 +28,8 @@ import axios from 'axios'
 import { load as CheerioLoad } from 'cheerio'
 import { type PropType, defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import { type BuildList } from '@/lib/dataTypes'
+import { type Versions, type BuildList } from '@/lib/dataTypes'
+import isOutdatedBuild from '@/lib/isOutdatedBuild'
 
 export default defineComponent({
   props: {
@@ -42,6 +43,12 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    allVersions: {
+      type: Array as PropType<Versions[]>,
+      default: () => {
+        return [] as Versions[]
+      },
+    },
   },
   setup () {
     const toast = useToast()
@@ -52,13 +59,6 @@ export default defineComponent({
     }
   },
   methods: {
-    outdated (versions: string[] | undefined) {
-      if (versions) {
-        return !versions.includes(this.currentVersion)
-      } else {
-        return true
-      }
-    },
     syncBuilds () {
       this.progressbar = 0
       let buildCount = 0
@@ -67,7 +67,7 @@ export default defineComponent({
         for (const build of buildCat.builds) {
           // PoE Forum & PoE-vault
           const asyncPoEforumvault = async () => {
-            if (this.outdated(build.versions)) {
+            if (isOutdatedBuild(build.versions, this.currentVersion, this.allVersions, false)) {
               let apiAddress = 'http://localhost:3601'
               if (build.url.includes('pathofexile.com')) {
                 const address = build.url.slice(Math.max(0, build.url.indexOf('/forum/') + 7))
