@@ -60,7 +60,7 @@
         <q-separator spaced />
 
         <ButtonSync
-          :build-list.sync="buildList"
+          v-model="buildList"
           :current-version="currentVersion"
           @update:buildList="sortBuilds"
         />
@@ -82,13 +82,13 @@
         </q-item>
 
         <ButtonRandomize
-          :build-list.sync="buildList"
+          v-model="buildList"
           :current-version="currentVersion"
           @update:buildList="sortBuilds"
         />
 
         <ButtonCleanup
-          :build-list.sync="buildList"
+          v-model="buildList"
           :current-version="currentVersion"
           @update:buildList="saveBuilds"
         />
