@@ -53,8 +53,8 @@
         </q-item-label>
 
         <ButtonSettings
-          :versions.sync="versions"
-          :current-version.sync="currentVersion"
+          v-model:versions="versions"
+          v-model:currentVersion="currentVersion"
         />
 
         <q-separator spaced />
@@ -188,6 +188,7 @@
 <script lang="ts">
 import axios from 'axios'
 import compareVersions from 'compare-versions'
+import { intersection, isArray } from 'lodash-es'
 import { firstBy } from 'thenby'
 import { type Ref, defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
@@ -270,11 +271,19 @@ export default defineComponent({
       return this.types[typeID]
     },
     outdated (versions: string[] | undefined) {
-      if (versions) {
-        return !versions.includes(this.currentVersion)
+      // If build version list has current => not outdated, else check for compatible
+      if (versions?.includes(this.currentVersion)) {
+        return false
       } else {
-        return true
+        const versionData = this.versions.find((version) => {
+          return version.version === this.currentVersion
+        })
+        if (versionData?.compatible && isArray(versionData.compatible)) {
+          return intersection(versionData.compatible, versions).length === 0
+        }
       }
+
+      return true
     },
     /**
      * @param {object} event

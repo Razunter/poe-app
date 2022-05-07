@@ -1,4 +1,4 @@
-import type { BuildClass } from './BuildClass'
+import { type BuildClass } from './BuildClass'
 
 export type BuildTypes = {
   [key: string]: string;
@@ -16,4 +16,5 @@ export type Versions = {
   url?: string;
   note?: string;
   skiprf?: boolean;
+  compatible?: string[];
 }

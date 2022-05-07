@@ -75,7 +75,7 @@
                   v-model.trim="version.version"
                   for="version"
                   mask="#.##"
-                  maxlength="3"
+                  maxlength="4"
                   label="Version number"
                   autocomplete="false"
                   bottom-slots
@@ -106,6 +106,17 @@
                 <q-input
                   v-model.trim="version.note"
                   label="Note"
+                  bottom-slots
+                />
+                <q-select
+                  v-model="version.compatible"
+                  label="Compatible versions"
+                  new-value-mode="toggle"
+                  placeholder="Add version..."
+                  multiple
+                  required
+                  use-chips
+                  :options="allVersions"
                   bottom-slots
                 />
               </q-card-section>

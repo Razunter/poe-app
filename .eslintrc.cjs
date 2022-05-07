@@ -93,6 +93,7 @@ module.exports = {
         'vue/multi-word-component-names': 'off',
         'import/extensions': ['error', 'never', { 'vue': 'always' }],
         'vue/no-multiple-template-root': 'off',
+        'vue/no-v-model-argument': 'off',
       },
     },
     {
