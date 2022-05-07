@@ -37,7 +37,7 @@ export default defineConfig({
       // by default this plugin is using vite default ts compiler which is esbuild
       // 'swc' compiler is supported to use as well for frameworks
       // like Nestjs (esbuild dont support 'emitDecoratorMetadata' yet)
-      tsCompiler: 'esbuild',
+      tsCompiler: 'swc',
     }),
   ],
 })
