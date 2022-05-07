@@ -38,7 +38,7 @@ const generalJS = {
       imports: 'always-multiline',
       objects: 'always-multiline',
     },
-  ]
+  ],
 }
 
 const ts = {
@@ -92,7 +92,7 @@ module.exports = {
         ...ts,
         'vue/multi-word-component-names': 'off',
         'import/extensions': ['error', 'never', { 'vue': 'always' }],
-        'vue/no-multiple-template-root': 'off'
+        'vue/no-multiple-template-root': 'off',
       },
     },
     {

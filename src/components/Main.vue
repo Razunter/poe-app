@@ -189,8 +189,7 @@
 import axios from 'axios'
 import compareVersions from 'compare-versions'
 import { firstBy } from 'thenby'
-import type { Ref } from 'vue'
-import { defineComponent, ref } from 'vue'
+import { type Ref, defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import Build from '@/components/Build.vue'
 import ButtonCleanup from '@/components/ButtonCleanup.vue'
@@ -198,7 +197,7 @@ import ButtonRandomize from '@/components/ButtonRandomize.vue'
 import ButtonSettings from '@/components/ButtonSettings.vue'
 import ButtonSync from '@/components/ButtonSync.vue'
 import { BuildClass } from '@/lib/BuildClass'
-import type { BuildList, BuildTypes, Versions } from '@/lib/dataTypes'
+import { type BuildList, type BuildTypes, type Versions } from '@/lib/dataTypes'
 import { useStore } from '@/store/authors'
 
 const getBuildTypeBuilds = (buildList: BuildList, buildType: string) => {
@@ -270,7 +269,7 @@ export default defineComponent({
     typeName (typeID: string) {
       return this.types[typeID]
     },
-    outdated (versions: string[]) {
+    outdated (versions: string[] | undefined) {
       if (versions) {
         return !versions.includes(this.currentVersion)
       } else {
@@ -308,6 +307,7 @@ export default defineComponent({
       for (const buildcat of this.buildList) {
         buildcat.builds.sort(
           // Outdated
+          /* eslint-disable @typescript-eslint/indent */
           firstBy<BuildClass>((buildA, buildB) => {
             if (this.outdated(buildA.versions) && !this.outdated(buildB.versions)) {
               return 1
@@ -361,6 +361,8 @@ export default defineComponent({
               return 0
             }),
         )
+        /* eslint-enable @typescript-eslint/indent */
+
         buildcat.builds.sort((buildA: BuildClass, buildB: BuildClass) => {
           // Sort by url type
           if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {

@@ -18,9 +18,8 @@
 
 <script lang="ts">
 import { random } from 'lodash-es'
-import type { PropType } from 'vue'
-import { defineComponent } from 'vue'
-import type { BuildList } from '@/lib/dataTypes'
+import { type PropType, defineComponent } from 'vue'
+import { type BuildList } from '@/lib/dataTypes'
 
 export default defineComponent({
   props: {
@@ -36,7 +35,7 @@ export default defineComponent({
     },
   },
   methods: {
-    outdated (versions: string[]) {
+    outdated (versions: string[] | undefined) {
       if (versions) {
         return !versions.includes(this.currentVersion)
       } else {

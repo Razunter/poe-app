@@ -152,9 +152,8 @@
 
 <script lang="ts">
 import compareVersions from 'compare-versions'
-import type { PropType } from 'vue'
-import { defineComponent, ref } from 'vue'
-import type { BuildClass } from '@/lib/BuildClass'
+import { type PropType, defineComponent, ref } from 'vue'
+import { type BuildClass } from '@/lib/BuildClass'
 import { useStore } from '@/store/authors'
 
 export default defineComponent({
@@ -175,10 +174,6 @@ export default defineComponent({
   },
   setup (props) {
     const buildData = props.build
-    if (!buildData.versions) {
-      buildData.versions = []
-    }
-
     const store = useStore()
     const authors = Array.from(store.authors) as string[]
     const authorsFiltered = ref(authors)
@@ -190,7 +185,7 @@ export default defineComponent({
       authors,
       authorsFiltered,
 
-      filterFn (value: string, update: (argument: () => void) => void, abort: unknown) {
+      filterFn (value: string, update: (argument: () => void) => void) {
         update(() => {
           const needle = value.toLowerCase()
           authorsFiltered.value = authors.filter((filterValue: string) => {

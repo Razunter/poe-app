@@ -26,10 +26,9 @@
 <script lang="ts">
 import axios from 'axios'
 import { load as CheerioLoad } from 'cheerio'
-import type { PropType } from 'vue'
-import { defineComponent, ref } from 'vue'
+import { type PropType, defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import type { BuildList } from '@/lib/dataTypes'
+import { type BuildList } from '@/lib/dataTypes'
 
 export default defineComponent({
   props: {
@@ -53,7 +52,7 @@ export default defineComponent({
     }
   },
   methods: {
-    outdated (versions: string[]) {
+    outdated (versions: string[] | undefined) {
       if (versions) {
         return !versions.includes(this.currentVersion)
       } else {
@@ -155,7 +154,7 @@ export default defineComponent({
                     })
                   })
               }
-            } else if (build.video?.includes('twitch.tv') && !build.videothumb) {
+            } else if (build.video.includes('twitch.tv') && !build.videothumb) {
               const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('/') + 1))
               const { data: video } = await axios.get('http://localhost:3601/twitch', {
                 params: { videoID },
@@ -182,7 +181,7 @@ export default defineComponent({
           }
 
           // eslint-disable-next-line @typescript-eslint/no-loop-func
-          buildPromises.push(new Promise<void>((resolve, reject) => {
+          buildPromises.push(new Promise<void>((resolve) => {
             void Promise.allSettled([asyncPoEforumvault(), asyncYtTwitch()])
               .then(() => {
                 buildCount++

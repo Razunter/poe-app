@@ -139,9 +139,8 @@
 </template>
 
 <script lang="ts">
-import type { PropType, Ref } from 'vue'
-import { defineComponent, ref } from 'vue'
-import type { Versions } from '@/lib/dataTypes'
+import { type PropType, type Ref, defineComponent, ref } from 'vue'
+import { type Versions } from '@/lib/dataTypes'
 
 export default defineComponent({
   props: {
@@ -158,7 +157,7 @@ export default defineComponent({
   },
   setup (props) {
     return {
-      newVersions: ref(props.versions ? props.versions.concat() : []),
+      newVersions: ref(props.versions.concat()),
       newCurrentVersion: ref(props.currentVersion ? props.currentVersion.concat() : ''),
       showDialog: ref(false),
     } as {
@@ -196,7 +195,7 @@ export default defineComponent({
       this.showDialog = false
     },
     reset () {
-      this.newVersions = this.versions ? this.versions.concat() : []
+      this.newVersions = this.versions.concat()
       this.newCurrentVersion = this.currentVersion ? this.currentVersion.concat() : ''
     },
   },
