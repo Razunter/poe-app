@@ -91,6 +91,7 @@
         <ButtonCleanup
           v-model:buildList="buildList"
           :current-version="currentVersion"
+          :all-versions="versions"
           @update:buildList="saveBuilds"
         />
 

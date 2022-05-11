@@ -18,7 +18,8 @@
 
 <script lang="ts">
 import { type PropType, defineComponent } from 'vue'
-import { type BuildList } from '@/lib/dataTypes'
+import { type BuildList, Versions } from '@/lib/dataTypes'
+import isOutdatedBuild from '@/lib/isOutdatedBuild'
 
 const versionInt = (versionString: string) => {
   const vArray = versionString.split('.')
@@ -39,6 +40,12 @@ export default defineComponent({
       },
       type: Array as PropType<BuildList>,
     },
+    allVersions: {
+      type: Array as PropType<Versions[]>,
+      default: () => {
+        return [] as Versions[]
+      },
+    },
     currentVersion: {
       type: String,
       default: '',
@@ -47,7 +54,7 @@ export default defineComponent({
   methods: {
     outdated (versions: string[] | undefined) {
       if (versions) {
-        return !versions.includes(this.currentVersion)
+        return isOutdatedBuild(versions, this.currentVersion, this.allVersions)
       } else {
         return true
       }
