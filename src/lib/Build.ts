@@ -1,4 +1,4 @@
-export class BuildClass {
+export class Build {
   public title = ''
 
   public url = ''
@@ -28,7 +28,7 @@ export class BuildClass {
     author,
     pin,
     skip,
-  }: Partial<BuildClass>) {
+  }: Partial<Build>) {
     if (title) {
       this.title = title
     }

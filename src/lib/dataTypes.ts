@@ -1,13 +1,15 @@
-import { type BuildClass } from './BuildClass'
+import type { Build } from './Build'
 
 export type BuildTypes = {
   [key: string]: string;
 }
 
-export type BuildList = Array<{
+export type BuildCategory = {
   type: string;
-  builds: BuildClass[];
-}>
+  builds: Build[];
+}
+
+export type BuildList = BuildCategory[]
 
 export type Versions = {
   version: string;

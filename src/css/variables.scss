@@ -1,0 +1,33 @@
+@use "sass:math";
+
+$white: #ffffff;
+
+$theme-colors: (
+        "light": #111629,
+        "dark": #22222d,
+        "primary": #1e2464,
+        "secondary": #bc6e39,
+        "info": #e95e20,
+        "success": #0e804b,
+        "warning": #dfc913,
+        "danger": #ec1f07,
+);
+
+$body-bg: #22222d;
+$body-color: #ffffff;
+
+$card-color:                        null !default;
+$card-bg:                           lighten($body-bg, 10%);
+
+$form-check-input-bg: #3640b3;
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+:root {
+  --bs-grid-gutter-width: #{$grid-gutter-width};
+  --bs-grid-gutter-width-half: #{math.div($grid-gutter-width, 2)};
+}

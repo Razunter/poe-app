@@ -47,6 +47,7 @@ const ts = {
   'typescript-sort-keys/interface': 'off',
   // '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
   'canonical/import-specifier-newline': 'off',
+  'canonical/prefer-inline-type-import': 'off',
   '@typescript-eslint/no-extra-parens': 'off',
   '@typescript-eslint/member-delimiter-style': [
     'error',
@@ -60,13 +61,18 @@ const ts = {
 }
 
 module.exports = {
+  root: true,
+  rules: generalJS,
   extends: ['canonical'],
+  ignorePatterns: ['*.cjs'],
   overrides: [
     {
       extends: ['canonical/typescript'],
       files: ['*.ts'],
       parserOptions: {
         project: './tsconfig.json',
+        sourceType: 'module',
+        tsconfigRootDir: './',
       },
       rules: {
         ...generalJS,
@@ -74,13 +80,10 @@ module.exports = {
       },
     },
     {
-      files: ['*.vue'],
-      extends: [
-        'canonical/typescript',
-        'plugin:vue/recommended',
-        '@vue/eslint-config-typescript/recommended',
-      ],
-      parser: 'vue-eslint-parser',
+      files: ['*.svelte'],
+      processor: 'svelte3/svelte3',
+      extends: ['canonical/typescript'],
+      plugins: ['svelte3', '@typescript-eslint'],
       parserOptions: {
         parser: '@typescript-eslint/parser',
         project: './tsconfig.json',
@@ -90,10 +93,6 @@ module.exports = {
       rules: {
         ...generalJS,
         ...ts,
-        'vue/multi-word-component-names': 'off',
-        'import/extensions': ['error', 'never', { 'vue': 'always' }],
-        'vue/no-multiple-template-root': 'off',
-        'vue/no-v-model-argument': 'off',
       },
     },
     {
@@ -105,6 +104,16 @@ module.exports = {
       files: '*.yaml',
     },
   ],
-  root: true,
-  rules: generalJS,
+  settings: {
+    'svelte3/typescript': () => require('typescript'),
+  },
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2020,
+  },
+  env: {
+    browser: true,
+    es2017: true,
+    node: true,
+  },
 }

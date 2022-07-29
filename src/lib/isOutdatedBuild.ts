@@ -1,5 +1,5 @@
 import { intersection, isArray } from 'lodash-es'
-import { type Versions } from '@/lib/dataTypes'
+import type { Versions } from '$lib/dataTypes'
 
 const isOutdatedBuild = (versions: string[] | undefined, currentVersion: string, allVersions: Versions[], checkCompatibility = true) => {
   // If build version list has current => not outdated, else check for compatible

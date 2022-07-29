@@ -58,7 +58,7 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.local
+.env.*
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -86,11 +86,17 @@ dist-api
 # Service worker
 sw.*
 
-# macOS
-.DS_Store
-
 # Vim swap files
 *.swp
 
 # PNPM config
 .npmrc
+
+
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+!.env.example
+.vercel
