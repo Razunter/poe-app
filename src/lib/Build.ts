@@ -1,9 +1,9 @@
 export class Build {
-  public title = ''
+  public title: string
 
-  public url = ''
+  public url: string
 
-  public video = ''
+  public video?: string
 
   public videothumb?: {
     '480w'?: string;
@@ -11,46 +11,32 @@ export class Build {
     '1280w'?: string;
   }
 
-  public versions: string[] = []
+  public versions?: string[]
 
   public author?: string
 
   public pin?: boolean
 
-  public skip?: boolean
+  public skip: boolean | undefined
 
-  public constructor ({
-    title,
-    url,
-    video,
-    videothumb,
-    versions,
-    author,
-    pin,
-    skip,
-  }: Partial<Build>) {
-    if (title) {
-      this.title = title
+  public constructor (buildObject: Partial<Build>) {
+    this.title = buildObject.title ?? ''
+    this.url = buildObject.url ?? ''
+
+    if (buildObject.video) {
+      this.video = buildObject.video
     }
 
-    if (url) {
-      this.url = url
+    if (typeof buildObject.videothumb === 'object' && Object.keys(buildObject.videothumb).length > 0) {
+      this.videothumb = buildObject.videothumb
     }
 
-    if (video) {
-      this.video = video
+    if (buildObject.versions) {
+      this.versions = buildObject.versions
     }
 
-    if (typeof videothumb === 'object' && Object.keys(videothumb).length > 0) {
-      this.videothumb = videothumb
-    }
-
-    if (versions) {
-      this.versions = versions
-    }
-
-    this.author = author
-    this.pin = pin
-    this.skip = skip
+    this.author = buildObject.author
+    this.pin = buildObject.pin
+    this.skip = buildObject.skip
   }
 }

@@ -12,11 +12,23 @@ export class BuildsData {
 
   public currentVersion: string
 
+  public authors: Set<string>
+
   public constructor (data: BuildsData) {
     this.buildList = data.buildList
     this.types = data.types
     this.versions = data.versions
     this.currentVersion = data.currentVersion
+    this.authors = new Set()
+
+    for (const buildCat of this.buildList) {
+      for (let build of buildCat.builds) {
+        build = new Build(build)
+        if (build.author) {
+          this.authors.add(build.author)
+        }
+      }
+    }
   }
 
   private readonly getBuildTypeBuilds = (buildList: BuildList, buildType: string) => {
