@@ -1,5 +1,8 @@
 <script lang='ts'>
-  import Counter from '$lib/Counter.svelte';
+  import type { BuildsData } from '$lib/BuildsData'
+
+  export let data
+  export let buildData = data.buildData as BuildsData
 </script>
 
 <svelte:head>
@@ -9,6 +12,7 @@
 
 <template>
     <section>Buildlist</section>
+    {buildData.currentVersion}
 </template>
 
 <style>

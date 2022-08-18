@@ -1,6 +1,6 @@
 import axios from 'axios'
 import compareVersions from 'compare-versions'
-import type { Build } from '$lib/Build'
+import { Build } from '$lib/Build'
 import isOutdatedBuild from '$lib/isOutdatedBuild'
 
 export class BuildsData {
@@ -12,8 +12,7 @@ export class BuildsData {
 
   public currentVersion: string
 
-  public constructor () {
-    const data = axios.get('http://localhost:3601/load')
+  public constructor (data: BuildsData) {
     this.buildList = data.buildList
     this.types = data.types
     this.versions = data.versions
@@ -175,8 +174,6 @@ export class BuildsData {
           }
         }
       }
-
-      this.versions[this.versions.length - 1].skiprf = !rfBuilds.has(this.currentVersion)
 
       const buildListFull = {
         currentVersion: this.currentVersion,
