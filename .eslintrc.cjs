@@ -89,10 +89,19 @@ module.exports = {
         project: './tsconfig.json',
         sourceType: 'module',
         tsconfigRootDir: './',
+        extraFileExtensions: ['.svelte'],
       },
       rules: {
         ...generalJS,
         ...ts,
+        'import/first': 'off',
+        'import/no-duplicates': 'off',
+        'import/no-mutable-exports': 'off',
+        'import/no-unresolved': 'off',
+        'import/prefer-default-export': 'off',
+      },
+      settings: {
+        'svelte3/typescript': () => require('typescript'),
       },
     },
     {
@@ -104,9 +113,6 @@ module.exports = {
       files: '*.yaml',
     },
   ],
-  settings: {
-    'svelte3/typescript': () => require('typescript'),
-  },
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 2020,
