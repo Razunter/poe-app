@@ -1,13 +1,13 @@
 // eslint-disable-next-line canonical/filename-match-exported
 import { readFileSync, existsSync } from 'node:fs'
 import path from 'path'
+import type { RequestHandler } from './$types'
 // eslint-disable-next-line import/no-unassigned-import
 // import 'dotenv/config'
 
 const jsonPath = path.normalize(import.meta.env.VITE_jsonPath as string)
 
-/** @type {import('@sveltejs/kit').RequestHandler} */
-export const GET = async () => {
+export const GET: RequestHandler = async () => {
   let versionsData
   let errorText = ''
   let buildsData
@@ -34,9 +34,6 @@ export const GET = async () => {
 
   const response = {
     status: 200,
-    headers: {
-      'access-control-allow-origin': '*',
-    },
     body: {},
   }
 
@@ -49,6 +46,11 @@ export const GET = async () => {
     response.body = Object.assign(buildsData, versionsData)
   }
 
-  throw new Error("@migration task: Migrate this return statement (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292701)");
-  return response
+  return new Response(JSON.stringify(response.body), {
+    status: response.status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      // 'access-control-allow-origin': '*',
+    },
+  })
 }
