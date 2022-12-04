@@ -189,8 +189,7 @@
 
 <script lang="ts">
 import axios from 'axios'
-import compareVersions from 'compare-versions'
-import { intersection, isArray } from 'lodash-es'
+import { compareVersions } from 'compare-versions'
 import { firstBy } from 'thenby'
 import { type Ref, defineComponent, ref } from 'vue'
 import { useToast } from 'vue-toastification'

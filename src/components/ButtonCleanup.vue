@@ -1,13 +1,13 @@
 <template>
   <q-item
-    v-ripple
-    clickable
-    @click="cleanupBuilds"
+      v-ripple
+      clickable
+      @click="cleanupBuilds"
   >
     <q-item-section avatar>
       <q-icon
-        color="white"
-        name="mdi-delete"
+          color="white"
+          name="mdi-delete"
       />
     </q-item-section>
     <q-item-section>
@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts">
-import { type PropType, defineComponent } from 'vue'
-import { type BuildList, Versions } from '@/lib/dataTypes'
+import {type PropType, defineComponent} from 'vue'
+import {type Versions, type BuildList} from '@/lib/dataTypes'
 import isOutdatedBuild from '@/lib/isOutdatedBuild'
 
 const versionInt = (versionString: string) => {
@@ -52,14 +52,14 @@ export default defineComponent({
     },
   },
   methods: {
-    outdated (versions: string[] | undefined) {
+    outdated(versions: string[] | undefined) {
       if (versions) {
         return isOutdatedBuild(versions, this.currentVersion, this.allVersions)
       } else {
         return true
       }
     },
-    cleanupBuilds () {
+    cleanupBuilds() {
       for (const buildCat of this.buildList) {
         for (const [index, build] of buildCat.builds.entries()) {
           if (this.outdated(build.versions)) {

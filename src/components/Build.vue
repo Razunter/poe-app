@@ -151,7 +151,7 @@
 </template>
 
 <script lang="ts">
-import compareVersions from 'compare-versions'
+import { compareVersions } from 'compare-versions'
 import { type PropType, defineComponent, ref } from 'vue'
 import { type BuildClass } from '@/lib/BuildClass'
 import { useStore } from '@/store/authors'
@@ -173,15 +173,14 @@ export default defineComponent({
     },
   },
   setup (props) {
-    const buildData = props.build
     const store = useStore()
     const authors = Array.from(store.authors) as string[]
     const authorsFiltered = ref(authors)
 
     return {
       showDialog: ref(false),
-      buildData: ref(buildData),
-      newBuildData: ref({ ...buildData }),
+      buildData: ref(props.build),
+      newBuildData: ref({ ...props.build }),
       authors,
       authorsFiltered,
 
