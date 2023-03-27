@@ -1,6 +1,7 @@
 <script lang='ts'>
   import Header from '$components/LayoutHeader.svelte';
   import Sidebar from '$components/Sidebar.svelte';
+  import '$css/app.scss'
 </script>
 
 <div class='page'>
@@ -14,8 +15,6 @@
 </div>
 
 <style lang='scss' global>
-  @use "../css/app" as *;
-
   .page {
     display: grid;
     grid-template-columns: 18rem auto;
