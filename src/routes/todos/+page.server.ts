@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	};
 };
 
-export const POST: Action = async ({ request, locals }) => {
+export const _POST: Action = async ({ request, locals }) => {
 	const form = await request.formData();
 
 	await api('POST', `todos/${locals.userid}`, {
@@ -45,7 +45,7 @@ const redirect = {
 	}
 };
 
-export const PATCH: Action = async ({ request, locals }) => {
+export const _PATCH: Action = async ({ request, locals }) => {
 	const form = await request.formData();
 
 	await api('PATCH', `todos/${locals.userid}/${form.get('uid')}`, {
@@ -57,7 +57,7 @@ export const PATCH: Action = async ({ request, locals }) => {
 	return redirect;
 };
 
-export const DELETE: Action = async ({ request, locals }) => {
+export const _DELETE: Action = async ({ request, locals }) => {
 	const form = await request.formData();
 
 	await api('DELETE', `todos/${locals.userid}/${form.get('uid')}`);

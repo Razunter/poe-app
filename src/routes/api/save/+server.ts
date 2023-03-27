@@ -1,14 +1,15 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import fs from 'fs'
-import path from 'path'
+import { env } from '$env/dynamic/private'
 import bodyParser from 'body-parser'
 import express from 'express'
+import fs from 'fs'
+import path from 'path'
 // eslint-disable-next-line import/no-unassigned-import
 // import 'dotenv/config'
 
 const app = express()
 
-const jsonPath = path.normalize(import.meta.env.VITE_jsonPath as string)
+const jsonPath = path.normalize(env.jsonPath as string)
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({

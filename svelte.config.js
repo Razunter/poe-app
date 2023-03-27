@@ -1,8 +1,7 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import adapter from '@sveltejs/adapter-auto'
+import adapter from '@sveltejs/adapter-node'
 import preprocess from 'svelte-preprocess'
 
-// eslint-disable-next-line jsdoc/valid-types
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -38,11 +37,6 @@ const config = {
     alias: {
       $components: 'src/components',
       $css: 'src/css',
-    },
-
-    // Override http methods in the Todo forms
-    methodOverride: {
-      allowed: ['PATCH', 'DELETE'],
     },
   },
 }

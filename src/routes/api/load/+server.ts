@@ -1,22 +1,23 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import { readFileSync, existsSync } from 'node:fs'
+import type {RequestHandler} from './$types'
+import {error as kitError} from '@sveltejs/kit'
+import {env} from '$env/dynamic/private'
+import {existsSync, readFileSync} from 'node:fs'
 import path from 'path'
-import type { RequestHandler } from './$types'
 // eslint-disable-next-line import/no-unassigned-import
 // import 'dotenv/config'
 
-const jsonPath = path.normalize(import.meta.env.VITE_jsonPath as string)
+const jsonPath = path.normalize(env.jsonPath)
 
 export const GET: RequestHandler = async () => {
   let versionsData
-  let errorText = ''
   let buildsData
 
   try {
     const versionsDataRaw = readFileSync(path.join(jsonPath, 'versions.json'), 'utf8')
     versionsData = JSON.parse(versionsDataRaw)
   } catch (error) {
-    errorText = String(error)
+    throw kitError(500, String(error))
   }
 
   let file = path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-')) + '.json'
@@ -29,7 +30,7 @@ export const GET: RequestHandler = async () => {
     const dataRaw = readFileSync(file, 'utf8')
     buildsData = JSON.parse(dataRaw)
   } catch (error) {
-    errorText += String(error)
+    throw kitError(500, String(error))
   }
 
   const response = {
@@ -37,14 +38,7 @@ export const GET: RequestHandler = async () => {
     body: {},
   }
 
-  if (errorText) {
-    response.status = 500
-    response.body = {
-      errorText,
-    }
-  } else {
-    response.body = Object.assign(buildsData, versionsData)
-  }
+  response.body = Object.assign(buildsData, versionsData)
 
   return new Response(JSON.stringify(response.body), {
     status: response.status,

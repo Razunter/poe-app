@@ -1,7 +1,7 @@
-import axios from 'axios'
-import compareVersions from 'compare-versions'
-import { Build } from '$lib/Build'
+// import axios from 'axios'
+import {Build} from '$lib/Build'
 import isOutdatedBuild from '$lib/isOutdatedBuild'
+import {compareVersions} from 'compare-versions'
 
 export class BuildsData {
   public buildList: BuildList
@@ -14,7 +14,7 @@ export class BuildsData {
 
   public authors: Set<string>
 
-  public constructor (data: BuildsData) {
+  public constructor(data: BuildsData) {
     this.buildList = data.buildList
     this.types = data.types
     this.versions = data.versions
@@ -38,7 +38,7 @@ export class BuildsData {
     return buildList[buildTypeIndex].builds
   }
 
-  public sortBuilds () {
+  public sortBuilds() {
     for (const buildcat of this.buildList) {
       buildcat.builds.sort(
         /* eslint-disable @typescript-eslint/indent */
@@ -150,7 +150,7 @@ export class BuildsData {
     }
   }
 
-  public save () {
+  public save() {
     // Validation Start
     const duplicateUrls: Array<[string, string]> = []
     let flatBuildList: Build[] = []

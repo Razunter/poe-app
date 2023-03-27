@@ -1,6 +1,7 @@
 // eslint-disable-next-line canonical/filename-match-exported
 import { ApiClient } from '@twurple/api'
-import { ClientCredentialsAuthProvider } from '@twurple/auth'
+import { AppTokenAuthProvider } from '@twurple/auth'
+import { env } from '$env/dynamic/private'
 import { Router } from 'express'
 // eslint-disable-next-line import/no-unassigned-import
 // import 'dotenv/config'
@@ -8,7 +9,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.use('/twitch', (request, response) => {
-  const TwitchAuthProvider = new ClientCredentialsAuthProvider(import.meta.env.VITE_TwitchClientId as string, import.meta.env.VITE_TwitchClientSecret as string)
+  const TwitchAuthProvider = new AppTokenAuthProvider(env.TwitchClientId, env.TwitchClientSecret)
   const TwitchApiClient = new ApiClient({ authProvider: TwitchAuthProvider })
 
   if (request.query.videoID) {
