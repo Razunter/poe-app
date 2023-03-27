@@ -39,6 +39,9 @@ const generalJS = {
       objects: 'always-multiline',
     },
   ],
+  'import/no-unassigned-import': [2, {allow: ['**/*.css', '**/*.scss', '**/*.postcss']}],
+  // disable Prettier rules
+  'prettier/prettier': ['off']
 }
 
 const ts = {
@@ -49,6 +52,11 @@ const ts = {
   'canonical/import-specifier-newline': 'off',
   'canonical/prefer-inline-type-import': 'off',
   '@typescript-eslint/no-extra-parens': 'off',
+  '@typescript-eslint/space-before-function-paren': ["error", {
+    "anonymous": "always",
+    "named": "never",
+    "asyncArrow": "always"
+  }],
   '@typescript-eslint/member-delimiter-style': [
     'error',
     {
@@ -63,7 +71,7 @@ const ts = {
 module.exports = {
   root: true,
   extends: [
-    'canonical',
+    'canonical/auto',
   ],
   rules: generalJS,
   ignorePatterns: ['*.cjs', '*.config.mjs', '**/node_modules/**'],
@@ -108,14 +116,6 @@ module.exports = {
           'svelte': 'always'
         }],
       },
-    },
-    {
-      extends: ['canonical/json'],
-      files: '*.json',
-    },
-    {
-      extends: ['canonical/yaml'],
-      files: '*.yaml',
     },
   ],
   parserOptions: {

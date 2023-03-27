@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import Header from '$components/LayoutHeader.svelte';
-  import Sidebar from '$components/Sidebar.svelte';
+  import Header from '$components/LayoutHeader.svelte'
+  import Sidebar from '$components/Sidebar.svelte'
   import '$css/app.scss'
 </script>
 
