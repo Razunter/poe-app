@@ -17,39 +17,16 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     // "verbatimModuleSyntax": true,
-    // TODO: remove once SvelteKit updates
     "jsx": "preserve",
     "incremental": true,
     "sourceMap": true,
     "downlevelIteration": true,
-    "baseUrl": "./",
-    "types": [
-      "@types/node"
-    ],
-    "paths": {
-      "$lib": [
-        "src/lib"
-      ],
-      "$lib/*": [
-        "src/lib/*"
-      ],
-      "$components": [
-        "src/components"
-      ],
-      "$components/*": [
-        "src/components/*"
-      ],
-      "$css": [
-        "src/css"
-      ],
-      "$css/*": [
-        "src/$css/*"
-      ]
-    }
+    "baseUrl": "."
   },
   "include": [
     "*.ts",
     "src/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    ".svelte-kit/ambient.d.ts"
   ]
 }

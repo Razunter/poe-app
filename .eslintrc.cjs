@@ -62,17 +62,22 @@ const ts = {
 
 module.exports = {
   root: true,
+  extends: [
+    'canonical',
+  ],
   rules: generalJS,
-  extends: ['canonical'],
-  ignorePatterns: ['*.cjs'],
+  ignorePatterns: ['*.cjs', '*.config.mjs', '**/node_modules/**'],
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+  },
   overrides: [
     {
       extends: ['canonical/typescript'],
       files: ['*.ts'],
       parserOptions: {
         project: './tsconfig.json',
-        sourceType: 'module',
-        tsconfigRootDir: './',
       },
       rules: {
         ...generalJS,
@@ -83,25 +88,25 @@ module.exports = {
       files: ['*.svelte'],
       processor: 'svelte3/svelte3',
       extends: ['canonical/typescript'],
-      plugins: ['svelte3', '@typescript-eslint'],
+      plugins: ['canonical', 'svelte3', '@typescript-eslint'],
       parserOptions: {
         parser: '@typescript-eslint/parser',
         project: './tsconfig.json',
-        sourceType: 'module',
-        tsconfigRootDir: './',
         extraFileExtensions: ['.svelte'],
       },
       rules: {
         ...generalJS,
         ...ts,
+        'no-multiple-empty-lines': 0,
         'import/first': 'off',
         'import/no-duplicates': 'off',
         'import/no-mutable-exports': 'off',
         'import/no-unresolved': 'off',
         'import/prefer-default-export': 'off',
-      },
-      settings: {
-        'svelte3/typescript': () => require('typescript'),
+        'import/extensions': [2, 'never', {
+          'svg': 'always',
+          'svelte': 'always'
+        }],
       },
     },
     {
@@ -115,11 +120,9 @@ module.exports = {
   ],
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2020,
+    ecmaVersion: 2020
   },
-  env: {
-    browser: true,
-    es2017: true,
-    node: true,
+  settings: {
+    'svelte3/typescript': () => require('typescript'),
   },
 }
