@@ -3,8 +3,6 @@ import { ApiClient } from '@twurple/api'
 import { AppTokenAuthProvider } from '@twurple/auth'
 import { env } from '$env/dynamic/private'
 import { Router } from 'express'
-// eslint-disable-next-line import/no-unassigned-import
-// import 'dotenv/config'
 
 const router = Router()
 

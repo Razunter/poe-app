@@ -1,47 +1,43 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import { env } from '$env/dynamic/private'
-import bodyParser from 'body-parser'
-import express from 'express'
-import fs from 'fs'
-import path from 'path'
-// eslint-disable-next-line import/no-unassigned-import
-// import 'dotenv/config'
+import type {RequestHandler} from '@sveltejs/kit'
+import {error as kitError} from '@sveltejs/kit'
+import {JSON_PATH} from '$env/static/private'
+import type {BuildsDataType} from '$lib/BuildsData'
+import fs from 'node:fs'
+import path from 'node:path'
 
-const app = express()
+const jsonPath = path.normalize(JSON_PATH)
 
-const jsonPath = path.normalize(env.jsonPath as string)
+export const POST = (async ({request}) => {
+  const data = await request.json() as BuildsDataType
 
-app.use(bodyParser.json({ limit: '50mb' }))
-app.use(bodyParser.urlencoded({
-  limit: '50mb',
-  extended: true,
-}))
-app.use(express.json())
+  if (!data) {
+    throw kitError(400, 'No data received')
+  }
 
-app.post('/save', (request, response) => {
-  const data = request.body
   const versionsData = {
     currentVersion: data.currentVersion,
     versions: data.versions,
   }
-  delete data.currentVersion
-  delete data.versions
+
+  const finalData: Partial<BuildsDataType> = structuredClone(data)
+  delete finalData.currentVersion
+  delete finalData.versions
 
   // Write versions
-  fs.writeFile(path.join(jsonPath, 'versions.json'), JSON.stringify(versionsData, null, 2), (error) => {
-    if (error) {
-      response.send('Error: ' + error.message)
-    }
-  })
+  try {
+    await Promise.all([
+      fs.promises.writeFile(path.join(jsonPath, 'versions.json'), JSON.stringify(versionsData, null, 2)),
 
-  // Write data
-  fs.writeFile(path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-') + '.json'), JSON.stringify(data, null, 2), (error) => {
-    if (error) {
-      response.send('Error: ' + error.message)
-    }
-  })
+      // Write data
+      fs.promises.writeFile(
+        path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-') + '.json'),
+        JSON.stringify(finalData, null, 2),
+      ),
+    ])
+  } catch (error) {
+    throw kitError(500, 'Error: ' + (error instanceof Error ? error.message : error))
+  }
 
-  response.send('file saved successfully')
-})
-
-export default app
+  return new Response('file saved successfully')
+}) satisfies RequestHandler

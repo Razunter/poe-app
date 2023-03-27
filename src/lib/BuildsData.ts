@@ -1,20 +1,22 @@
-// import axios from 'axios'
+import {env} from '$env/dynamic/public'
 import {Build} from '$lib/Build'
-import isOutdatedBuild from '$lib/isOutdatedBuild'
+import axios, {AxiosError} from 'axios'
 import {compareVersions} from 'compare-versions'
+import intersect from 'just-intersect'
+import {writable} from 'svelte/store'
 
-export class BuildsData {
+export class BuildsDataClass {
   public buildList: BuildList
 
   public types: BuildTypes
 
-  public versions: Versions
+  public versions: Versions[]
 
   public currentVersion: string
 
   public authors: Set<string>
 
-  public constructor(data: BuildsData) {
+  public constructor(data: BuildsDataType) {
     this.buildList = data.buildList
     this.types = data.types
     this.versions = data.versions
@@ -38,15 +40,31 @@ export class BuildsData {
     return buildList[buildTypeIndex].builds
   }
 
+  private readonly isOutdatedBuild = (versions: string[], checkCompatibility = true) => {
+    // If build version list has current => not outdated, else check for compatible
+    if (versions.includes(this.currentVersion)) {
+      return false
+    } else if (checkCompatibility) {
+      const versionData = this.versions.find((version) => {
+        return version.version === this.currentVersion
+      })
+      if (versionData?.compatible && Array.isArray(versionData.compatible)) {
+        return intersect(versionData.compatible, versions).length === 0
+      }
+    }
+
+    return true
+  }
+
   public sortBuilds() {
-    for (const buildcat of this.buildList) {
-      buildcat.builds.sort(
+    for (const buildCategory of this.buildList) {
+      buildCategory.builds.sort(
         /* eslint-disable @typescript-eslint/indent */
         (buildA, buildB) => {
           // Outdated
-          if (isOutdatedBuild(buildA.versions, this.currentVersion, this.versions) && !isOutdatedBuild(buildB.versions, this.currentVersion, this.versions)) {
+          if (this.isOutdatedBuild(buildA.versions) && !this.isOutdatedBuild(buildB.versions)) {
             return 1
-          } else if (!isOutdatedBuild(buildA.versions, this.currentVersion, this.versions) && isOutdatedBuild(buildB.versions, this.currentVersion, this.versions)) {
+          } else if (!this.isOutdatedBuild(buildA.versions) && this.isOutdatedBuild(buildB.versions)) {
             return -1
           }
 
@@ -55,7 +73,7 @@ export class BuildsData {
       )
 
       // eslint-disable-next-line complexity
-      buildcat.builds.sort((buildA, buildB) => {
+      buildCategory.builds.sort((buildA, buildB) => {
         // Author name
         if (buildA.author && buildB.author) {
           if (buildA.author && buildB.author) {
@@ -86,7 +104,7 @@ export class BuildsData {
 
         return 0
       })
-      buildcat.builds.sort((buildA, buildB) => {
+      buildCategory.builds.sort((buildA, buildB) => {
         // Sort pinned
         if (buildA.pin && !buildB.pin) {
           return -1
@@ -96,7 +114,7 @@ export class BuildsData {
 
         return 0
       })
-      buildcat.builds.sort((buildA, buildB) => {
+      buildCategory.builds.sort((buildA, buildB) => {
         if (buildA.videothumb && buildB.videothumb) {
           if (buildA.videothumb['640w'] && !buildB.videothumb['640w']) {
             return -1
@@ -109,7 +127,7 @@ export class BuildsData {
       })
       /* eslint-enable @typescript-eslint/indent */
 
-      buildcat.builds.sort((buildA: Build, buildB: Build) => {
+      buildCategory.builds.sort((buildA: Build, buildB: Build) => {
         // Sort by url type
         if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
           return -1
@@ -119,7 +137,7 @@ export class BuildsData {
 
         return 0
       })
-      buildcat.builds.sort((buildA: Build, buildB: Build) => {
+      buildCategory.builds.sort((buildA: Build, buildB: Build) => {
         // Sort by YouTube url
         if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
           return 1
@@ -130,14 +148,14 @@ export class BuildsData {
         return 0
       })
 
-      buildcat.builds.sort((buildA: Build, buildB: Build) => {
+      buildCategory.builds.sort((buildA: Build, buildB: Build) => {
         // Sort by version
         const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
         const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
         return compareVersions(buildBVersionLatest, buildAVersionLatest)
       })
 
-      buildcat.builds.sort((buildA: Build, buildB: Build) => {
+      buildCategory.builds.sort((buildA: Build, buildB: Build) => {
         // Sort by video
         if (buildA.video && !buildB.video) {
           return -1
@@ -150,7 +168,7 @@ export class BuildsData {
     }
   }
 
-  public save() {
+  public async save() {
     // Validation Start
     const duplicateUrls: Array<[string, string]> = []
     let flatBuildList: Build[] = []
@@ -170,46 +188,50 @@ export class BuildsData {
     }
     // Validation End
 
-    if (duplicateUrls.length === 0) {
-      // Cleanup & skipRF
-      const buildListFinal = Array.from(this.buildList)
-      const rfBuilds = new Set()
-
-      for (const [catIndex, buildCat] of buildListFinal.entries()) {
-        for (const [buildIndex, build] of buildCat.builds.entries()) {
-          buildListFinal[catIndex].builds[buildIndex] = new Build(build)
-
-          if (buildCat.type === 'rf') {
-            for (const version of build.versions) {
-              rfBuilds.add(version)
-            }
-          }
-        }
-      }
-
-      const buildListFull = {
-        currentVersion: this.currentVersion,
-        versions: this.versions,
-        types: this.types,
-        buildList: buildListFinal,
-      }
-
-      // await axios.post('http://localhost:3601/save', buildListFull)
-      //   .then((response: { data: string }) => {
-      //     this.toast.success(response.data, { timeout: 3_000 })
-      //   })
-      //   .catch((error) => {
-      //     this.toast.error(error.message)
-      //   })
-    } else {
+    if (duplicateUrls.length > 0) {
       let log = ''
       for (const element of duplicateUrls) {
         log += '<p>' + element.join('<br />') + '</p>'
       }
 
+      console.log(log)
       // this.toast.error('<strong>Duplicate URLs detected:</strong><br />' + log, {
       //   timeout: false,
       // })
+
+      return
+    }
+
+    // Cleanup & skipRF
+    const buildListFinal = Array.from(this.buildList)
+    const rfBuilds = new Set()
+
+    for (const [catIndex, buildCat] of buildListFinal.entries()) {
+      for (const [buildIndex, build] of buildCat.builds.entries()) {
+        buildListFinal[catIndex].builds[buildIndex] = new Build(build)
+
+        if (buildCat.type === 'rf' && build.versions) {
+          for (const version of build.versions) {
+            rfBuilds.add(version)
+          }
+        }
+      }
+    }
+
+    const buildListFull = {
+      currentVersion: this.currentVersion,
+      versions: this.versions,
+      types: this.types,
+      buildList: buildListFinal,
+    }
+
+    try {
+      const response = await axios.post(`${env.PUBLIC_ORIGIN}:${env.PUBLIC_PORT}/api/save`, buildListFull)
+      // show toast
+      console.log(response.data)
+    } catch (error) {
+      // show error toast
+      console.error(error instanceof AxiosError ? error.message : error)
     }
   }
 }
@@ -233,3 +255,13 @@ export type Versions = {
   note?: string;
   compatible?: string[];
 }
+
+export type BuildsDataType = {
+  buildList: BuildList;
+  types: BuildTypes;
+  versions: Versions[];
+  currentVersion: string;
+  authors: Set<string>;
+}
+
+export const BuildsData = writable<BuildsDataClass>()

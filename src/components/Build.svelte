@@ -2,9 +2,8 @@
   import pinIcon from '@iconify/icons-mdi/pin'
   import Icon from '@iconify/svelte'
   import type {Build} from '$lib/Build'
-  import type {BuildsData} from '$lib/BuildsData'
+  import type {BuildsDataType} from '$lib/BuildsData'
   import {compareVersions} from 'compare-versions'
-  import {isArray} from 'lodash-es'
   import {
     Button,
     Modal,
@@ -20,8 +19,8 @@
 
   export let buildData: Build
   let newBuildData = {...buildData}
-  export let authors: BuildsData['authors']
-  const authorsCopy = isArray(authors) ? Array.from(authors) as string[] : []
+  export let authors: BuildsDataType['authors']
+  const authorsCopy = Array.isArray(authors) ? Array.from(authors) as string[] : []
   let authorsFiltered
   let outdated
 

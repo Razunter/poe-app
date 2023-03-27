@@ -1,13 +1,11 @@
 // eslint-disable-next-line canonical/filename-match-exported
 import type {RequestHandler} from './$types'
 import {error as kitError} from '@sveltejs/kit'
-import {env} from '$env/dynamic/private'
+import {JSON_PATH} from '$env/static/private'
 import {existsSync, readFileSync} from 'node:fs'
-import path from 'path'
-// eslint-disable-next-line import/no-unassigned-import
-// import 'dotenv/config'
+import path from 'node:path'
 
-const jsonPath = path.normalize(env.jsonPath)
+const jsonPath = path.normalize(JSON_PATH)
 
 export const GET: RequestHandler = async () => {
   let versionsData

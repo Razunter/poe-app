@@ -1,9 +1,10 @@
 <script lang='ts'>
   import Build from '$components/Build.svelte'
-  import { BuildsData } from '$lib/BuildsData'
+  import type { BuildsDataType} from '$lib/BuildsData'
+  import {BuildsData, BuildsDataClass} from '$lib/BuildsData'
 
-  export let data
-  export let buildsData = new BuildsData(data.buildData)
+  export let data: {buildData: BuildsDataType}
+  $BuildsData = new BuildsDataClass(data.buildData)
 </script>
 
 <svelte:head>
@@ -13,10 +14,10 @@
 
 <template>
     <section>Buildlist</section>
-    {#each buildsData.buildList as buildCategory}
+    {#each $BuildsData.buildList as buildCategory}
         <h2>{buildCategory.type}</h2>
         {#each buildCategory.builds as build}
-            <Build buildData={build} authors={buildsData.authors} />
+            <Build buildData={build} authors={$BuildsData.authors} />
         {/each}
     {/each}
 </template>

@@ -11,7 +11,7 @@ export class Build {
     '1280w'?: string;
   }
 
-  public versions?: string[]
+  public versions: string[]
 
   public author?: string
 
@@ -19,7 +19,7 @@ export class Build {
 
   public skip: boolean | undefined
 
-  public constructor (buildObject: Partial<Build>) {
+  public constructor(buildObject: Partial<Build>) {
     this.title = buildObject.title ?? ''
     this.url = buildObject.url ?? ''
 
@@ -31,9 +31,7 @@ export class Build {
       this.videothumb = buildObject.videothumb
     }
 
-    if (buildObject.versions) {
-      this.versions = buildObject.versions
-    }
+    this.versions = buildObject.versions ?? []
 
     this.author = buildObject.author
     this.pin = buildObject.pin
