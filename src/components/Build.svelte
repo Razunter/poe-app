@@ -48,7 +48,7 @@
 >
   <div class="build__image rounded-start">
     {#if buildData.videothumb?.['480w']}
-      <img src="{buildData.videothumb['480w']}" class="img-fluid rounded-start" alt="{buildData.title}">
+      <img src="{buildData.videothumb['480w']}" class="img-fluid rounded-start" alt="{buildData.title}" loading="lazy">
     {/if}
   </div>
   <h4 class='build__title card-title'>
