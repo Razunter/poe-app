@@ -4,6 +4,23 @@ import type {BuildsDataType} from '$lib/BuildsData'
 
 export const prerender = true
 
+const dataMaintenance = (data: BuildsDataType) => {
+  const supportedVersions = data.versions.map((version) => {
+    return version.version
+  })
+
+  // remove outdated versions
+  for (const buildCategory of data.buildList) {
+    for (const build of buildCategory.builds) {
+      build.versions = build.versions.filter((version) => {
+        return supportedVersions.includes(version)
+      })
+    }
+  }
+
+  return data
+}
+
 export const load: PageLoad = async ({fetch}) => {
   const response = await fetch('/api/load', {
     method: 'GET',
@@ -21,6 +38,6 @@ export const load: PageLoad = async ({fetch}) => {
   }
 
   return {
-    buildData: data,
+    buildData: dataMaintenance(data as BuildsDataType),
   }
 }
