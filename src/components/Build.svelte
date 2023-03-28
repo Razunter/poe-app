@@ -5,6 +5,8 @@
   import type {Build} from '$lib/Build'
   import {Button} from 'sveltestrap'
   import BuildEditModal from '$components/BuildEditModal.svelte'
+  import deleteIcon from '@iconify/icons-mdi/delete'
+  import {BuildsData} from "$lib/BuildsData";
 
   export let buildData: Build
   let outdated
@@ -12,7 +14,30 @@
   let editModalOpen = false
 
   const deleteBuild = () => {
+    if (!window.confirm('Confirm deletion?')) {
+      return
+    }
 
+    let buildIndex = -1
+    let categoryIndex: string | undefined
+
+    for (const buildCategory in $BuildsData.buildList) {
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      buildIndex = $BuildsData.buildList[buildCategory].builds.findIndex((build) => {
+        return build.url === buildData.url
+      })
+
+      if (buildIndex >= 0) {
+        categoryIndex = buildCategory
+        break
+      }
+    }
+
+    if (buildIndex >= 0 && categoryIndex) {
+      $BuildsData.buildList[categoryIndex].builds.splice(buildIndex, 1)
+      // trigger update
+      $BuildsData = $BuildsData
+    }
   }
 </script>
 
@@ -53,7 +78,7 @@
     {/if}
   </div>
   <div class="build__buttons">
-    <Button color='primary' size='lg' class='w-100' on:click={() => {
+    <Button color='primary' size='lg' on:click={() => {
       editModalOpen = true
     }}>
       <span class='btn-icon__inner'>
@@ -61,7 +86,12 @@
         <span class='btn-icon__text'>Edit</span>
       </span>
     </Button>
-    <Button color='danger' on:click={deleteBuild}>Delete</Button>
+    <Button color='danger' size='lg' class='text-white' on:click={deleteBuild}>
+      <span class='btn-icon__inner'>
+        <Icon icon={deleteIcon} class='btn-icon__icon'/>
+        <span class='btn-icon__text'>Delete</span>
+      </span>
+    </Button>
   </div>
 </article>
 {#if editModalOpen}

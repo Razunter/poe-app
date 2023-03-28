@@ -3,9 +3,10 @@
   import {BuildsData} from '$lib/BuildsData'
   import {Build} from '$lib/Build'
   import pencilIcon from '@iconify/icons-mdi/pencil'
+  import contentSave from '@iconify/icons-mdi/content-save'
+  import backupRestore from '@iconify/icons-mdi/backup-restore'
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
-  import {tick} from "svelte";
 
   // Unique build url for editing
   export let buildUrl: string | undefined
@@ -150,9 +151,17 @@
     </form>
   </ModalBody>
   <ModalFooter>
-    <Button type="submit" color='primary' on:click={formSubmit}>Save</Button>
-    <Button color='warning' on:click={init}>
-      Reset
+    <Button type="submit" color='primary' on:click={formSubmit}>
+      <span class='btn-icon__inner'>
+        <Icon icon={contentSave} class='btn-icon__icon'/>
+        <span class='btn-icon__text'>Save</span>
+      </span>
+    </Button>
+    <Button type="reset" color='warning' on:click={init}>
+      <span class='btn-icon__inner'>
+        <Icon icon={backupRestore} class='btn-icon__icon'/>
+        <span class='btn-icon__text'>Reset</span>
+      </span>
     </Button>
   </ModalFooter>
 </Modal>
