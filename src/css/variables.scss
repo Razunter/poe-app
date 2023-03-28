@@ -23,6 +23,11 @@ $form-check-input-bg: #3640b3;
 
 $link-color: #0068ff;
 
+$modal-content-color:               $card-color;
+$modal-content-bg:                  $card-bg;
+
+$btn-close-color: $white;
+
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/maps";

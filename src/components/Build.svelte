@@ -3,46 +3,13 @@
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import Icon from '@iconify/svelte'
   import type {Build} from '$lib/Build'
-  import type {BuildsDataType} from '$lib/BuildsData'
-  import {compareVersions} from 'compare-versions'
-  import {
-    Button,
-    // Modal,
-    // ModalBody,
-    // ModalFooter,
-    // ModalHeader,
-  } from 'sveltestrap'
-
-  let modalOpen = false
-  const modalToggle = () => {
-    return (modalOpen = !modalOpen)
-  }
+  import {Button} from 'sveltestrap'
+  import BuildEditModal from '$components/BuildEditModal.svelte'
 
   export let buildData: Build
-  let newBuildData = {...buildData}
-  export let authors: BuildsDataType['authors']
-  const authorsCopy = Array.isArray(authors) ? Array.from(authors) as string[] : []
-  let authorsFiltered
   let outdated
 
-  const filterFunction = (value: string) => {
-    const needle = value.toLowerCase()
-    authorsFiltered = authorsCopy.filter((filterValue: string) => {
-      return filterValue.toLowerCase()
-        .includes(needle)
-    })
-  }
-
-  const formSubmit = () => {
-    newBuildData.versions.sort(compareVersions)
-    buildData = {...newBuildData}
-    modalOpen = false
-  }
-
-  const formCancel = () => {
-    newBuildData = {...buildData}
-    modalOpen = false
-  }
+  let editModalOpen = false
 </script>
 
 <article
@@ -82,89 +49,19 @@
     {/if}
   </div>
   <div class="build__buttons">
-    <Button color='primary' size='lg' class='w-100'>
+    <Button color='primary' size='lg' class='w-100' on:click={() => {
+      editModalOpen = true
+    }}>
       <span class='btn-icon__inner'>
         <Icon icon={pencilIcon} class='btn-icon__icon'/>
         <span class='btn-icon__text'>Edit</span>
       </span>
     </Button>
   </div>
-  <!--  <Modal isOpen={modalOpen} {modalToggle}>-->
-  <!--    <ModalHeader {modalToggle}>Edit build</ModalHeader>-->
-  <!--    <ModalBody>-->
-  <!--          <q-form-->
-  <!--            @submit.prevent="formSubmit"-->
-  <!--          >-->
-  <!--            <q-input-->
-  <!--              v-model.trim="newBuildData.title"-->
-  <!--              label="Build title"-->
-  <!--              required-->
-  <!--              autocomplete="false"-->
-  <!--              bottom-slots-->
-  <!--              :rules="[val => !!val || 'Field is required']"-->
-  <!--            />-->
-  <!--            <q-select-->
-  <!--              v-model="newBuildData.author"-->
-  <!--              :options="authorsFiltered"-->
-  <!--              clearable-->
-  <!--              use-input-->
-  <!--              new-value-mode="add-unique"-->
-  <!--              input-debounce="0"-->
-  <!--              label="Author"-->
-  <!--              bottom-slots-->
-  <!--              @filter="filterFn"-->
-  <!--            />-->
-  <!--            <q-input-->
-  <!--              v-model.trim="newBuildData.url"-->
-  <!--              label="Build URL"-->
-  <!--              required-->
-  <!--              bottom-slots-->
-  <!--              :rules="[val => !!val || 'Field is required']"-->
-  <!--            >-->
-  <!--              <template #append>-->
-  <!--                <q-btn-->
-  <!--                  :href="newBuildData.url"-->
-  <!--                  icon="mdi-open-in-new"-->
-  <!--                  target="_blank"-->
-  <!--                  flat-->
-  <!--                  type="a"-->
-  <!--                />-->
-  <!--              </template>-->
-  <!--            </q-input>-->
-  <!--            <q-input-->
-  <!--              v-model.trim="newBuildData.video"-->
-  <!--              label="Video URL"-->
-  <!--              bottom-slots-->
-  <!--            />-->
-  <!--            <q-select-->
-  <!--              v-model="newBuildData.versions"-->
-  <!--              label="Supported versions"-->
-  <!--              new-value-mode="toggle"-->
-  <!--              placeholder="Add version..."-->
-  <!--              multiple-->
-  <!--              required-->
-  <!--              use-input-->
-  <!--              use-chips-->
-  <!--              bottom-slots-->
-  <!--              :rules="[val => !!val || 'Field is required']"-->
-  <!--            />-->
-  <!--            <q-toggle-->
-  <!--              v-model="newBuildData.pin"-->
-  <!--              label="Pin build"-->
-  <!--              bottom-slots-->
-  <!--            />-->
-  <!--            <q-toggle-->
-  <!--              v-model="newBuildData.skip"-->
-  <!--              label="Skip build"-->
-  <!--            />-->
-  <!--          </q-form>-->
-  <!--    </ModalBody>-->
-  <!--    <ModalFooter>-->
-  <!--      <Button color='primary' on:click={formSubmit}>Save</Button>-->
-  <!--      <Button color='danger' on:click={formCancel}>Delete</Button>-->
-  <!--    </ModalFooter>-->
-  <!--  </Modal>-->
 </article>
+{#if editModalOpen}
+  <BuildEditModal bind:modalOpen={editModalOpen} buildUrl={buildData.url}/>
+{/if}
 
 <style lang='scss'>
   .btn-unstyled {

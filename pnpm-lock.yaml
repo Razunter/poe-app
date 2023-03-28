@@ -22,6 +22,9 @@ dependencies:
   just-intersect:
     specifier: ^4.3.0
     version: 4.3.0
+  svelecte:
+    specifier: ^3.15.3
+    version: 3.15.3
   sveltestrap:
     specifier: ^5.10.0
     version: 5.10.0(svelte@3.57.0)
@@ -5920,6 +5923,12 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /svelecte@3.15.3:
+    resolution: {integrity: sha512-70gfzzh6BFjdSkPZGMVnyrpRU3qkw+FpsDQty1GIs2IngGfukRslunR9r4Y1Ai8rGYCUnld4+63PZJljzHGxsQ==}
+    dependencies:
+      svelte-tiny-virtual-list: 2.0.5
+    dev: false
+
   /svelte-check@3.1.4(@babel/core@7.21.3)(postcss-load-config@4.0.1)(postcss@8.4.21)(sass@1.60.0)(svelte@3.57.0):
     resolution: {integrity: sha512-25Lb46ZS4IK/XpBMe4IBMrtYf23V8alqBX+szXoccb7uM0D2Wqq5rMRzYBONZnFVuU1bQG3R50lyIT5eRewv2g==}
     hasBin: true
@@ -6057,6 +6066,10 @@ packages:
       svelte: 3.57.0
       typescript: 5.0.2
     dev: true
+
+  /svelte-tiny-virtual-list@2.0.5:
+    resolution: {integrity: sha512-xg9ckb8UeeIme4/5qlwCrl2QNmUZ8SCQYZn3Ji83cUsoASqRNy3KWjpmNmzYvPDqCHSZjruBBsoB7t5hwuzw5g==}
+    dev: false
 
   /svelte@3.57.0:
     resolution: {integrity: sha512-WMXEvF+RtAaclw0t3bPDTUe19pplMlfyKDsixbHQYgCWi9+O9VN0kXU1OppzrB9gPAvz4NALuoca2LfW2bOjTQ==}

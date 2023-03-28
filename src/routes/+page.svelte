@@ -24,10 +24,12 @@
   </div>
   <div class="card-body">
     {#each $BuildsData.buildList as buildCategory}
-      <h3 class="display-6 icon-wrap"><Icon class="icon" icon={circleSmall} /><span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
-      <hr />
+      <h3 class="display-6 icon-wrap">
+        <Icon class="icon" icon={circleSmall}/>
+        <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
+      <hr/>
       {#each buildCategory.builds as build}
-        <Build buildData={build} authors={$BuildsData.authors}/>
+        <Build buildData={build} />
       {/each}
     {/each}
   </div>

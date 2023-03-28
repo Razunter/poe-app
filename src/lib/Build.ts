@@ -19,22 +19,22 @@ export class Build {
 
   public skip: boolean | undefined
 
-  public constructor(buildObject: Partial<Build>) {
-    this.title = buildObject.title ?? ''
-    this.url = buildObject.url ?? ''
+  public constructor(buildObject?: Partial<Build>) {
+    this.title = buildObject?.title ?? ''
+    this.url = buildObject?.url ?? ''
 
-    if (buildObject.video) {
+    if (buildObject?.video) {
       this.video = buildObject.video
     }
 
-    if (typeof buildObject.videothumb === 'object' && Object.keys(buildObject.videothumb).length > 0) {
+    if (typeof buildObject?.videothumb === 'object' && Object.keys(buildObject.videothumb).length > 0) {
       this.videothumb = buildObject.videothumb
     }
 
-    this.versions = buildObject.versions ?? []
+    this.versions = buildObject?.versions ?? []
 
-    this.author = buildObject.author
-    this.pin = buildObject.pin
-    this.skip = buildObject.skip
+    this.author = buildObject?.author
+    this.pin = buildObject?.pin
+    this.skip = buildObject?.skip
   }
 }
