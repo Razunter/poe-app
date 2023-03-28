@@ -5,7 +5,7 @@
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
-  import {onMount} from 'svelte'
+  import {tick} from "svelte";
 
   // Unique build url for editing
   export let buildUrl: string | undefined
@@ -25,27 +25,77 @@
     return version.version
   })
 
-  let build: Build
+  const buildTypesArray: Array<{ value: string, label: string }> = []
+  for (const typeKey in $BuildsData.types) {
+    buildTypesArray.push({value: typeKey, label: $BuildsData.types[typeKey]})
+  }
 
-  if (buildUrl) {
-    for (const buildCategory of $BuildsData.buildList) {
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
-      const foundBuild = buildCategory.builds.find((build_) => {
-        return build_.url === buildUrl
+  let build: Build
+  let buildOriginalType: string | undefined
+  let buildType: string = $BuildsData.types[0]
+
+  const init = async () => {
+    if (buildUrl) {
+      for (const buildCategory of $BuildsData.buildList) {
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        const existingBuild = buildCategory.builds.find((build_) => {
+          return build_.url === buildUrl
+        })
+
+        if (existingBuild) {
+          build = new Build(existingBuild)
+          buildType = buildCategory.type
+          buildOriginalType = buildCategory.type
+          break
+        }
+      }
+    } else {
+      build = new Build()
+    }
+  }
+
+  // On open
+  init()
+
+  const saveBuild = () => {
+    if (buildOriginalType && buildOriginalType !== buildType) {
+      const buildOriginalTypeIndex = $BuildsData.buildList.findIndex((buildCategory) => {
+        return buildCategory.type === buildOriginalType
       })
 
-      if (foundBuild) {
-        build = structuredClone(foundBuild)
-        break
-      }
+      const buildOriginalIndex = $BuildsData.buildList[buildOriginalTypeIndex].builds.findIndex((build_) => {
+        return build_.url === build.url
+      })
+
+      $BuildsData.buildList[buildOriginalTypeIndex].builds.splice(buildOriginalIndex, 1)
     }
-  } else {
-    build = new Build()
+
+    const buildTypeIndex = $BuildsData.buildList.findIndex((buildCategory) => {
+      return buildCategory.type === buildType
+    })
+
+    // not found, add new
+    if (buildTypeIndex === -1) {
+      $BuildsData.buildList.push({
+        type: buildType,
+        builds: [build],
+      })
+    }
+
+    const foundBuildIndex = $BuildsData.buildList[buildTypeIndex].builds.findIndex((build_) => {
+      return build_.url === build.url
+    })
+
+    if (foundBuildIndex >= 0) {
+      $BuildsData.buildList[buildTypeIndex].builds[foundBuildIndex] = build
+    } else {
+      // not found, add new
+      $BuildsData.buildList[buildTypeIndex].builds.push(build)
+    }
   }
 
   const formSubmit = () => {
-    // newBuildData.versions.sort(compareVersions)
-    // buildData = {...newBuildData}
+    saveBuild()
     modalOpen = false
   }
 </script>
@@ -57,6 +107,13 @@
   </ModalHeader>
   <ModalBody>
     <form on:submit|preventDefault={formSubmit}>
+      <FormGroup>
+        <Label for="editBuildType">Type</Label>
+        <Svelecte inputId="editBuildType" class="svelecte--dark"
+                  options={buildTypesArray}
+                  bind:value={buildType}
+        />
+      </FormGroup>
       <FormGroup>
         <Label for="editBuildTitle">Title</Label>
         <Input id="editBuildTitle" required bind:value="{build.title}"/>
@@ -85,16 +142,17 @@
         />
       </FormGroup>
       <FormGroup>
-        <Input id="pinBuild" type="switch" label="Pin build" bind:value={build.pin} />
+        <Input id="pinBuild" type="switch" label="Pin build" bind:checked={build.pin}/>
       </FormGroup>
       <FormGroup>
-        <Input id="skipBuild" type="switch" label="Skip build" bind:value={build.skip} />
+        <Input id="skipBuild" type="switch" label="Skip build" bind:checked={build.skip}/>
       </FormGroup>
     </form>
   </ModalBody>
   <ModalFooter>
-    <Button color='primary' on:click={formSubmit}>Save</Button>
-    <Button color='warning' on:click={() => {}}>Reset</Button>
-    <Button color='danger' on:click={() => {}}>Delete</Button>
+    <Button type="submit" color='primary' on:click={formSubmit}>Save</Button>
+    <Button color='warning' on:click={init}>
+      Reset
+    </Button>
   </ModalFooter>
 </Modal>

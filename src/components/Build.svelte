@@ -10,6 +10,10 @@
   let outdated
 
   let editModalOpen = false
+
+  const deleteBuild = () => {
+
+  }
 </script>
 
 <article
@@ -41,7 +45,7 @@
       <span class="build_videothumb--{size}"
             class:text-success={buildData.videothumb?.hasOwnProperty(size)}>{size}</span>
     {/each}
-    <span class="build__pinned" class:active={buildData.pin}>
+    <span class="build__pinned" class:text-success={buildData.pin}>
          <Icon icon={pinIcon}/>
     </span>
     {#if buildData.skip}
@@ -57,6 +61,7 @@
         <span class='btn-icon__text'>Edit</span>
       </span>
     </Button>
+    <Button color='danger' on:click={deleteBuild}>Delete</Button>
   </div>
 </article>
 {#if editModalOpen}
