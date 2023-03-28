@@ -1,0 +1,18 @@
+.btn-icon {
+  &__inner {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__text {
+    display: block;
+  }
+
+  &__icon {
+    margin-right: .4em;
+    display: block;
+    width: 1.2em;
+    height: 1.2em;
+  }
+}

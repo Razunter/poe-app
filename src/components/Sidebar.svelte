@@ -17,26 +17,26 @@
         <h4 class='card-title mb-0'>Actions</h4>
       </div>
       <div class='card-body'>
-        <Button color='light' size='lg' class='w-100'>
-          <span class='button-inner'><Icon icon={cogIcon} class='icon-inline'/><span class='button-text'>Settings</span></span>
+        <Button color='light' size='lg' class='btn-icon w-100'>
+          <span class='btn-icon__inner'><Icon icon={cogIcon} class='btn-icon__icon'/><span class='btn-icon__text'>Settings</span></span>
         </Button>
         <hr/>
         <div class='d-grid gap-2'>
-          <Button color='primary' size='lg'>
-                        <span class='button-inner'><Icon icon={accessPointNetwork} class='icon-inline'/><span
-                          class='button-text'>Sync builds</span></span>
+          <Button color='primary' size='lg' class="btn-icon">
+                        <span class='btn-icon__inner'><Icon icon={accessPointNetwork} class='btn-icon__icon'/><span
+                          class='btn-icon__text'>Sync builds</span></span>
           </Button>
-          <Button color='primary' size='lg'>
-                        <span class='button-inner'><Icon icon={sortAscending} class='icon-inline'/><span
-                          class='button-text'>Sort builds</span></span>
+          <Button color='primary' size='lg' class="btn-icon">
+                        <span class='btn-icon__inner'><Icon icon={sortAscending} class='btn-icon__icon'/><span
+                          class='btn-icon__text'>Sort builds</span></span>
           </Button>
-          <Button color='primary' size='lg'>
-                        <span class='button-inner'><Icon icon={rotate3dVariant} class='icon-inline'/><span
-                          class='button-text'>Randomize order</span></span>
+          <Button color='primary' size='lg' class="btn-icon">
+                        <span class='btn-icon__inner'><Icon icon={rotate3dVariant} class='btn-icon__icon'/><span
+                          class='btn-icon__text'>Randomize order</span></span>
           </Button>
-          <Button color='primary' size='lg'>
-                        <span class='button-inner'><Icon icon={vacuumIcon} class='icon-inline'/><span
-                          class='button-text'>Cleanup outdated</span></span>
+          <Button color='primary' size='lg' class="btn-icon">
+                        <span class='btn-icon__inner'><Icon icon={vacuumIcon} class='btn-icon__icon'/><span
+                          class='btn-icon__text'>Cleanup outdated</span></span>
           </Button>
           <hr/>
           <Button
@@ -45,8 +45,8 @@
             on:click={() => {
             $BuildsData.save()
           }}>
-                        <span class='button-inner'><Icon icon={contentSave} class='icon-inline'/><span
-                          class='button-text'>Save</span></span>
+                        <span class='btn-icon__inner'><Icon icon={contentSave} class='btn-icon__icon'/><span
+                          class='btn-icon__text'>Save</span></span>
           </Button>
         </div>
       </div>
@@ -65,23 +65,6 @@
   .sidebar {
     padding-left: var(--bs-grid-gutter-width-half);
     padding-right: var(--bs-grid-gutter-width-half);
-  }
-
-  .button-inner {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    .button-text {
-      display: block;
-    }
-  }
-
-  :global .icon-inline {
-    margin-right: .4em;
-    display: block;
-    width: 1.2em;
-    height: 1.2em;
   }
 
   .form-check {
