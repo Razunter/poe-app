@@ -10,11 +10,14 @@
   import {BuildsData} from '$lib/BuildsData'
   import {getContext} from 'svelte'
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
+  import SettingsModal from '$components/SettingsModal.svelte'
 
   const filters = getContext('filters')
 
   let className: string
   export {className as class}
+
+  let showSettings = false
 </script>
 
 <SidebarWrap class={className}>
@@ -22,10 +25,17 @@
     <h4 class='card-title mb-0'>Actions</h4>
   </div>
   <div class='card-body'>
-    <Button color='light' size='lg' class='btn-icon w-100'>
+    <Button color='light' size='lg' class='btn-icon w-100'
+            on:click={() => {
+              showSettings = true
+            }}
+    >
       <span class='btn-icon__inner'><Icon icon={cogIcon} class='btn-icon__icon'/><span
         class='btn-icon__text'>Settings</span></span>
     </Button>
+    {#if showSettings}
+      <SettingsModal bind:modalOpen={showSettings}/>
+    {/if}
     <hr/>
     <div class='d-grid gap-2'>
       <Button color='primary' size='lg' class="btn-icon">
