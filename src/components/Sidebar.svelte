@@ -8,6 +8,9 @@
   import vacuumIcon from '@iconify/icons-mdi/vacuum'
   import contentSave from '@iconify/icons-mdi/content-save'
   import {BuildsData} from '$lib/BuildsData'
+  import {getContext} from 'svelte'
+
+  const filters = getContext('filters')
 </script>
 
 <template>
@@ -52,10 +55,10 @@
       </div>
       <div class='card-footer'>
         <h4 class='card-title'>Filters:</h4>
-        <div class='form-check form-switch'>
-          <label class='form-check-label' for='filterOutdated'>Show outdated</label>
-          <input placeholder='' class='form-check-input' id='filterOutdated' type='checkbox' name='' value=''>
-        </div>
+        <FormGroup>
+          <Input id="showOutdated" type="switch" label="Show outdated" bind:checked={$filters.showOutdated}/>
+          {$filters.showOutdated}
+        </FormGroup>
       </div>
     </div>
   </aside>
@@ -65,18 +68,5 @@
   .sidebar {
     padding-left: var(--bs-grid-gutter-width-half);
     padding-right: var(--bs-grid-gutter-width-half);
-  }
-
-  .form-check {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 0;
-
-    .form-check-input {
-      cursor: pointer;
-      float: none;
-      margin-left: 0;
-    }
   }
 </style>

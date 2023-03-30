@@ -2,8 +2,6 @@ import type {PageLoad} from './$types'
 import {error as kitError} from '@sveltejs/kit'
 import type {BuildsDataType} from '$lib/BuildsData'
 
-export const prerender = true
-
 const dataMaintenance = (data: BuildsDataType) => {
   const supportedVersions = data.versions.map((version) => {
     return version.version

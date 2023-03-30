@@ -4,9 +4,12 @@
   import {BuildsData, BuildsDataClass} from '$lib/BuildsData'
   import Icon from '@iconify/svelte'
   import circleSmall from '@iconify/icons-mdi/circle-small'
+  import {getContext} from 'svelte'
 
   export let data: { buildData: BuildsDataType }
   $BuildsData = new BuildsDataClass(data.buildData)
+
+  const filters = getContext('filters')
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -29,7 +32,11 @@
         <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
       <hr/>
       {#each buildCategory.builds as build}
-        <Build buildData={build} />
+        {#if $filters.showOutdated && BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}
+          <Build buildData={build} outdated={true}/>
+        {:else}
+          <Build buildData={build}/>
+        {/if}
       {/each}
     {/each}
   </div>

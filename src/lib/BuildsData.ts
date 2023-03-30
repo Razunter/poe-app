@@ -40,13 +40,13 @@ export class BuildsDataClass {
     return buildList[buildTypeIndex].builds
   }
 
-  private readonly isOutdatedBuild = (versions: string[], checkCompatibility = true) => {
+  public static readonly isOutdatedBuild = (data: BuildsDataType, versions: string[], checkCompatibility = true) => {
     // If build version list has current => not outdated, else check for compatible
-    if (versions.includes(this.currentVersion)) {
+    if (versions.includes(data.currentVersion)) {
       return false
     } else if (checkCompatibility) {
-      const versionData = this.versions.find((version) => {
-        return version.version === this.currentVersion
+      const versionData = data.versions.find((version) => {
+        return version.version === data.currentVersion
       })
       if (versionData?.compatible && Array.isArray(versionData.compatible)) {
         return intersect(versionData.compatible, versions).length === 0
@@ -62,9 +62,9 @@ export class BuildsDataClass {
         /* eslint-disable @typescript-eslint/indent */
         (buildA, buildB) => {
           // Outdated
-          if (this.isOutdatedBuild(buildA.versions) && !this.isOutdatedBuild(buildB.versions)) {
+          if (BuildsDataClass.isOutdatedBuild(this, buildA.versions) && !BuildsDataClass.isOutdatedBuild(this, buildB.versions)) {
             return 1
-          } else if (!this.isOutdatedBuild(buildA.versions) && this.isOutdatedBuild(buildB.versions)) {
+          } else if (!BuildsDataClass.isOutdatedBuild(this, buildA.versions) && BuildsDataClass.isOutdatedBuild(this, buildB.versions)) {
             return -1
           }
 

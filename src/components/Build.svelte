@@ -6,10 +6,10 @@
   import {Button} from 'sveltestrap'
   import BuildEditModal from '$components/BuildEditModal.svelte'
   import deleteIcon from '@iconify/icons-mdi/delete'
-  import {BuildsData} from "$lib/BuildsData";
+  import {BuildsData} from '$lib/BuildsData'
 
   export let buildData: Build
-  let outdated
+  export let outdated = false
 
   let editModalOpen = false
 

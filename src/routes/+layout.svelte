@@ -2,16 +2,24 @@
   import Header from '$components/LayoutHeader.svelte'
   import Sidebar from '$components/Sidebar.svelte'
   import '$css/app.scss'
+  import {setContext} from 'svelte'
+  import {writable} from 'svelte/store'
+
+  const filters = writable<{ showOutdated: boolean }>({
+    showOutdated: false,
+  })
+
+  setContext('filters', filters)
 </script>
 
 <div class='page'>
-    <Header />
+  <Header/>
 
-    <Sidebar />
+  <Sidebar/>
 
-    <main>
-        <slot />
-    </main>
+  <main>
+    <slot/>
+  </main>
 </div>
 
 <style lang='scss' global>
