@@ -1,9 +1,10 @@
 <script lang='ts'>
   import Header from '$components/LayoutHeader.svelte'
-  import Sidebar from '$components/Sidebar.svelte'
+  import Sidebar from '$components/Sidebar/Sidebar.svelte'
   import '$css/app.scss'
   import {setContext} from 'svelte'
   import {writable} from 'svelte/store'
+  import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
 
   const filters = writable<{ showOutdated: boolean }>({
     showOutdated: false,
@@ -13,33 +14,40 @@
 </script>
 
 <div class='page'>
-  <Header/>
+  <Header class="page__header" />
 
-  <Sidebar/>
+  <Sidebar class="sidebar--left" />
 
-  <main>
+  <main class="page__main">
     <slot/>
   </main>
+
+  <SidebarLog class="sidebar--right" />
 </div>
 
-<style lang='scss' global>
+<style lang='scss'>
   .page {
     display: grid;
-    grid-template-columns: 18rem auto;
+    grid-template-columns: 18rem auto 18rem;
     padding-top: .5rem;
 
-    > header {
-      grid-column: 1 / span 2;
+    :global(.page__header) {
+      grid-column: 1 / span 3;
       grid-row: 1;
     }
 
-    > .sidebar {
+    :global(.page__main) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    :global(.sidebar--left) {
       grid-column: 1;
       grid-row: 2;
     }
 
-    > main {
-      grid-column: 2;
+    :global(.sidebar--right) {
+      grid-column: 3;
       grid-row: 2;
     }
   }
