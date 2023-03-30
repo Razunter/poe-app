@@ -94,9 +94,9 @@ module.exports = {
     },
     {
       files: ['*.svelte'],
-      processor: 'svelte3/svelte3',
-      extends: ['canonical/typescript'],
-      plugins: ['canonical', 'svelte3', '@typescript-eslint'],
+      extends: ['canonical/typescript', 'plugin:svelte/recommended'],
+      plugins: ['canonical', '@typescript-eslint'],
+      parser: 'svelte-eslint-parser',
       parserOptions: {
         parser: '@typescript-eslint/parser',
         project: './tsconfig.json',
@@ -121,8 +121,5 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 2020
-  },
-  settings: {
-    'svelte3/typescript': () => require('typescript'),
   },
 }

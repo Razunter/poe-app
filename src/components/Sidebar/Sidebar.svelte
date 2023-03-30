@@ -49,8 +49,8 @@
         color='success'
         size='lg'
         on:click={() => {
-            $BuildsData.save()
-          }}>
+          $BuildsData.save()
+        }}>
                         <span class='btn-icon__inner'><Icon icon={contentSave} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Save</span></span>
       </Button>
