@@ -57,7 +57,6 @@
         <h4 class='card-title'>Filters:</h4>
         <FormGroup>
           <Input id="showOutdated" type="switch" label="Show outdated" bind:checked={$filters.showOutdated}/>
-          {$filters.showOutdated}
         </FormGroup>
       </div>
     </div>
@@ -68,5 +67,12 @@
   .sidebar {
     padding-left: var(--bs-grid-gutter-width-half);
     padding-right: var(--bs-grid-gutter-width-half);
+    position: relative;
+  }
+
+  .card {
+    position: sticky;
+    top: 0;
+    left: 0;
   }
 </style>
