@@ -55,6 +55,7 @@
     "compare-versions": "^5.0.3",
     "dotenv": "^16.0.3",
     "just-intersect": "^4.3.0",
+    "just-shuffle": "^4.2.0",
     "svelecte": "^3.15.3",
     "sveltestrap": "^5.10.0"
   }

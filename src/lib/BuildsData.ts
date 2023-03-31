@@ -4,6 +4,7 @@ import type {LogType} from '$lib/stores'
 import axios, {AxiosError} from 'axios'
 import {compareVersions} from 'compare-versions'
 import intersect from 'just-intersect'
+import shuffle from 'just-shuffle'
 import {getContext} from 'svelte'
 import type {Writable} from 'svelte/store'
 
@@ -168,6 +169,14 @@ export class BuildsDataClass {
         return 0
       })
     }
+  }
+
+  public randomizeOrder = () => {
+    for (const buildcat of this.buildList) {
+      buildcat.builds = shuffle(buildcat.builds)
+    }
+
+    return this
   }
 
   // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.

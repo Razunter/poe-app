@@ -48,7 +48,9 @@
                         <span class='btn-icon__inner'><Icon icon={sortAscending} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Sort builds</span></span>
       </Button>
-      <Button color='primary' size='lg' class="btn-icon">
+      <Button color='primary' size='lg' class="btn-icon" on:click={() => {
+        $BuildsData = $BuildsData.randomizeOrder()
+      }}>
                         <span class='btn-icon__inner'><Icon icon={rotate3dVariant} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Randomize order</span></span>
       </Button>
