@@ -33,10 +33,9 @@
         <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
       <hr/>
       {#each buildCategory.builds as build}
-        {#if $filters.showOutdated && BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}
-          <Build buildData={build} outdated={true}/>
-        {:else}
-          <Build buildData={build}/>
+        {@const outdated = BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}
+        {#if !outdated || ($filters.showOutdated && outdated) }
+          <Build buildData={build} outdated={outdated}/>
         {/if}
       {/each}
     {/each}
