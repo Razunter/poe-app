@@ -5,12 +5,18 @@
   import {setContext} from 'svelte'
   import {writable} from 'svelte/store'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
+  import {log} from '$lib/stores'
 
   const filters = writable<{ showOutdated: boolean }>({
     showOutdated: false,
   })
 
   setContext('filters', filters)
+
+  $log = new Map()
+  $log.set(new Date(), 'Init')
+
+  setContext('log', log)
 </script>
 
 <div class='page'>

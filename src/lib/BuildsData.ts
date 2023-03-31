@@ -1,8 +1,11 @@
 import {env} from '$env/dynamic/public'
 import {Build} from '$lib/Build'
+import type {LogType} from '$lib/stores'
 import axios, {AxiosError} from 'axios'
 import {compareVersions} from 'compare-versions'
 import intersect from 'just-intersect'
+import {getContext} from 'svelte'
+import type {Writable} from 'svelte/store'
 import {writable} from 'svelte/store'
 
 export class BuildsDataClass {
@@ -169,6 +172,8 @@ export class BuildsDataClass {
   }
 
   public async save() {
+    const log = getContext<Writable<LogType>>('log')
+
     // Validation Start
     const duplicateUrls: Array<[string, string]> = []
     let flatBuildList: Build[] = []
@@ -176,7 +181,7 @@ export class BuildsDataClass {
       flatBuildList = flatBuildList.concat(buildCat.builds)
     }
 
-    const map = new Set()
+    const map = new Set<string>()
     for (const build of flatBuildList) {
       if (map.has(build.url)) {
         const originalItem = Array.from(map.keys())
@@ -189,32 +194,31 @@ export class BuildsDataClass {
     // Validation End
 
     if (duplicateUrls.length > 0) {
-      let log = ''
+      let logMessage = ''
       for (const element of duplicateUrls) {
-        log += '<p>' + element.join('<br />') + '</p>'
+        logMessage += '<p>' + element.join('<br />') + '</p>'
       }
 
-      console.log(log)
-      // this.toast.error('<strong>Duplicate URLs detected:</strong><br />' + log, {
-      //   timeout: false,
-      // })
+      log.update((log_) => {
+        return log_.set(new Date(), '<strong>Duplicate URLs detected:</strong><br />' + logMessage)
+      })
 
       return
     }
 
-    // Cleanup & skipRF
+    // Cleanup
     const buildListFinal = Array.from(this.buildList)
-    const rfBuilds = new Set()
+    // const rfBuilds = new Set()
 
     for (const [catIndex, buildCat] of buildListFinal.entries()) {
       for (const [buildIndex, build] of buildCat.builds.entries()) {
         buildListFinal[catIndex].builds[buildIndex] = new Build(build)
 
-        if (buildCat.type === 'rf' && build.versions) {
-          for (const version of build.versions) {
-            rfBuilds.add(version)
-          }
-        }
+        // if (buildCat.type === 'rf' && build.versions) {
+        //   for (const version of build.versions) {
+        //     rfBuilds.add(version)
+        //   }
+        // }
       }
     }
 
@@ -228,10 +232,14 @@ export class BuildsDataClass {
     try {
       const response = await axios.post(`${env.PUBLIC_ORIGIN}:${env.PUBLIC_PORT}/api/save`, buildListFull)
       // show toast
-      console.log(response.data)
+      log.update((log_) => {
+        return log_.set(new Date(), response.data)
+      })
     } catch (error) {
-      // show error toast
-      console.error(error instanceof AxiosError ? error.message : error)
+      const errorMessage = error instanceof AxiosError ? error.message : String(error)
+      log.update((log_) => {
+        return log_.set(new Date(), errorMessage)
+      })
     }
   }
 }
