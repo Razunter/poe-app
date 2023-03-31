@@ -64,10 +64,12 @@ export class BuildsDataClass {
       buildCategory.builds.sort(
         /* eslint-disable @typescript-eslint/indent */
         (buildA, buildB) => {
+          const buildAoutdated = BuildsDataClass.isOutdatedBuild(this, buildA.versions)
+          const buildBoutdated = BuildsDataClass.isOutdatedBuild(this, buildB.versions)
           // Outdated
-          if (BuildsDataClass.isOutdatedBuild(this, buildA.versions) && !BuildsDataClass.isOutdatedBuild(this, buildB.versions)) {
+          if (buildAoutdated && !buildBoutdated) {
             return 1
-          } else if (!BuildsDataClass.isOutdatedBuild(this, buildA.versions) && BuildsDataClass.isOutdatedBuild(this, buildB.versions)) {
+          } else if (!buildAoutdated && buildBoutdated) {
             return -1
           }
 
@@ -169,6 +171,8 @@ export class BuildsDataClass {
         return 0
       })
     }
+
+    return this
   }
 
   public static convertVersionToInt = (versionString: string) => {

@@ -44,7 +44,11 @@
                         <span class='btn-icon__inner'><Icon icon={accessPointNetwork} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Sync builds</span></span>
       </Button>
-      <Button color='primary' size='lg' class="btn-icon">
+      <Button color='primary' size='lg' class="btn-icon"
+              on:click={() => {
+                $BuildsData = $BuildsData.sortBuilds()
+              }}
+      >
                         <span class='btn-icon__inner'><Icon icon={sortAscending} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Sort builds</span></span>
       </Button>
