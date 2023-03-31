@@ -8,6 +8,7 @@
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
   import {getContext} from 'svelte'
+  import {BuildsDataClass} from '$lib/BuildsData'
 
   // Unique build url for editing
   export let buildUrl: string | undefined
@@ -37,6 +38,8 @@
   let build: Build
   let buildOriginalType: string | undefined
   let buildType: string = $BuildsData.types[0]
+  let form: HTMLFormElement
+  let invalidUrl = ''
 
   const init = async () => {
     if (buildUrl) {
@@ -99,6 +102,15 @@
   }
 
   const formSubmit = () => {
+    if (!form.reportValidity()) {
+      return
+    }
+
+    invalidUrl = BuildsDataClass.checkForDuplicates($BuildsData.buildList, build.url)
+    if (invalidUrl) {
+      return
+    }
+
     saveBuild()
     modalOpen = false
   }
@@ -110,7 +122,7 @@
     Edit build
   </ModalHeader>
   <ModalBody>
-    <form on:submit|preventDefault={formSubmit}>
+    <form bind:this={form} on:submit|preventDefault={formSubmit}>
       <FormGroup>
         <Label for="editBuildType">Type</Label>
         <Svelecte inputId="editBuildType" class="svelecte--dark"
@@ -129,7 +141,8 @@
       </FormGroup>
       <FormGroup>
         <Label for="editBuildURL">URL</Label>
-        <Input id="editBuildURL" required bind:value="{build.url}"/>
+        <Input id="editBuildURL" invalid={invalidUrl.length > 0}
+               feedback={invalidUrl ? 'Duplicate URL: ' + invalidUrl : ''} required bind:value="{build.url}"/>
       </FormGroup>
       <FormGroup>
         <Label for="editBuildVideoURL">Video URL</Label>
@@ -154,16 +167,16 @@
     </form>
   </ModalBody>
   <ModalFooter>
+    <Button type="reset" color='warning' on:click={init}>
+          <span class='btn-icon__inner'>
+            <Icon icon={backupRestore} class='btn-icon__icon'/>
+            <span class='btn-icon__text'>Reset</span>
+          </span>
+    </Button>
     <Button type="submit" color='primary' on:click={formSubmit}>
       <span class='btn-icon__inner'>
         <Icon icon={contentSave} class='btn-icon__icon'/>
         <span class='btn-icon__text'>Save</span>
-      </span>
-    </Button>
-    <Button type="reset" color='warning' on:click={init}>
-      <span class='btn-icon__inner'>
-        <Icon icon={backupRestore} class='btn-icon__icon'/>
-        <span class='btn-icon__text'>Reset</span>
       </span>
     </Button>
   </ModalFooter>

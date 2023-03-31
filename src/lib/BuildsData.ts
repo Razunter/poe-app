@@ -170,29 +170,45 @@ export class BuildsDataClass {
     }
   }
 
-  public async save() {
-    const log = getContext<Writable<LogType>>('log')
-
-    // Validation Start
-    const duplicateUrls: Array<[string, string]> = []
+  // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.
+  public static checkForDuplicates(buildList: BuildList): Map<string, string>
+  public static checkForDuplicates(buildList: BuildList, singleUrl: string): string
+  public static checkForDuplicates(buildList: BuildList, singleUrl?: string): Map<string, string> | string {
+    const duplicateUrls: Map<string, string> = new Map()
     let flatBuildList: Build[] = []
-    for (const buildCat of this.buildList) {
+    for (const buildCat of buildList) {
       flatBuildList = flatBuildList.concat(buildCat.builds)
     }
 
-    const map = new Set<string>()
-    for (const build of flatBuildList) {
-      if (map.has(build.url)) {
-        const originalItem = Array.from(map.keys())
-          .indexOf(build.url)
-        duplicateUrls.push([build.title, flatBuildList[originalItem].title])
-      } else {
-        map.add(build.url)
-      }
-    }
-    // Validation End
+    if (typeof singleUrl === 'string') {
+      const foundBuild = flatBuildList.find((build) => {
+        return build.url === singleUrl
+      })
 
-    if (duplicateUrls.length > 0) {
+      return (foundBuild ? foundBuild.title : '')
+    } else {
+      const map = new Set<string>()
+      for (const build of flatBuildList) {
+        if (map.has(build.url)) {
+          const originalItem = Array.from(map.keys())
+            .indexOf(build.url)
+          duplicateUrls.set(build.title, flatBuildList[originalItem].title)
+        } else {
+          map.add(build.url)
+        }
+      }
+
+      return duplicateUrls
+    }
+  }
+
+  public async save() {
+    const log = getContext<Writable<LogType>>('log')
+
+    // Validation
+    const duplicateUrls = BuildsDataClass.checkForDuplicates(this.buildList)
+
+    if (duplicateUrls.size > 0) {
       let logMessage = ''
       for (const element of duplicateUrls) {
         logMessage += '<p>' + element.join('<br />') + '</p>'
