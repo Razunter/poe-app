@@ -54,7 +54,9 @@
                         <span class='btn-icon__inner'><Icon icon={rotate3dVariant} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Randomize order</span></span>
       </Button>
-      <Button color='primary' size='lg' class="btn-icon">
+      <Button color='primary' size='lg' class="btn-icon" on:click={() => {
+        $BuildsData = $BuildsData.cleanup()
+      }}>
                         <span class='btn-icon__inner'><Icon icon={vacuumIcon} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Cleanup outdated</span></span>
       </Button>

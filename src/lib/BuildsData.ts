@@ -171,6 +171,53 @@ export class BuildsDataClass {
     }
   }
 
+  public static convertVersionToInt = (versionString: string) => {
+    const vArray = versionString.split('.')
+    for (const [index, vArrayItem] of vArray.entries()) {
+      if (vArrayItem.length < 2) {
+        vArray[index] = '0' + vArrayItem
+      }
+    }
+
+    return Number.parseInt(vArray.join(''), 10)
+  }
+
+  public cleanup = () => {
+    const log = getContext<Writable<LogType>>('log')
+
+    const count = {
+      YT: 0,
+      Total: 0,
+    }
+
+    for (const buildCat of this.buildList) {
+      for (const [index, build] of buildCat.builds.entries()) {
+        if (BuildsDataClass.isOutdatedBuild(this, build.versions)) {
+          // YT-only
+          if (build.url.includes('youtube.com')) {
+            buildCat.builds.splice(index, 1)
+            count.YT += 1
+            count.Total += 1
+          }
+
+          // Very outdated
+          const lastV = BuildsDataClass.convertVersionToInt(build.versions[build.versions.length - 1])
+          const currentVersionInt = BuildsDataClass.convertVersionToInt(this.currentVersion)
+          if (lastV < currentVersionInt - 2) {
+            buildCat.builds.splice(index, 1)
+            count.Total += 1
+          }
+        }
+      }
+    }
+
+    log.update((log_) => {
+      return log_.set(new Date, `Removed ${count.YT} YouTube builds and ${count.Total} in total`)
+    })
+
+    return this
+  }
+
   public randomizeOrder = () => {
     for (const buildcat of this.buildList) {
       buildcat.builds = shuffle(buildcat.builds)
