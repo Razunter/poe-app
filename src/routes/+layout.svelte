@@ -6,6 +6,7 @@
   import {writable} from 'svelte/store'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
   import {log} from '$lib/stores'
+  import type {BuildsDataClass} from '$lib/BuildsData'
 
   const filters = writable<{ showOutdated: boolean }>({
     showOutdated: false,
@@ -17,6 +18,9 @@
   $log.set(new Date(), 'Init')
 
   setContext('log', log)
+
+  const BuildsData = writable<BuildsDataClass>()
+  setContext('BuildsData', BuildsData)
 </script>
 
 <div class='page'>

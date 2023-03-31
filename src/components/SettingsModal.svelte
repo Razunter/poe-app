@@ -16,13 +16,16 @@
   import plusThick from '@iconify/icons-mdi/plus-thick'
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
-  import {BuildsData} from '$lib/BuildsData'
+  import type {BuildsDataWritable} from '$lib/BuildsData'
   import type {Versions} from '$lib/dataTypes'
   import deleteIcon from '@iconify/icons-mdi/delete'
+  import {getContext} from 'svelte'
 
   export let modalOpen = false
 
   let form: HTMLFormElement
+
+  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
 
   const modalToggle = () => {
     return (modalOpen = !modalOpen)

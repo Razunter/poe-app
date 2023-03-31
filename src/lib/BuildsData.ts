@@ -6,7 +6,6 @@ import {compareVersions} from 'compare-versions'
 import intersect from 'just-intersect'
 import {getContext} from 'svelte'
 import type {Writable} from 'svelte/store'
-import {writable} from 'svelte/store'
 
 export class BuildsDataClass {
   public buildList: BuildList
@@ -208,17 +207,10 @@ export class BuildsDataClass {
 
     // Cleanup
     const buildListFinal = Array.from(this.buildList)
-    // const rfBuilds = new Set()
 
     for (const [catIndex, buildCat] of buildListFinal.entries()) {
       for (const [buildIndex, build] of buildCat.builds.entries()) {
         buildListFinal[catIndex].builds[buildIndex] = new Build(build)
-
-        // if (buildCat.type === 'rf' && build.versions) {
-        //   for (const version of build.versions) {
-        //     rfBuilds.add(version)
-        //   }
-        // }
       }
     }
 
@@ -231,7 +223,6 @@ export class BuildsDataClass {
 
     try {
       const response = await axios.post(`${env.PUBLIC_ORIGIN}:${env.PUBLIC_PORT}/api/save`, buildListFull)
-      // show toast
       log.update((log_) => {
         return log_.set(new Date(), response.data)
       })
@@ -272,4 +263,4 @@ export type BuildsDataType = {
   authors: Set<string>;
 }
 
-export const BuildsData = writable<BuildsDataClass>()
+export type BuildsDataWritable = Writable<BuildsDataClass>

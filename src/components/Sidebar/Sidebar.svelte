@@ -7,7 +7,7 @@
   import rotate3dVariant from '@iconify/icons-mdi/rotate-3d-variant'
   import vacuumIcon from '@iconify/icons-mdi/vacuum'
   import contentSave from '@iconify/icons-mdi/content-save'
-  import {BuildsData} from '$lib/BuildsData'
+  import type {BuildsDataWritable} from '$lib/BuildsData'
   import {getContext} from 'svelte'
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
   import SettingsModal from '$components/SettingsModal.svelte'
@@ -18,6 +18,8 @@
   export {className as class}
 
   let showSettings = false
+
+  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
 </script>
 
 <SidebarWrap class={className}>

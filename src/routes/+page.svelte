@@ -1,12 +1,13 @@
 <script lang='ts'>
   import Build from '$components/Build.svelte'
-  import type {BuildsDataType} from '$lib/BuildsData'
-  import {BuildsData, BuildsDataClass} from '$lib/BuildsData'
+  import type {BuildsDataType, BuildsDataWritable} from '$lib/BuildsData'
+  import {BuildsDataClass} from '$lib/BuildsData'
   import Icon from '@iconify/svelte'
   import circleSmall from '@iconify/icons-mdi/circle-small'
   import {getContext} from 'svelte'
 
   export let data: { buildData: BuildsDataType }
+  const BuildsData: BuildsDataWritable = getContext('BuildsData')
   $BuildsData = new BuildsDataClass(data.buildData)
 
   const filters = getContext('filters')

@@ -6,12 +6,15 @@
   import {Button} from 'sveltestrap'
   import BuildEditModal from '$components/BuildEditModal.svelte'
   import deleteIcon from '@iconify/icons-mdi/delete'
-  import {BuildsData} from '$lib/BuildsData'
+  import type {BuildsDataWritable} from '$lib/BuildsData'
+  import {getContext} from 'svelte'
 
   export let buildData: Build
   export let outdated = false
 
   let editModalOpen = false
+
+  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
 
   const deleteBuild = () => {
     if (!window.confirm('Confirm deletion?')) {

@@ -1,17 +1,20 @@
 <script lang="ts">
   import {Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader} from 'sveltestrap'
-  import {BuildsData} from '$lib/BuildsData'
+  import type {BuildsDataWritable} from '$lib/BuildsData'
   import {Build} from '$lib/Build'
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import contentSave from '@iconify/icons-mdi/content-save'
   import backupRestore from '@iconify/icons-mdi/backup-restore'
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
+  import {getContext} from 'svelte'
 
   // Unique build url for editing
   export let buildUrl: string | undefined
 
   export let modalOpen = false
+
+  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
 
   const modalToggle = () => {
     return (modalOpen = !modalOpen)
