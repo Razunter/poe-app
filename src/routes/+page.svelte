@@ -5,12 +5,13 @@
   import Icon from '@iconify/svelte'
   import circleSmall from '@iconify/icons-mdi/circle-small'
   import {getContext} from 'svelte'
+  import type {Writable} from 'svelte/store'
 
   export let data: { buildData: BuildsDataType }
   const BuildsData: BuildsDataWritable = getContext('BuildsData')
   $BuildsData = new BuildsDataClass(data.buildData)
 
-  const filters = getContext('filters')
+  const showOutdated = getContext<Writable<boolean>>('showOutdated')
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -34,7 +35,7 @@
       <hr/>
       {#each buildCategory.builds as build}
         {@const outdated = BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}
-        {#if !outdated || ($filters.showOutdated && outdated) }
+        {#if !outdated || ($showOutdated && outdated) }
           <Build buildData={build} outdated={outdated}/>
         {/if}
       {/each}

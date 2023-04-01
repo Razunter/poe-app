@@ -33,6 +33,8 @@ $card-cap-bg: #363648;
 $accordion-button-active-bg: lighten($body-bg, 10%);
 $accordion-button-active-color: $white;
 
+$progress-bg: $card-bg;
+
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/maps";

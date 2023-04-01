@@ -1,13 +1,12 @@
 <script lang="ts">
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
   import {getContext} from 'svelte'
-  import type {Writable} from 'svelte/store'
-  import type {LogType} from '$lib/stores'
+  import type {WritableLog} from '$lib/stores'
 
   let className: string
   export {className as class}
 
-  const log = getContext<Writable<LogType>>('log')
+  const log = getContext<WritableLog>('log')
   let logKeys: Array<[Date, string]>
   $: logKeys = Array.from($log)
 </script>

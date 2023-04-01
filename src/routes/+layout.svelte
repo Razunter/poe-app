@@ -5,18 +5,16 @@
   import {setContext} from 'svelte'
   import {writable} from 'svelte/store'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
-  import {log} from '$lib/stores'
+  import {log, progressBar, showOutdated} from '$lib/stores'
   import type {BuildsDataClass} from '$lib/BuildsData'
 
-  const filters = writable<{ showOutdated: boolean }>({
-    showOutdated: false,
-  })
+  $showOutdated = false
+  setContext('showOutdated', showOutdated)
 
-  setContext('filters', filters)
+  $progressBar = 0
+  setContext('progressBar', progressBar)
 
-  $log = new Map()
-  $log.set(new Date(), 'Init')
-
+  $log = new Map([[new Date(), 'Init']])
   setContext('log', log)
 
   const BuildsData = writable<BuildsDataClass>()

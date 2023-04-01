@@ -1,11 +1,10 @@
-import {env} from '$env/dynamic/public'
+import {PUBLIC_ORIGIN} from '$env/static/public'
 import {Build} from '$lib/Build'
-import type {LogType} from '$lib/stores'
+import type {WritableLog} from '$lib/stores'
 import axios, {AxiosError} from 'axios'
 import {compareVersions} from 'compare-versions'
 import intersect from 'just-intersect'
 import shuffle from 'just-shuffle'
-import {getContext} from 'svelte'
 import type {Writable} from 'svelte/store'
 
 export class BuildsDataClass {
@@ -186,9 +185,7 @@ export class BuildsDataClass {
     return Number.parseInt(vArray.join(''), 10)
   }
 
-  public cleanup = () => {
-    const log = getContext<Writable<LogType>>('log')
-
+  public cleanup = (log: WritableLog) => {
     const count = {
       YT: 0,
       Total: 0,
@@ -262,9 +259,153 @@ export class BuildsDataClass {
     }
   }
 
-  public async save() {
-    const log = getContext<Writable<LogType>>('log')
+  public syncBuilds = async (progressBar: Writable<number>, log: WritableLog) => {
+    progressBar.set(0)
 
+    let buildCount = 0
+    const buildPromises = []
+    for (const buildCat of this.buildList) {
+      for (const build of buildCat.builds) {
+        // PoE Forum & PoE-vault
+        const asyncPoEforumvault = async () => {
+          if (BuildsDataClass.isOutdatedBuild(this, build.versions, false)) {
+            if (!build.url.includes('pathofexile.com') && !build.url.includes('poe-vault.com')) {
+              return true
+            }
+
+            await axios.get(`${PUBLIC_ORIGIN}/api/proxy`, {
+              params: {targetUrl: build.url},
+            })
+              .then((response) => {
+                if (typeof response.data === 'string' && response.data.startsWith('Error')) {
+                  log.update((log_) => {
+                    return log_.set(new Date(), response.data + '\n' + build.title)
+                  })
+                } else {
+                  const temporaryDiv = document.createElement('div')
+                  temporaryDiv.innerHTML = response.data.trim()
+                  const title = temporaryDiv.querySelector('title')?.text
+                  temporaryDiv.remove()
+                  if (title) {
+                    const regex = /\d.\d+/gu
+                    const versionNew = regex.exec(title)
+                    regex.lastIndex = 0
+                    if (versionNew === null) {
+                      log.update((log_) => {
+                        return log_.set(new Date(), 'Build or version not found: ' + build.title)
+                      })
+                    } else if (!build.versions.includes(versionNew[0])) {
+                      build.versions.push(versionNew[0])
+                      log.update((log_) => {
+                        return log_.set(new Date(), `Updated: ${build.title}\n${build.url}`)
+                      })
+                    }
+                  }
+                }
+              })
+              .catch((error) => {
+                // handle error
+                log.update((log_) => {
+                  return log_.set(new Date(), 'message' in error ? error.message : String(error) + '\n' + build.title)
+                })
+              })
+          }
+
+          return true
+        }
+
+        // YT
+        const asyncYtTwitch = async () => {
+          if (build.video && build.video.indexOf('youtube.com') > 0) {
+            const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('?v=') + 3))
+
+            if (build.videothumb?.['480w'] && !build.videothumb['480w'].includes(videoID)) {
+              build.videothumb = {}
+            }
+
+            if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
+              await axios.get(`${PUBLIC_ORIGIN}/api/youtube`, {
+                params: {videoID},
+              })
+                .then(({data}) => {
+                  if (data.items.length > 0) {
+                    const thumbs = data.items[0].snippet.thumbnails
+                    build.videothumb = {
+                      '480w': thumbs.high.url,
+                    }
+                    if (thumbs.standard) {
+                      build.videothumb['640w'] = thumbs.standard.url
+                    }
+
+                    if (thumbs.maxres) {
+                      build.videothumb['1280w'] = thumbs.maxres.url
+                    }
+                  } else {
+                    build.video = ''
+                    build.videothumb = {}
+                    log.update((log_) => {
+                      return log_.set(new Date(), 'YouTube video not found: ' + build.title)
+                    })
+                  }
+                })
+                .catch((error) => {
+                  // handle error
+                  log.update((log_) => {
+                    return log_.set(new Date(), ('message' in error ? error.message : String(error)) + '\n' + build.title)
+                  })
+                })
+            }
+          } else if (build.video?.includes('twitch.tv') && !build.videothumb) {
+            const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('/') + 1))
+            const {data: video} = await axios.get(`${PUBLIC_ORIGIN}/api/twitch`, {
+              params: {videoID},
+            })
+            if (!video) {
+              log.update((log_) => {
+                return log_.set(new Date(), 'Twitch video not found: ' + build.video)
+              })
+              return false
+            }
+
+            // eslint-disable-next-line require-atomic-updates
+            build.videothumb = {
+              '480w': video.thumbnailUrl.replace('%{width}', '480')
+                .replace('%{height}', '360'),
+              '640w': video.thumbnailUrl.replace('%{width}', '640')
+                .replace('%{height}', '480'),
+              '1280w': video.thumbnailUrl.replace('%{width}', '1280')
+                .replace('%{height}', '720'),
+            }
+          }
+
+          return true
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        buildPromises.push(new Promise<void>((resolve) => {
+          void Promise.allSettled([asyncPoEforumvault(), asyncYtTwitch()])
+            // eslint-disable-next-line promise/prefer-await-to-then
+            .then(() => {
+              buildCount++
+              progressBar.set(1 - (buildPromises.length - buildCount) / buildPromises.length)
+              resolve()
+            })
+        }))
+      }
+    }
+
+    await Promise.allSettled(buildPromises)
+      .then(() => {
+        progressBar.set(1)
+        log.update((log_) => {
+          return log_.set(new Date(), 'Sync complete')
+        })
+      })
+
+    return this
+  }
+
+  public async save(log: WritableLog) {
     // Validation
     const duplicateUrls = BuildsDataClass.checkForDuplicates(this.buildList)
 
@@ -298,7 +439,7 @@ export class BuildsDataClass {
     }
 
     try {
-      const response = await axios.post(`${env.PUBLIC_ORIGIN}:${env.PUBLIC_PORT}/api/save`, buildListFull)
+      const response = await axios.post(`${PUBLIC_ORIGIN}/api/save`, buildListFull)
       log.update((log_) => {
         return log_.set(new Date(), response.data)
       })

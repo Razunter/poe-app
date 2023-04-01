@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {Button, FormGroup, Input} from 'sveltestrap'
+  import {Button, FormGroup, Input, Progress} from 'sveltestrap'
   import Icon from '@iconify/svelte'
   import cogIcon from '@iconify/icons-mdi/cog'
   import accessPointNetwork from '@iconify/icons-mdi/access-point-network'
@@ -11,8 +11,10 @@
   import {getContext} from 'svelte'
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
   import SettingsModal from '$components/SettingsModal.svelte'
+  import type {Writable} from 'svelte/store'
+  import type {WritableLog} from '$lib/stores'
 
-  const filters = getContext('filters')
+  const showOutdated = getContext<Writable<boolean>>('showOutdated')
 
   let className: string
   export {className as class}
@@ -20,6 +22,8 @@
   let showSettings = false
 
   const BuildsData = getContext<BuildsDataWritable>('BuildsData')
+  const progressBar = getContext<Writable<number>>('progressBar')
+  const log = getContext<WritableLog>('log')
 </script>
 
 <SidebarWrap class={className}>
@@ -40,10 +44,15 @@
     {/if}
     <hr/>
     <div class='d-grid gap-2'>
-      <Button color='primary' size='lg' class="btn-icon">
-                        <span class='btn-icon__inner'><Icon icon={accessPointNetwork} class='btn-icon__icon'/><span
-                          class='btn-icon__text'>Sync builds</span></span>
+      <Button color='primary' size='lg' class="btn-icon"
+              on:click={async () => {
+                $BuildsData = await $BuildsData.syncBuilds(progressBar, log)
+              }}
+      >
+        <span class='btn-icon__inner'><Icon icon={accessPointNetwork} class='btn-icon__icon'/><span
+          class='btn-icon__text'>Sync builds</span></span>
       </Button>
+      <Progress color="primary" value={$progressBar} />
       <Button color='primary' size='lg' class="btn-icon"
               on:click={() => {
                 $BuildsData = $BuildsData.sortBuilds()
@@ -59,7 +68,7 @@
                           class='btn-icon__text'>Randomize order</span></span>
       </Button>
       <Button color='primary' size='lg' class="btn-icon" on:click={() => {
-        $BuildsData = $BuildsData.cleanup()
+        $BuildsData = $BuildsData.cleanup(log)
       }}>
                         <span class='btn-icon__inner'><Icon icon={vacuumIcon} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Cleanup outdated</span></span>
@@ -69,7 +78,7 @@
         color='success'
         size='lg'
         on:click={() => {
-          $BuildsData.save()
+          $BuildsData.save(log)
         }}>
                         <span class='btn-icon__inner'><Icon icon={contentSave} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Save</span></span>
@@ -79,7 +88,7 @@
   <div class='card-footer'>
     <h4 class='card-title'>Filters:</h4>
     <FormGroup>
-      <Input id="showOutdated" type="switch" label="Show outdated" bind:checked={$filters.showOutdated}/>
+      <Input id="showOutdated" type="switch" label="Show outdated" bind:checked={$showOutdated}/>
     </FormGroup>
   </div>
 </SidebarWrap>
