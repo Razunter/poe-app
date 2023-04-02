@@ -102,13 +102,6 @@
 {/if}
 
 <style lang='scss'>
-  .btn-unstyled {
-    all: unset;
-    display: block;
-    width: 100%;
-    cursor: pointer;
-  }
-
   .build {
     display: grid;
     grid-template-areas: "image title buttons"
@@ -126,6 +119,7 @@
       overflow: hidden;
       display: flex;
       align-items: center;
+      background: #000000;
     }
 
     &__title {
