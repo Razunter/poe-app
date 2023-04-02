@@ -382,9 +382,10 @@ export class BuildsDataClass {
 
     let localCounter = buildPromises.length
     await Promise.allSettled(buildPromises.map(async (prom) => {
-      localCounter--
-      progressBar.set(100 - Math.round((localCounter / buildPromises.length) * 100))
-      return await prom.function(prom.arguments[0], prom.arguments[1])
+      return await prom.function(prom.arguments[0], prom.arguments[1]).then(() => {
+        localCounter--
+        progressBar.set(100 - Math.round((localCounter / buildPromises.length) * 100))
+      })
     }))
 
     log.update((log_) => {
