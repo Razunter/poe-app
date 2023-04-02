@@ -16,15 +16,15 @@ $theme-colors: (
 $body-bg: #22222d;
 $body-color: #ffffff;
 
-$card-color:                        null !default;
-$card-bg:                           lighten($body-bg, 10%);
+$card-color: null !default;
+$card-bg: lighten($body-bg, 10%);
 
 $form-check-input-bg: #3640b3;
 
 $link-color: #0068ff;
 
-$modal-content-color:               $card-color;
-$modal-content-bg:                  $card-bg;
+$modal-content-color: $card-color;
+$modal-content-bg: $card-bg;
 
 $btn-close-color: $white;
 
@@ -34,6 +34,10 @@ $accordion-button-active-bg: lighten($body-bg, 10%);
 $accordion-button-active-color: $white;
 
 $progress-bg: $card-bg;
+
+$list-group-bg: $card-bg;
+$list-group-color: $white;
+$list-group-border-color:           rgba($white, .125);
 
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";

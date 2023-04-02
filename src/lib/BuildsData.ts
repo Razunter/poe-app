@@ -275,7 +275,6 @@ export class BuildsDataClass {
       params: {targetUrl: build.url},
     })
       .then((response) => {
-        console.debug({build: build.title, response: response.data})
         if (typeof response.data === 'string' && response.data.startsWith('Error')) {
           log.update((log_) => {
             return log_.set(new Date(), response.data + '\n' + build.title)

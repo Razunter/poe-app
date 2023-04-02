@@ -8,7 +8,7 @@
 
   const log = getContext<WritableLog>('log')
   let logKeys: Array<[Date, string]>
-  $: logKeys = Array.from($log)
+  $: logKeys = Array.from($log).reverse()
 </script>
 
 <SidebarWrap class={className} stretch>
@@ -16,9 +16,9 @@
     <h4 class='card-title mb-0'>Log</h4>
   </div>
   <div class='card-body'>
-    <ul>
+    <ul class="list-group list-group-flush">
       {#each logKeys as logKey}
-        <li>
+        <li class="list-group-item">
             <span class="time">
               {new Intl.DateTimeFormat('ru-RU', {
                 hour: '2-digit',
@@ -40,5 +40,9 @@
     position: sticky;
     top: 0;
     z-index: 1;
+  }
+
+  .card-body {
+    padding: 0;
   }
 </style>

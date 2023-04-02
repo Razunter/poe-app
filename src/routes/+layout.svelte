@@ -22,15 +22,15 @@
 </script>
 
 <div class='page'>
-  <Header class="page__header" />
+  <Header class="page__header"/>
 
-  <Sidebar class="sidebar--left" />
+  <Sidebar class="sidebar--left"/>
 
   <main class="page__main">
     <slot/>
   </main>
 
-  <SidebarLog class="sidebar--right" />
+  <SidebarLog class="sidebar--right"/>
 </div>
 
 <style lang='scss'>

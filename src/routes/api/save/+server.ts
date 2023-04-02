@@ -39,5 +39,5 @@ export const POST = (async ({request}) => {
     throw kitError(500, 'Error: ' + (error instanceof Error ? error.message : error))
   }
 
-  return new Response('file saved successfully')
+  return new Response('File saved successfully')
 }) satisfies RequestHandler
