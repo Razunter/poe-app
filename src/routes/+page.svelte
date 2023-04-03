@@ -6,6 +6,9 @@
   import circleSmall from '@iconify/icons-mdi/circle-small'
   import {getContext} from 'svelte'
   import type {Writable} from 'svelte/store'
+  import {Button} from 'sveltestrap'
+  import BuildEditModal from '$components/BuildEditModal.svelte'
+  import plusThick from '@iconify/icons-mdi/plus-thick'
 
   export let data: { buildData: BuildsDataType }
   const BuildsData: BuildsDataWritable = getContext('BuildsData')
@@ -16,6 +19,12 @@
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
+
+  let showAddBuildModal = false
+
+  const addBuild = () => {
+    showAddBuildModal = true
+  }
 </script>
 
 <svelte:head>
@@ -24,8 +33,15 @@
 </svelte:head>
 
 <section class="card">
-  <div class="card-header">
+  <div class="card-header d-flex justify-content-between align-center">
     <h2 class="card-title display-5">Build list</h2>
+    <Button color="success" size="lg" on:click={addBuild}>
+      <span class='btn-icon__inner'><Icon icon={plusThick} class='btn-icon__icon'/><span
+        class='btn-icon__text'>Add build</span></span>
+    </Button>
+    {#if showAddBuildModal}
+      <BuildEditModal bind:modalOpen={showAddBuildModal}/>
+    {/if}
   </div>
   <div class="card-body">
     {#each $BuildsData.buildList as buildCategory}

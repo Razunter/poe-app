@@ -11,7 +11,7 @@
   import {BuildsDataClass} from '$lib/BuildsData'
 
   // Unique build url for editing
-  export let buildUrl: string | undefined
+  export let buildUrl = ''
 
   export let modalOpen = false
 
@@ -36,6 +36,7 @@
   }
 
   let build: Build
+  let buildOriginalTitle: string | undefined
   let buildOriginalType: string | undefined
   let buildType: string = $BuildsData.types[0]
   let form: HTMLFormElement
@@ -53,11 +54,12 @@
           build = new Build(existingBuild)
           buildType = buildCategory.type
           buildOriginalType = buildCategory.type
+          buildOriginalTitle = existingBuild.title
           break
         }
       }
     } else {
-      build = new Build()
+      build = new Build({versions: [$BuildsData.currentVersion]})
     }
   }
 
@@ -99,6 +101,9 @@
       // not found, add new
       $BuildsData.buildList[buildTypeIndex].builds.push(build)
     }
+
+    // Trigger update
+    $BuildsData = $BuildsData
   }
 
   const formSubmit = () => {
@@ -106,7 +111,7 @@
       return
     }
 
-    invalidUrl = BuildsDataClass.checkForDuplicates($BuildsData.buildList, build.url)
+    invalidUrl = BuildsDataClass.checkForDuplicates($BuildsData.buildList, build.url, buildOriginalTitle)
     if (invalidUrl) {
       return
     }
@@ -146,7 +151,7 @@
       </FormGroup>
       <FormGroup>
         <Label for="editBuildVideoURL">Video URL</Label>
-        <Input id="editBuildVideoURL" required bind:value="{build.video}"/>
+        <Input id="editBuildVideoURL" bind:value="{build.video}"/>
       </FormGroup>
       <FormGroup>
         <Label for="editBuildVersions">Compatible game versions</Label>

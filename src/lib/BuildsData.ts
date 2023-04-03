@@ -229,8 +229,8 @@ export class BuildsDataClass {
 
   // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.
   public static checkForDuplicates(buildList: BuildList): Map<string, string>
-  public static checkForDuplicates(buildList: BuildList, singleUrl: string): string
-  public static checkForDuplicates(buildList: BuildList, singleUrl?: string): Map<string, string> | string {
+  public static checkForDuplicates(buildList: BuildList, singleUrl: string, buildTitle: string): string
+  public static checkForDuplicates(buildList: BuildList, singleUrl?: string, buildTitle?: string): Map<string, string> | string {
     const duplicateUrls: Map<string, string> = new Map()
     let flatBuildList: Build[] = []
     for (const buildCat of buildList) {
@@ -239,7 +239,7 @@ export class BuildsDataClass {
 
     if (typeof singleUrl === 'string') {
       const foundBuild = flatBuildList.find((build) => {
-        return build.url === singleUrl
+        return (build.url === singleUrl) && (build.title !== buildTitle)
       })
 
       return (foundBuild ? foundBuild.title : '')
