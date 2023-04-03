@@ -39,6 +39,9 @@ const generalJS = {
       objects: 'always-multiline',
     },
   ],
+  'import/no-unassigned-import': [2, {allow: ['**/*.css', '**/*.scss', '**/*.postcss']}],
+  // disable Prettier rules
+  'prettier/prettier': ['off']
 }
 
 const ts = {
@@ -47,7 +50,13 @@ const ts = {
   'typescript-sort-keys/interface': 'off',
   // '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
   'canonical/import-specifier-newline': 'off',
+  'canonical/prefer-inline-type-import': 'off',
   '@typescript-eslint/no-extra-parens': 'off',
+  '@typescript-eslint/space-before-function-paren': ["error", {
+    "anonymous": "always",
+    "named": "never",
+    "asyncArrow": "always"
+  }],
   '@typescript-eslint/member-delimiter-style': [
     'error',
     {
@@ -60,7 +69,17 @@ const ts = {
 }
 
 module.exports = {
-  extends: ['canonical'],
+  root: true,
+  extends: [
+    'canonical/auto',
+  ],
+  rules: generalJS,
+  ignorePatterns: ['*.cjs', '*.config.mjs', '**/node_modules/**'],
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+  },
   overrides: [
     {
       extends: ['canonical/typescript'],
@@ -74,37 +93,33 @@ module.exports = {
       },
     },
     {
-      files: ['*.vue'],
-      extends: [
-        'canonical/typescript',
-        'plugin:vue/recommended',
-        '@vue/eslint-config-typescript/recommended',
-      ],
-      parser: 'vue-eslint-parser',
+      files: ['*.svelte'],
+      extends: ['canonical/typescript', 'plugin:svelte/recommended'],
+      plugins: ['canonical', '@typescript-eslint'],
+      parser: 'svelte-eslint-parser',
       parserOptions: {
         parser: '@typescript-eslint/parser',
         project: './tsconfig.json',
-        sourceType: 'module',
-        tsconfigRootDir: './',
+        extraFileExtensions: ['.svelte'],
       },
       rules: {
         ...generalJS,
         ...ts,
-        'vue/multi-word-component-names': 'off',
-        'import/extensions': ['error', 'never', { 'vue': 'always' }],
-        'vue/no-multiple-template-root': 'off',
-        'vue/no-v-model-argument': 'off',
+        'no-multiple-empty-lines': 0,
+        'import/first': 'off',
+        'import/no-duplicates': 'off',
+        'import/no-mutable-exports': 'off',
+        'import/no-unresolved': 'off',
+        'import/prefer-default-export': 'off',
+        'import/extensions': [2, 'never', {
+          'svg': 'always',
+          'svelte': 'always'
+        }],
       },
     },
-    {
-      extends: ['canonical/json'],
-      files: '*.json',
-    },
-    {
-      extends: ['canonical/yaml'],
-      files: '*.yaml',
-    },
   ],
-  root: true,
-  rules: generalJS,
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2020
+  },
 }

@@ -1,0 +1,51 @@
+@use "sass:math";
+
+$white: #ffffff;
+
+$theme-colors: (
+        "light": #111629,
+        "dark": #22222d,
+        "primary": #1e2464,
+        "secondary": #bc6e39,
+        "info": #e95e20,
+        "success": #0e804b,
+        "warning": #dfc913,
+        "danger": #ec1f07,
+);
+
+$body-bg: #22222d;
+$body-color: #ffffff;
+
+$card-color: null !default;
+$card-bg: lighten($body-bg, 10%);
+
+$form-check-input-bg: #3640b3;
+
+$link-color: #0068ff;
+
+$modal-content-color: $card-color;
+$modal-content-bg: $card-bg;
+
+$btn-close-color: $white;
+
+$card-cap-bg: #363648;
+
+$accordion-button-active-bg: lighten($body-bg, 10%);
+$accordion-button-active-color: $white;
+
+$progress-bg: $card-bg;
+
+$list-group-bg: $card-bg;
+$list-group-color: $white;
+$list-group-border-color:           rgba($white, .125);
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+:root {
+  --bs-grid-gutter-width: #{$grid-gutter-width};
+  --bs-grid-gutter-width-half: #{math.div($grid-gutter-width, 2)};
+}

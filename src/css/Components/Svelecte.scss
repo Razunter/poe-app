@@ -1,0 +1,28 @@
+@use "sass:color";
+
+:root {
+  --sv-bg: #{$input-bg};
+  --sv-icon-color: #{$input-color};
+  --sv-border: 1px solid #{$input-border-color};
+  --sv-active-border: 1px solid #{$input-focus-border-color};
+}
+
+.sv-dd-item {
+  cursor: pointer;
+}
+
+.sv-dd-item-active {
+  background-color: color.adjust($input-bg, $lightness: +10%);
+}
+
+.sv-content.has-multiSelection {
+  .sv-item {
+    padding: 0 0.5em;
+    display: flex;
+    align-items: center;
+  }
+
+  .sv-item-btn {
+    padding-top: 0.2em !important;
+  }
+}

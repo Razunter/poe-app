@@ -1,3 +1,3 @@
 # Localhost-backend for https://raz-poebuilds.netlify.app/
 
-Vue 3, TS, migrated from Nuxt 2 to Vite. Bad code, bad UI, but works.
+SvelteKit, TS. Made for 3440x1440 screen without any adaptivity.
