@@ -36,7 +36,7 @@
 <style lang='scss'>
   .page {
     display: grid;
-    grid-template-columns: 18rem auto 18rem;
+    grid-template-columns: 18rem auto minmax(18rem, 24rem);
     padding-top: .5rem;
 
     :global(.page__header) {
