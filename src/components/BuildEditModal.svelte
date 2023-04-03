@@ -142,7 +142,7 @@
       <FormGroup>
         <Label for="editBuildAuthor">Author</Label>
         <Svelecte inputId="editBuildAuthor" class="svelecte--dark" options={authorsArray} bind:value={build.author}
-                  clearable allowEditing creatable labelAsValue/>
+                  clearable allowEditing creatable labelAsValue creatablePrefix="" />
       </FormGroup>
       <FormGroup>
         <Label for="editBuildURL">URL</Label>
