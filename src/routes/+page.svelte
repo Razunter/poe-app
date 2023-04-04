@@ -22,7 +22,10 @@
 
   let showAddBuildModal = false
 
-  const addBuild = () => {
+  let buildType: string | undefined
+
+  const addBuild = (buildType_?: string) => {
+    buildType = buildType_
     showAddBuildModal = true
   }
 </script>
@@ -33,21 +36,25 @@
 </svelte:head>
 
 <section class="card">
-  <div class="card-header d-flex justify-content-between align-center">
+  <div class="card-header">
     <h2 class="card-title display-5">Build list</h2>
-    <Button color="success" size="lg" on:click={addBuild}>
-      <span class='btn-icon__inner'><Icon icon={plusThick} class='btn-icon__icon'/><span
-        class='btn-icon__text'>Add build</span></span>
-    </Button>
     {#if showAddBuildModal}
-      <BuildEditModal bind:modalOpen={showAddBuildModal}/>
+      <BuildEditModal buildType={buildType} bind:modalOpen={showAddBuildModal}/>
     {/if}
   </div>
   <div class="card-body">
     {#each $BuildsData.buildList as buildCategory}
-      <h3 class="display-6 icon-wrap">
-        <Icon class="icon" icon={circleSmall}/>
-        <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
+      <div class="d-flex justify-content-between align-center">
+        <h3 class="display-6 icon-wrap">
+          <Icon class="icon" icon={circleSmall}/>
+          <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span></h3>
+        <Button color="success" size="lg" on:click={() => {
+          addBuild(buildCategory.type)
+        }}>
+        <span class='btn-icon__inner'><Icon icon={plusThick} class='btn-icon__icon'/><span
+          class='btn-icon__text'>Add build</span></span>
+        </Button>
+      </div>
       <hr/>
       {#each buildCategory.builds as build}
         {@const outdated = BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}

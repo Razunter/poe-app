@@ -39,7 +39,10 @@
   let build: Build
   let buildOriginalTitle: string | undefined
   let buildOriginalType: string | undefined
-  let buildType: string = $BuildsData.types[0]
+
+  // can be set on modal creation
+  export let buildType: string = $BuildsData.types[0]
+
   let form: HTMLFormElement
   let invalidUrl = ''
 
