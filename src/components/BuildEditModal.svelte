@@ -25,6 +25,7 @@
   for (const author of $BuildsData.authors.values()) {
     authorsArray.push(author)
   }
+  authorsArray.sort()
 
   const versionsArray: string[] = $BuildsData.versions.map((version) => {
     return version.version
