@@ -172,7 +172,7 @@
       </FormGroup>
     </form>
   </ModalBody>
-  <ModalFooter>
+  <ModalFooter class="justify-content-between">
     <Button type="reset" color='warning' on:click={init}>
           <span class='btn-icon__inner'>
             <Icon icon={backupRestore} class='btn-icon__icon'/>
