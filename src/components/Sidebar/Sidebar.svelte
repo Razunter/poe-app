@@ -46,7 +46,8 @@
     <div class='d-grid gap-2'>
       <Button color='primary' size='lg' class="btn-icon"
               on:click={async () => {
-                $BuildsData = await $BuildsData.syncBuilds(progressBar, log)
+                await $BuildsData.syncBuilds(progressBar, log)
+                $BuildsData = $BuildsData.sortBuilds()
               }}
       >
         <span class='btn-icon__inner'><Icon icon={accessPointNetwork} class='btn-icon__icon'/><span
@@ -62,7 +63,8 @@
                           class='btn-icon__text'>Sort builds</span></span>
       </Button>
       <Button color='primary' size='lg' class="btn-icon" on:click={() => {
-        $BuildsData = $BuildsData.randomizeOrder()
+        $BuildsData.randomizeOrder()
+        $BuildsData = $BuildsData.sortBuilds()
       }}>
                         <span class='btn-icon__inner'><Icon icon={rotate3dVariant} class='btn-icon__icon'/><span
                           class='btn-icon__text'>Randomize order</span></span>
