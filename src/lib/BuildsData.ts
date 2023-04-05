@@ -267,7 +267,10 @@ export class BuildsDataClass {
     }
 
     // URL isn't supported → nothing to do
-    if (!build.url.includes('pathofexile.com') && !build.url.includes('poe-vault.com')) {
+    if (!build.url.includes('pathofexile.com') &&
+      !build.url.includes('poe-vault.com') &&
+      !build.url.includes('maxroll.gg')
+    ) {
       return
     }
 
