@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:start": "vite build & node -r dotenv/config build",
+    "build:start": "vite build & node -r dotenv/config build dotenv_config_path=./.env.local",
+    "start": "node -r dotenv/config build dotenv_config_path=./.env.local",
     "package": "svelte-kit package",
     "preview": "vite preview",
     "test": "playwright test",
