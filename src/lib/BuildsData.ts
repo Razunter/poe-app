@@ -133,16 +133,6 @@ export class BuildsDataClass {
       /* eslint-enable @typescript-eslint/indent */
 
       buildCategory.builds.sort((buildA: Build, buildB: Build) => {
-        // Sort by url type
-        if (buildA.url.includes('pathofexile.com') && !buildB.url.includes('pathofexile.com')) {
-          return -1
-        } else if (!buildA.url.includes('pathofexile.com') && buildB.url.includes('pathofexile.com')) {
-          return 1
-        }
-
-        return 0
-      })
-      buildCategory.builds.sort((buildA: Build, buildB: Build) => {
         // Sort by YouTube url
         if (buildA.url.includes('youtube.com') && !buildB.url.includes('youtube.com')) {
           return 1
