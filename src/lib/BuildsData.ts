@@ -88,9 +88,10 @@ export class BuildsDataClass {
               return 1
             }
 
-            if (buildA.author === 'GhazzyTV' && buildB.author !== 'GhazzyTV' && !buildB.url.includes('pathofexile.com')) {
+            // Videos make eyes bleed
+            if (buildA.author === 'Tripolar Bear' && buildB.author !== 'Tripolar Bear' && !buildB.url.includes('pathofexile.com')) {
               return 1
-            } else if (buildB.author === 'GhazzyTV' && buildA.author !== 'GhazzyTV' && !buildA.url.includes('pathofexile.com')) {
+            } else if (buildB.author === 'Tripolar Bear' && buildA.author !== 'Tripolar Bear' && !buildA.url.includes('pathofexile.com')) {
               return -1
             }
           }
