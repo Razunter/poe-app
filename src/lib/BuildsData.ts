@@ -275,7 +275,7 @@ export class BuildsDataClass {
           })
         } else if (response.data === '') {
           log.update((log_) => {
-            return log_.set(new Date(), 'Build or version not found: ' + build.title)
+            return log_.set(new Date(), `Build or version not found: <a href="${build.url}" target="_blank" rel="noopener">${build.title}</a>.`)
           })
         } else if (!build.versions.includes(response.data)) {
           build.versions.push(response.data)
