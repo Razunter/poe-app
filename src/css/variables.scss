@@ -16,6 +16,8 @@ $theme-colors: (
 $body-bg: #22222d;
 $body-color: #ffffff;
 
+$input-bg: $body-bg;
+
 $card-color: null !default;
 $card-bg: lighten($body-bg, 10%);
 
@@ -41,6 +43,7 @@ $list-group-border-color:           rgba($white, .125);
 
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";

@@ -95,7 +95,6 @@ module.exports = {
     {
       files: ['*.svelte'],
       extends: ['canonical/typescript', 'plugin:svelte/recommended'],
-      plugins: ['canonical', '@typescript-eslint'],
       parser: 'svelte-eslint-parser',
       parserOptions: {
         parser: '@typescript-eslint/parser',

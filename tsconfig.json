@@ -16,6 +16,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "ignoreDeprecations": "5.0",
     // "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "incremental": true,

@@ -1,0 +1,22 @@
+diff --git a/src/Tooltip.svelte b/src/Tooltip.svelte
+index a0bd07847ed0ee15ec2fa3d87340b3c2bec13313..36c51ce5dabd512504440c6847b553d68b833df2 100644
+--- a/src/Tooltip.svelte
++++ b/src/Tooltip.svelte
+@@ -1,6 +1,6 @@
+ <script>
+   import { onDestroy, onMount } from 'svelte';
+-  import { createPopper } from '@popperjs/core/dist/esm/popper';
++  import { createPopper } from '@popperjs/core';
+   import classnames, { uuid } from './utils';
+   import InlineContainer from './InlineContainer.svelte';
+   import Portal from './Portal.svelte';
+diff --git a/src/popper.js b/src/popper.js
+index 9f5f4eaf6a42f0e3a03cc6dccbc03b354ad2734f..223675ee7131a786db724ad04cdd2881ecb9dcd2 100644
+--- a/src/popper.js
++++ b/src/popper.js
+@@ -1,4 +1,4 @@
+-import { createPopper } from '@popperjs/core/dist/esm/popper';
++import { createPopper } from '@popperjs/core';
+ 
+ // Code derived from https://github.com/bryanmylee/svelte-popperjs/blob/master/src/index.ts
+ export function createPopperActions(initOptions) {

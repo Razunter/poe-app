@@ -1,6 +1,6 @@
 {
   "name": "poe-app-sveltekit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "browserslist": [
     "> 0.2%",
     "last 2 versions",
@@ -23,42 +23,47 @@
     "types-sync": "svelte-kit sync"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.3",
-    "@babel/preset-env": "^7.20.2",
-    "@iconify/icons-mdi": "^1.2.44",
-    "@iconify/svelte": "^3.1.0",
-    "@playwright/test": "^1.32.1",
-    "@rushstack/eslint-patch": "^1.2.0",
-    "@sveltejs/adapter-node": "^1.2.3",
-    "@sveltejs/kit": "next",
-    "@typescript-eslint/eslint-plugin": "^5.57.0",
-    "@typescript-eslint/parser": "^5.57.0",
+    "@babel/core": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
+    "@iconify/icons-mdi": "^1.2.47",
+    "@iconify/svelte": "^3.1.4",
+    "@playwright/test": "^1.37.0",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@sveltejs/adapter-node": "^1.3.1",
+    "@sveltejs/kit": "^1.22.5",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",
-    "eslint": "^8.37.0",
-    "eslint-config-canonical": "^41.0.1",
-    "eslint-plugin-svelte": "^2.23.1",
-    "postcss": "^8.4.21",
+    "eslint": "^8.47.0",
+    "eslint-config-canonical": "^41.1.7",
+    "eslint-plugin-svelte": "^2.32.4",
+    "postcss": "^8.4.27",
     "postcss-load-config": "^4.0.1",
-    "sass": "^1.60.0",
-    "svelte": "^3.58.0",
-    "svelte-check": "^3.1.4",
-    "svelte-preprocess": "^5.0.3",
-    "tslib": "^2.5.0",
-    "typescript": "^5.0.2",
-    "vite": "^4.2.1"
+    "sass": "^1.65.1",
+    "svelte-check": "^3.5.0",
+    "svelte-preprocess": "^5.0.4",
+    "tslib": "^2.6.1",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9"
   },
   "type": "module",
   "dependencies": {
-    "@twurple/api": "^6.0.9",
-    "@twurple/auth": "^6.0.9",
-    "axios": "^1.3.4",
-    "bootstrap": "^5.2.3",
-    "compare-versions": "^5.0.3",
-    "dotenv": "^16.0.3",
+    "@twurple/api": "^7.0.1",
+    "@twurple/auth": "^7.0.1",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.1",
+    "compare-versions": "^6.1.0",
+    "dotenv": "^16.3.1",
     "just-intersect": "^4.3.0",
     "just-shuffle": "^4.2.0",
-    "puppeteer": "^19.8.2",
-    "svelecte": "^3.15.3",
-    "sveltestrap": "^5.10.0"
+    "puppeteer": "^21.0.3",
+    "svelecte": "^3.16.4",
+    "svelte": "^3.55.0",
+    "sveltestrap": "^5.11.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "sveltestrap@5.11.1": "patches/sveltestrap@5.11.1.patch"
+    }
   }
 }
