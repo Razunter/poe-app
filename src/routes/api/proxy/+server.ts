@@ -21,7 +21,9 @@ export const GET = (async ({url}) => {
   }
 
   if (mode === 'start') {
-    browser = await launch()
+    browser = await launch({
+      headless: 'new',
+    })
     return new Response('success')
   } else if (mode === 'end') {
     browser?.close()
