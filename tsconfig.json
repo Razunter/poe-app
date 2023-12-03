@@ -22,10 +22,22 @@
     "incremental": true,
     "sourceMap": true,
     "downlevelIteration": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "$components/*": [
+        "src/components/*"
+      ],
+      "$lib/*": [
+        "src/lib/*"
+      ],
+      "$css/*": [
+        "src/css/*"
+      ],
+    }
   },
   "include": [
     "*.ts",
+    "*.js",
     "src/**/*",
     "tests/**/*",
     ".svelte-kit/ambient.d.ts"
