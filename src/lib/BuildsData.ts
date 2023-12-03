@@ -1,11 +1,11 @@
-import {PUBLIC_ORIGIN} from '$env/static/public'
-import {Build} from '$lib/Build'
-import type {WritableLog} from '$lib/stores'
-import axios, {AxiosError} from 'axios'
-import {compareVersions} from 'compare-versions'
+import { PUBLIC_ORIGIN } from '$env/static/public'
+import { Build } from '$lib/Build'
+import { type WritableLog } from '$lib/stores'
+import axios, { AxiosError } from 'axios'
+import { compareVersions } from 'compare-versions'
 import intersect from 'just-intersect'
 import shuffle from 'just-shuffle'
-import type {Writable} from 'svelte/store'
+import { type Writable } from 'svelte/store'
 
 export class BuildsDataClass {
   public buildList: BuildList
@@ -84,14 +84,26 @@ export class BuildsDataClass {
             // Author bias
             if (buildA.author === 'Zizaran' && buildB.author !== 'Zizaran' && !buildB.url.includes('pathofexile.com')) {
               return -1
-            } else if (buildB.author === 'Zizaran' && buildA.author !== 'Zizaran' && !buildA.url.includes('pathofexile.com')) {
+            } else if (
+              buildB.author === 'Zizaran' &&
+              buildA.author !== 'Zizaran' &&
+              !buildA.url.includes('pathofexile.com')
+            ) {
               return 1
             }
 
             // Videos make eyes bleed
-            if (buildA.author === 'Tripolar Bear' && buildB.author !== 'Tripolar Bear' && !buildB.url.includes('pathofexile.com')) {
+            if (
+              buildA.author === 'Tripolar Bear' &&
+              buildB.author !== 'Tripolar Bear' &&
+              !buildB.url.includes('pathofexile.com')
+            ) {
               return 1
-            } else if (buildB.author === 'Tripolar Bear' && buildA.author !== 'Tripolar Bear' && !buildA.url.includes('pathofexile.com')) {
+            } else if (
+              buildB.author === 'Tripolar Bear' &&
+              buildA.author !== 'Tripolar Bear' &&
+              !buildA.url.includes('pathofexile.com')
+            ) {
               return -1
             }
           }
@@ -204,7 +216,7 @@ export class BuildsDataClass {
     }
 
     log.update((log_) => {
-      return log_.set(new Date, `Removed ${count.YT} YouTube builds and ${count.Total} in total`)
+      return log_.set(new Date(), `Removed ${count.YT} YouTube builds and ${count.Total} in total`)
     })
 
     return this
@@ -221,7 +233,11 @@ export class BuildsDataClass {
   // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.
   public static checkForDuplicates(buildList: BuildList): Map<string, string>
   public static checkForDuplicates(buildList: BuildList, singleUrl: string, buildTitle: string): string
-  public static checkForDuplicates(buildList: BuildList, singleUrl?: string, buildTitle?: string): Map<string, string> | string {
+  public static checkForDuplicates(
+    buildList: BuildList,
+    singleUrl?: string,
+    buildTitle?: string,
+  ): Map<string, string> | string {
     const duplicateUrls: Map<string, string> = new Map()
     let flatBuildList: Build[] = []
     for (const buildCat of buildList) {
@@ -230,16 +246,15 @@ export class BuildsDataClass {
 
     if (typeof singleUrl === 'string') {
       const foundBuild = flatBuildList.find((build) => {
-        return (build.url === singleUrl) && (build.title !== buildTitle)
+        return build.url === singleUrl && build.title !== buildTitle
       })
 
-      return (foundBuild ? foundBuild.title : '')
+      return foundBuild ? foundBuild.title : ''
     } else {
       const map = new Set<string>()
       for (const build of flatBuildList) {
         if (map.has(build.url)) {
-          const originalItem = Array.from(map.keys())
-            .indexOf(build.url)
+          const originalItem = Array.from(map.keys()).indexOf(build.url)
           duplicateUrls.set(build.title, flatBuildList[originalItem].title)
         } else {
           map.add(build.url)
@@ -258,16 +273,18 @@ export class BuildsDataClass {
     }
 
     // URL isn't supported → nothing to do
-    if (!build.url.includes('pathofexile.com') &&
+    if (
+      !build.url.includes('pathofexile.com') &&
       !build.url.includes('poe-vault.com') &&
       !build.url.includes('maxroll.gg')
     ) {
       return
     }
 
-    await axios.get<string>(`${PUBLIC_ORIGIN}/api/proxy`, {
-      params: {targetUrl: build.url},
-    })
+    await axios
+      .get<string>(`${PUBLIC_ORIGIN}/api/proxy`, {
+        params: { targetUrl: build.url },
+      })
       .then((response) => {
         if (typeof response.data === 'string' && response.data.startsWith('Error')) {
           log.update((log_) => {
@@ -275,7 +292,10 @@ export class BuildsDataClass {
           })
         } else if (response.data === '') {
           log.update((log_) => {
-            return log_.set(new Date(), `Build or version not found: <a href="${build.url}" target="_blank" rel="noopener">${build.title}</a>.`)
+            return log_.set(
+              new Date(),
+              `Build or version not found: <a href="${build.url}" target="_blank" rel="noopener">${build.title}</a>.`,
+            )
           })
         } else if (!build.versions.includes(response.data)) {
           build.versions.push(response.data)
@@ -301,10 +321,11 @@ export class BuildsDataClass {
       }
 
       if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
-        await axios.get(`${PUBLIC_ORIGIN}/api/youtube`, {
-          params: {videoID},
-        })
-          .then(({data}) => {
+        await axios
+          .get(`${PUBLIC_ORIGIN}/api/youtube`, {
+            params: { videoID },
+          })
+          .then(({ data }) => {
             if (data.items.length > 0) {
               const thumbs = data.items[0].snippet.thumbnails
               build.videothumb = {
@@ -334,8 +355,8 @@ export class BuildsDataClass {
       }
     } else if (build.video?.includes('twitch.tv') && !build.videothumb) {
       const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('/') + 1))
-      const {data: video} = await axios.get(`${PUBLIC_ORIGIN}/api/twitch`, {
-        params: {videoID},
+      const { data: video } = await axios.get(`${PUBLIC_ORIGIN}/api/twitch`, {
+        params: { videoID },
       })
       if (!video) {
         log.update((log_) => {
@@ -346,12 +367,9 @@ export class BuildsDataClass {
 
       // eslint-disable-next-line require-atomic-updates
       build.videothumb = {
-        '480w': video.thumbnailUrl.replace('%{width}', '480')
-          .replace('%{height}', '360'),
-        '640w': video.thumbnailUrl.replace('%{width}', '640')
-          .replace('%{height}', '480'),
-        '1280w': video.thumbnailUrl.replace('%{width}', '1280')
-          .replace('%{height}', '720'),
+        '480w': video.thumbnailUrl.replace('%{width}', '480').replace('%{height}', '360'),
+        '640w': video.thumbnailUrl.replace('%{width}', '640').replace('%{height}', '480'),
+        '1280w': video.thumbnailUrl.replace('%{width}', '1280').replace('%{height}', '720'),
       }
     }
 
@@ -361,26 +379,28 @@ export class BuildsDataClass {
   public syncBuilds = async (progressBar: Writable<number>, log: WritableLog) => {
     progressBar.set(0)
 
-    const buildPromises: Array<{ function: Function, arguments: [WritableLog, Build] }> = []
+    const buildPromises: Array<{ function: Function; arguments: [WritableLog, Build] }> = []
     for (const buildCat of this.buildList) {
       for (const build of buildCat.builds) {
-        buildPromises.push({function: this.syncBuilds_UpdateVersions, arguments: [log, build]})
-        buildPromises.push({function: this.syncBuilds_Video, arguments: [log, build]})
+        buildPromises.push({ function: this.syncBuilds_UpdateVersions, arguments: [log, build] })
+        buildPromises.push({ function: this.syncBuilds_Video, arguments: [log, build] })
       }
     }
 
     // Start browser
     await axios.get(`${PUBLIC_ORIGIN}/api/proxy`, {
-      params: {mode: 'start'},
+      params: { mode: 'start' },
     })
 
     let localCounter = buildPromises.length
-    await Promise.allSettled(buildPromises.map(async (prom) => {
-      return await prom.function(prom.arguments[0], prom.arguments[1]).then(() => {
-        localCounter--
-        progressBar.set(100 - Math.round((localCounter / buildPromises.length) * 100))
-      })
-    }))
+    await Promise.allSettled(
+      buildPromises.map(async (prom) => {
+        return await prom.function(prom.arguments[0], prom.arguments[1]).then(() => {
+          localCounter--
+          progressBar.set(100 - Math.round((localCounter / buildPromises.length) * 100))
+        })
+      }),
+    )
 
     log.update((log_) => {
       return log_.set(new Date(), 'Sync complete')
@@ -388,7 +408,7 @@ export class BuildsDataClass {
 
     // Close browser
     await axios.get(`${PUBLIC_ORIGIN}/api/proxy`, {
-      params: {mode: 'end'},
+      params: { mode: 'end' },
     })
 
     progressBar.set(100)
@@ -444,31 +464,31 @@ export class BuildsDataClass {
 }
 
 export type BuildTypes = {
-  [key: string]: string;
+  [key: string]: string
 }
 
 export type BuildCategory = {
-  type: string;
-  builds: Build[];
+  type: string
+  builds: Build[]
 }
 
 export type BuildList = BuildCategory[]
 
 export type Versions = {
-  version: string;
-  name: string;
-  wip?: boolean;
-  url?: string;
-  note?: string;
-  compatible?: string[];
+  version: string
+  name: string
+  wip?: boolean
+  url?: string
+  note?: string
+  compatible?: string[]
 }
 
 export type BuildsDataType = {
-  buildList: BuildList;
-  types: BuildTypes;
-  versions: Versions[];
-  currentVersion: string;
-  authors: Set<string>;
+  buildList: BuildList
+  types: BuildTypes
+  versions: Versions[]
+  currentVersion: string
+  authors: Set<string>
 }
 
 export type BuildsDataWritable = Writable<BuildsDataClass>

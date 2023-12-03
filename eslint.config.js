@@ -33,10 +33,7 @@ const generalJS = {
       objects: 'always-multiline',
     },
   ],
-  'import/no-unassigned-import': [
-    2,
-    { allow: ['**/*.css', '**/*.scss', '**/*.postcss'] },
-  ],
+  'import/no-unassigned-import': [2, { allow: ['**/*.css', '**/*.scss', '**/*.postcss'] }],
   'linebreak-style': ['off'],
   'object-curly-newline': [
     'error',
@@ -59,6 +56,8 @@ const generalJS = {
         svg: 'always',
         graphql: 'always',
         json: 'always',
+        css: 'always',
+        scss: 'always',
       },
     },
   ],

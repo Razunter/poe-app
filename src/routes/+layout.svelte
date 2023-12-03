@@ -1,12 +1,12 @@
-<script lang='ts'>
+<script lang="ts">
+  import '$css/app.scss'
   import Header from '$components/LayoutHeader.svelte'
   import Sidebar from '$components/Sidebar/Sidebar.svelte'
-  import '$css/app.scss'
-  import {setContext} from 'svelte'
-  import {writable} from 'svelte/store'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
-  import {log, progressBar, showOutdated} from '$lib/stores'
-  import type {BuildsDataClass} from '$lib/BuildsData'
+  import { type BuildsDataClass } from '$lib/BuildsData'
+  import { log, progressBar, showOutdated } from '$lib/stores'
+  import { setContext } from 'svelte'
+  import { writable } from 'svelte/store'
 
   $showOutdated = false
   setContext('showOutdated', showOutdated)
@@ -21,23 +21,23 @@
   setContext('BuildsData', BuildsData)
 </script>
 
-<div class='page'>
-  <Header class="page__header"/>
+<div class="page">
+  <Header class="page__header" />
 
-  <Sidebar class="sidebar--left"/>
+  <Sidebar class="sidebar--left" />
 
   <main class="page__main">
-    <slot/>
+    <slot />
   </main>
 
-  <SidebarLog class="sidebar--right"/>
+  <SidebarLog class="sidebar--right" />
 </div>
 
-<style lang='scss'>
+<style lang="scss">
   .page {
     display: grid;
     grid-template-columns: 18rem auto minmax(18rem, 24rem);
-    padding-top: .5rem;
+    padding-top: 0.5rem;
 
     :global(.page__header) {
       grid-column: 1 / span 3;

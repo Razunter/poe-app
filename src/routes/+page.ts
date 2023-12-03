@@ -1,6 +1,6 @@
-import type {PageLoad} from './$types'
-import {error as kitError} from '@sveltejs/kit'
-import type {BuildsDataType} from '$lib/BuildsData'
+import { type PageLoad } from './$types'
+import { error as kitError } from '@sveltejs/kit'
+import { type BuildsDataType } from '$lib/BuildsData'
 
 const dataMaintenance = (data: BuildsDataType) => {
   const supportedVersions = data.versions.map((version) => {
@@ -19,7 +19,7 @@ const dataMaintenance = (data: BuildsDataType) => {
   return data
 }
 
-export const load: PageLoad = async ({fetch}) => {
+export const load: PageLoad = async ({ fetch }) => {
   const response = await fetch('/api/load', {
     method: 'GET',
     credentials: 'same-origin',
@@ -29,7 +29,7 @@ export const load: PageLoad = async ({fetch}) => {
     },
   })
 
-  const data = await response.json() as BuildsDataType | Error
+  const data = (await response.json()) as BuildsDataType | Error
 
   if (response.status !== 200) {
     throw kitError(500, 'message' in data ? data.message : 'data')

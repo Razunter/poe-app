@@ -1,15 +1,14 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import type {RequestHandler} from '@sveltejs/kit'
-import {error as kitError} from '@sveltejs/kit'
-import {JSON_PATH} from '$env/static/private'
-import type {BuildsDataType} from '$lib/BuildsData'
+import { error as kitError, type RequestHandler } from '@sveltejs/kit'
+import { JSON_PATH } from '$env/static/private'
+import { type BuildsDataType } from '$lib/BuildsData'
 import fs from 'node:fs'
 import path from 'node:path'
 
 const jsonPath = path.normalize(JSON_PATH)
 
-export const POST = (async ({request}) => {
-  const data = await request.json() as BuildsDataType
+export const POST = (async ({ request }) => {
+  const data = (await request.json()) as BuildsDataType
 
   if (!data) {
     throw kitError(400, 'No data received')

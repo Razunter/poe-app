@@ -1,14 +1,14 @@
 <script lang="ts">
-  import {Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader} from 'sveltestrap'
-  import type {BuildsDataWritable} from '$lib/BuildsData'
-  import {Build} from '$lib/Build'
-  import pencilIcon from '@iconify/icons-mdi/pencil'
-  import contentSave from '@iconify/icons-mdi/content-save'
   import backupRestore from '@iconify/icons-mdi/backup-restore'
+  import contentSave from '@iconify/icons-mdi/content-save'
+  import pencilIcon from '@iconify/icons-mdi/pencil'
   import Icon from '@iconify/svelte'
+  import { Build } from '$lib/Build'
+  import { type BuildsDataWritable } from '$lib/BuildsData'
+  import { BuildsDataClass } from '$lib/BuildsData'
   import Svelecte from 'svelecte'
-  import {getContext} from 'svelte'
-  import {BuildsDataClass} from '$lib/BuildsData'
+  import { getContext } from 'svelte'
+  import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'sveltestrap'
 
   // Unique build url for editing
   export let buildUrl = ''
@@ -31,9 +31,9 @@
     return version.version
   })
 
-  const buildTypesArray: Array<{ value: string, label: string }> = []
+  const buildTypesArray: Array<{ value: string; label: string }> = []
   for (const typeKey in $BuildsData.types) {
-    buildTypesArray.push({value: typeKey, label: $BuildsData.types[typeKey]})
+    buildTypesArray.push({ value: typeKey, label: $BuildsData.types[typeKey] })
   }
 
   let build: Build
@@ -63,7 +63,7 @@
         }
       }
     } else {
-      build = new Build({versions: [$BuildsData.currentVersion]})
+      build = new Build({ versions: [$BuildsData.currentVersion] })
     }
   }
 
@@ -125,67 +125,125 @@
   }
 </script>
 
-<Modal isOpen={modalOpen} toggle={modalToggle} size="lg">
+<Modal
+  isOpen={modalOpen}
+  toggle={modalToggle}
+  size="lg"
+>
   <ModalHeader toggle={modalToggle}>
-    <Icon icon={pencilIcon} style="vertical-align: -0.15em;"/>
+    <Icon
+      icon={pencilIcon}
+      style="vertical-align: -0.15em;"
+    />
     Edit build
   </ModalHeader>
   <ModalBody>
-    <form bind:this={form} on:submit|preventDefault={formSubmit}>
+    <form
+      bind:this={form}
+      on:submit|preventDefault={formSubmit}
+    >
       <FormGroup>
         <Label for="editBuildType">Type</Label>
-        <Svelecte inputId="editBuildType" class="svelecte--dark"
-                  options={buildTypesArray}
-                  bind:value={buildType}
+        <Svelecte
+          inputId="editBuildType"
+          class="svelecte--dark"
+          options={buildTypesArray}
+          bind:value={buildType}
         />
       </FormGroup>
       <FormGroup>
         <Label for="editBuildTitle">Title</Label>
-        <Input id="editBuildTitle" required bind:value="{build.title}"/>
-      </FormGroup>
-      <FormGroup>
-        <Label for="editBuildAuthor">Author</Label>
-        <Svelecte inputId="editBuildAuthor" class="svelecte--dark" options={authorsArray} bind:value={build.author}
-                  clearable allowEditing creatable labelAsValue creatablePrefix="" />
-      </FormGroup>
-      <FormGroup>
-        <Label for="editBuildURL">URL</Label>
-        <Input id="editBuildURL" invalid={invalidUrl.length > 0}
-               feedback={invalidUrl ? 'Duplicate URL: ' + invalidUrl : ''} required bind:value="{build.url}"/>
-      </FormGroup>
-      <FormGroup>
-        <Label for="editBuildVideoURL">Video URL</Label>
-        <Input id="editBuildVideoURL" bind:value="{build.video}"/>
-      </FormGroup>
-      <FormGroup>
-        <Label for="editBuildVersions">Compatible game versions</Label>
-        <Svelecte inputId="editBuildVersions"
-                  class="svelecte--dark"
-                  options={versionsArray}
-                  bind:value={build.versions}
-                  multiple
-                  labelAsValue
+        <Input
+          id="editBuildTitle"
+          required
+          bind:value={build.title}
         />
       </FormGroup>
       <FormGroup>
-        <Input id="pinBuild" type="switch" label="Pin build" bind:checked={build.pin}/>
+        <Label for="editBuildAuthor">Author</Label>
+        <Svelecte
+          inputId="editBuildAuthor"
+          class="svelecte--dark"
+          options={authorsArray}
+          bind:value={build.author}
+          clearable
+          allowEditing
+          creatable
+          labelAsValue
+          creatablePrefix=""
+        />
       </FormGroup>
       <FormGroup>
-        <Input id="skipBuild" type="switch" label="Skip build" bind:checked={build.skip}/>
+        <Label for="editBuildURL">URL</Label>
+        <Input
+          id="editBuildURL"
+          invalid={invalidUrl.length > 0}
+          feedback={invalidUrl ? 'Duplicate URL: ' + invalidUrl : ''}
+          required
+          bind:value={build.url}
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label for="editBuildVideoURL">Video URL</Label>
+        <Input
+          id="editBuildVideoURL"
+          bind:value={build.video}
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label for="editBuildVersions">Compatible game versions</Label>
+        <Svelecte
+          inputId="editBuildVersions"
+          class="svelecte--dark"
+          options={versionsArray}
+          bind:value={build.versions}
+          multiple
+          labelAsValue
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          id="pinBuild"
+          type="switch"
+          label="Pin build"
+          bind:checked={build.pin}
+        />
+      </FormGroup>
+      <FormGroup>
+        <Input
+          id="skipBuild"
+          type="switch"
+          label="Skip build"
+          bind:checked={build.skip}
+        />
       </FormGroup>
     </form>
   </ModalBody>
   <ModalFooter class="justify-content-between">
-    <Button type="reset" color='warning' on:click={init}>
-          <span class='btn-icon__inner'>
-            <Icon icon={backupRestore} class='btn-icon__icon'/>
-            <span class='btn-icon__text'>Reset</span>
-          </span>
+    <Button
+      type="reset"
+      color="warning"
+      on:click={init}
+    >
+      <span class="btn-icon__inner">
+        <Icon
+          icon={backupRestore}
+          class="btn-icon__icon"
+        />
+        <span class="btn-icon__text">Reset</span>
+      </span>
     </Button>
-    <Button type="submit" color='primary' on:click={formSubmit}>
-      <span class='btn-icon__inner'>
-        <Icon icon={contentSave} class='btn-icon__icon'/>
-        <span class='btn-icon__text'>Save</span>
+    <Button
+      type="submit"
+      color="primary"
+      on:click={formSubmit}
+    >
+      <span class="btn-icon__inner">
+        <Icon
+          icon={contentSave}
+          class="btn-icon__icon"
+        />
+        <span class="btn-icon__text">Save</span>
       </span>
     </Button>
   </ModalFooter>

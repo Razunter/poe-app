@@ -1,8 +1,8 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import type {RequestHandler} from './$types'
-import {error as kitError, json} from '@sveltejs/kit'
-import {JSON_PATH} from '$env/static/private'
-import {existsSync, readFileSync} from 'node:fs'
+import { type RequestHandler } from './$types'
+import { error as kitError, json } from '@sveltejs/kit'
+import { JSON_PATH } from '$env/static/private'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
 const jsonPath = path.normalize(JSON_PATH)
@@ -20,7 +20,8 @@ export const GET: RequestHandler = (async () => {
 
   let file = path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-')) + '.json'
   if (!existsSync(file)) {
-    const dataFile = 'data-' + versionsData.versions[versionsData.versions.length - 1].version.replace('.', '-') + '.json'
+    const dataFile =
+      'data-' + versionsData.versions[versionsData.versions.length - 1].version.replace('.', '-') + '.json'
     file = path.join(jsonPath, dataFile)
   }
 

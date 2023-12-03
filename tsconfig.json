@@ -16,23 +16,20 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "ignoreDeprecations": "5.0",
-    // "verbatimModuleSyntax": true,
+    "importsNotUsedAsValues": "remove",
+//    "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "incremental": true,
     "sourceMap": true,
     "downlevelIteration": true,
     "baseUrl": ".",
     "paths": {
-      "$components/*": [
-        "src/components/*"
-      ],
-      "$lib/*": [
-        "src/lib/*"
-      ],
-      "$css/*": [
-        "src/css/*"
-      ],
+      "$components": ["./src/components"],
+      "$components/*": ["./src/components/*"],
+      "$lib":["./src/lib"],
+      "$lib/*":["./src/lib/*"],
+      "$css": ["./src/css"],
+      "$css/*": ["./src/css/*"],
     }
   },
   "include": [

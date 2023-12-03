@@ -1,4 +1,12 @@
 <script lang="ts">
+  import contentSave from '@iconify/icons-mdi/content-save'
+  import deleteIcon from '@iconify/icons-mdi/delete'
+  import pencilIcon from '@iconify/icons-mdi/pencil'
+  import plusThick from '@iconify/icons-mdi/plus-thick'
+  import Icon from '@iconify/svelte'
+  import { type BuildsDataWritable, type Versions } from '$lib/BuildsData'
+  import Svelecte from 'svelecte'
+  import { getContext } from 'svelte'
   import {
     Accordion,
     AccordionItem,
@@ -11,15 +19,6 @@
     ModalFooter,
     ModalHeader,
   } from 'sveltestrap'
-  import pencilIcon from '@iconify/icons-mdi/pencil'
-  import contentSave from '@iconify/icons-mdi/content-save'
-  import plusThick from '@iconify/icons-mdi/plus-thick'
-  import Icon from '@iconify/svelte'
-  import Svelecte from 'svelecte'
-  import type {BuildsDataWritable} from '$lib/BuildsData'
-  import type {Versions} from '$lib/dataTypes'
-  import deleteIcon from '@iconify/icons-mdi/delete'
-  import {getContext} from 'svelte'
 
   export let modalOpen = false
 
@@ -69,75 +68,128 @@
   }
 
   type LocalConfig = {
-    versions: Versions[];
-    currentVersion: string;
-    versionNumbers?: SvelecteValue[];
+    versions: Versions[]
+    currentVersion: string
+    versionNumbers?: SvelecteValue[]
   }
 
-  type SvelecteValue = { text: string, value: string }
+  type SvelecteValue = { text: string; value: string }
 </script>
 
-<Modal isOpen={modalOpen} toggle={modalToggle} size="lg" scrollable>
+<Modal
+  isOpen={modalOpen}
+  toggle={modalToggle}
+  size="lg"
+  scrollable
+>
   <ModalHeader toggle={modalToggle}>
-    <Icon icon={pencilIcon} style="vertical-align: -0.15em;"/>
+    <Icon
+      icon={pencilIcon}
+      style="vertical-align: -0.15em;"
+    />
     Edit versions config
   </ModalHeader>
   <ModalBody>
-    <form bind:this={form} on:submit|preventDefault={formSubmit}>
+    <form
+      bind:this={form}
+      on:submit|preventDefault={formSubmit}
+    >
       <FormGroup>
         <Label for="editCurrentVersion">Current version</Label>
-        <Svelecte inputId="editCurrentVersion" class="svelecte--dark"
-                  options={localConfig.versionNumbers}
-                  bind:value={localConfig.currentVersion}
-                  required
+        <Svelecte
+          inputId="editCurrentVersion"
+          class="svelecte--dark"
+          options={localConfig.versionNumbers}
+          bind:value={localConfig.currentVersion}
+          required
         />
       </FormGroup>
-      <hr/>
+      <hr />
       <h3>Versions</h3>
       <div class="mb-3">
-        <Button type="button" color="primary" size="lg" on:click={addVersion}>
-          <span class='btn-icon__inner'>
-            <Icon icon={plusThick} class='btn-icon__icon'/>
-            <span class='btn-icon__text'>Add new version</span>
+        <Button
+          type="button"
+          color="primary"
+          size="lg"
+          on:click={addVersion}
+        >
+          <span class="btn-icon__inner">
+            <Icon
+              icon={plusThick}
+              class="btn-icon__icon"
+            />
+            <span class="btn-icon__text">Add new version</span>
           </span>
         </Button>
       </div>
       <Accordion>
         {#each localConfig.versions as version}
           <AccordionItem header={version.version || 'new'}>
-            <FormGroup floating label="Version number">
-              <Input pattern={'\\d\\.\\d{1,2}'} bind:value={version.version} required/>
+            <FormGroup
+              floating
+              label="Version number"
+            >
+              <Input
+                pattern={'\\d\\.\\d{1,2}'}
+                bind:value={version.version}
+                required
+              />
             </FormGroup>
-            <FormGroup floating label="League name">
-              <Input bind:value={version.name} required/>
+            <FormGroup
+              floating
+              label="League name"
+            >
+              <Input
+                bind:value={version.name}
+                required
+              />
             </FormGroup>
-            <FormGroup floating label="League promo URL">
-              <Input bind:value={version.url}/>
+            <FormGroup
+              floating
+              label="League promo URL"
+            >
+              <Input bind:value={version.url} />
             </FormGroup>
             <FormGroup>
-              <Input type="switch" label="Work in progress" bind:checked={version.wip}/>
+              <Input
+                type="switch"
+                label="Work in progress"
+                bind:checked={version.wip}
+              />
             </FormGroup>
-            <FormGroup floating label="Note">
-              <Input bind:value={version.note}/>
+            <FormGroup
+              floating
+              label="Note"
+            >
+              <Input bind:value={version.note} />
             </FormGroup>
             <FormGroup>
               <Label for={`editCompatible-${version.version}`}>Compatible versions</Label>
-              <Svelecte inputId={`editCompatible-${version.version}`} class="svelecte--dark"
-                        options={localConfig.versionNumbers.filter((fVersion) => {
-                          return (fVersion.value !== localConfig.currentVersion) && (fVersion.value !== version.version)
-                        })}
-                        bind:value={version.compatible}
-                        placeholder="Add version..."
-                        multiple
+              <Svelecte
+                inputId={`editCompatible-${version.version}`}
+                class="svelecte--dark"
+                options={localConfig.versionNumbers?.filter((fVersion) => {
+                  return fVersion.value !== localConfig.currentVersion && fVersion.value !== version.version
+                })}
+                bind:value={version.compatible}
+                placeholder="Add version..."
+                multiple
               />
             </FormGroup>
-            <Button type="button" color="danger" class="text-white"
-                    on:click={() => {
-                      deleteVersion(version)
-                    }}>
-              <span class='btn-icon__inner'>
-                <Icon icon={deleteIcon} class='btn-icon__icon'/>
-                <span class='btn-icon__text'>Delete</span>
+            <Button
+              type="button"
+              color="danger"
+              class="text-white"
+              on:click={() => {
+                deleteVersion(version)
+              }}
+            >
+              <span class="btn-icon__inner">
+                <Icon
+                  icon={deleteIcon}
+                  class="btn-icon__icon"
+                />
+                <span class="btn-icon__text">Delete</span>
               </span>
             </Button>
           </AccordionItem>
@@ -146,10 +198,17 @@
     </form>
   </ModalBody>
   <ModalFooter>
-    <Button type="submit" color='primary' on:click={formSubmit}>
-      <span class='btn-icon__inner'>
-        <Icon icon={contentSave} class='btn-icon__icon'/>
-        <span class='btn-icon__text'>Save</span>
+    <Button
+      type="submit"
+      color="primary"
+      on:click={formSubmit}
+    >
+      <span class="btn-icon__inner">
+        <Icon
+          icon={contentSave}
+          class="btn-icon__icon"
+        />
+        <span class="btn-icon__text">Save</span>
       </span>
     </Button>
   </ModalFooter>

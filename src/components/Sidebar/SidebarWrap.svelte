@@ -1,8 +1,8 @@
 <script lang="ts">
-  import {onMount} from 'svelte'
+  import { onMount } from 'svelte'
 
   let className = 'sidebar'
-  export {className as class}
+  export { className as class }
 
   let sidebarElement: HTMLElement
   let sidebarTop: number | undefined
@@ -24,13 +24,20 @@
   })
 </script>
 
-<aside bind:this={sidebarElement} class={'sidebar' + (className ? ' ' + className : '')} class:sidebar--stretch={stretch}>
-  <div class='card sidebar__content' style="{stretch && sidebarTop !== undefined ? `height: calc(100vh - ${sidebarTop}px);` : ''}">
-    <slot/>
+<aside
+  bind:this={sidebarElement}
+  class={'sidebar' + (className ? ' ' + className : '')}
+  class:sidebar--stretch={stretch}
+>
+  <div
+    class="card sidebar__content"
+    style={stretch && sidebarTop !== undefined ? `height: calc(100vh - ${sidebarTop}px);` : ''}
+  >
+    <slot />
   </div>
 </aside>
 
-<style lang='scss'>
+<style lang="scss">
   .sidebar {
     padding-left: var(--bs-grid-gutter-width-half);
     padding-right: var(--bs-grid-gutter-width-half);

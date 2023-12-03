@@ -1,8 +1,6 @@
 // eslint-disable-next-line canonical/filename-match-exported
-import type {RequestHandler} from '@sveltejs/kit'
-import {error as kitError, json} from '@sveltejs/kit'
-import type {Browser} from 'puppeteer'
-import { launch} from 'puppeteer'
+import { error as kitError, json, type RequestHandler } from '@sveltejs/kit'
+import { type Browser, launch } from 'puppeteer'
 
 let browser: Browser
 
@@ -12,7 +10,7 @@ const getVersionFromTitle = (title: string) => {
   return version?.[0] ?? ''
 }
 
-export const GET = (async ({url}) => {
+export const GET = (async ({ url }) => {
   const mode = url.searchParams.get('mode')
   const targetUrl = url.searchParams.get('targetUrl')
 
@@ -34,7 +32,11 @@ export const GET = (async ({url}) => {
     const page = await browser.newPage()
     await page.setRequestInterception(true)
     page.on('request', (request) => {
-      if (request.resourceType() === 'image' || request.resourceType() === 'stylesheet' || request.resourceType() === 'font') {
+      if (
+        request.resourceType() === 'image' ||
+        request.resourceType() === 'stylesheet' ||
+        request.resourceType() === 'font'
+      ) {
         request.abort()
       } else {
         request.continue()

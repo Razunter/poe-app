@@ -6,9 +6,9 @@ export class Build {
   public video?: string
 
   public videothumb?: {
-    '480w'?: string;
-    '640w'?: string;
-    '1280w'?: string;
+    '480w'?: string
+    '640w'?: string
+    '1280w'?: string
   }
 
   public versions: string[]
