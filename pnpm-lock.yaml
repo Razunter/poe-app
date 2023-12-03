@@ -39,8 +39,8 @@ dependencies:
     specifier: ^4.2.8
     version: 4.2.8
   sveltestrap:
-    specifier: ^5.11.2
-    version: 5.11.2(svelte@4.2.8)
+    specifier: github:edraj/sveltestrap#fix-svelte4
+    version: github.com/edraj/sveltestrap/19bfe3aad684593580bdf2e44af8294730ec00e3(svelte@4.2.8)
   vite:
     specifier: 4.4.2
     version: 4.4.2(sass@1.69.5)
@@ -7210,15 +7210,6 @@ packages:
       magic-string: 0.30.5
       periscopic: 3.1.0
 
-  /sveltestrap@5.11.2(svelte@4.2.8):
-    resolution: {integrity: sha512-fkLqIUh2QHBoom7v6kHI85grLeOqplmvtnTiA5Ck2gchzpVmwXWaWpf8qWhCFxfDuMhJBPlWbJvtSmwpDEowrg==}
-    peerDependencies:
-      svelte: ^3.53.1
-    dependencies:
-      '@popperjs/core': 2.11.8
-      svelte: 4.2.8
-    dev: false
-
   /synckit@0.8.6:
     resolution: {integrity: sha512-laHF2savN6sMeHCjLRkheIU4wo3Zg9Ln5YOjOo7sZ5dVQW8yF5pPE5SIw1dsPhq3TRp1jisKRCdPhfs/1WMqDA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -7779,3 +7770,15 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  github.com/edraj/sveltestrap/19bfe3aad684593580bdf2e44af8294730ec00e3(svelte@4.2.8):
+    resolution: {tarball: https://codeload.github.com/edraj/sveltestrap/tar.gz/19bfe3aad684593580bdf2e44af8294730ec00e3}
+    id: github.com/edraj/sveltestrap/19bfe3aad684593580bdf2e44af8294730ec00e3
+    name: sveltestrap
+    version: 5.11.2
+    peerDependencies:
+      svelte: ^4.2.0
+    dependencies:
+      '@popperjs/core': 2.11.8
+      svelte: 4.2.8
+    dev: false
