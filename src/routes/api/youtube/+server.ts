@@ -7,7 +7,7 @@ export const GET: RequestHandler = (async ({ url }) => {
   const videoID = url.searchParams.get('videoID')
 
   if (!videoID) {
-    throw error(400, 'Error: No VideoID')
+    error(400, 'Error: No VideoID');
   }
 
   try {
@@ -18,10 +18,10 @@ export const GET: RequestHandler = (async ({ url }) => {
     if (data) {
       return json(data)
     } else {
-      throw error(500, "Can't get YouTube data")
+      error(500, "Can't get YouTube data");
     }
   } catch (error_) {
-    throw error(500, error_ instanceof Error ? error_.message : String(error_))
+    error(500, error_ instanceof Error ? error_.message : String(error_));
   }
 }) satisfies RequestHandler
 

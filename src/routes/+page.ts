@@ -1,6 +1,7 @@
-import { type PageLoad } from './$types'
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { PageLoad } from './$types'
 import { error as kitError } from '@sveltejs/kit'
-import { type BuildsDataType } from '$lib/BuildsData'
+import { type BuildsDataType } from '$lib/BuildsData.ts'
 
 const dataMaintenance = (data: BuildsDataType) => {
   const supportedVersions = data.versions.map((version) => {

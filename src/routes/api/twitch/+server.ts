@@ -8,7 +8,7 @@ export const GET: RequestHandler = (async ({ url }) => {
   const videoID = url.searchParams.get('videoID')
 
   if (!videoID) {
-    throw error(400, 'Error: No VideoID')
+    error(400, 'Error: No VideoID')
   }
 
   const TwitchAuthProvider = new AppTokenAuthProvider(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET)
@@ -19,6 +19,6 @@ export const GET: RequestHandler = (async ({ url }) => {
 
     return json(videoData)
   } catch (error_) {
-    throw error(500, error_ instanceof Error ? error_.message : String(error_))
+    error(500, error_ instanceof Error ? error_.message : String(error_))
   }
 }) satisfies RequestHandler

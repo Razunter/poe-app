@@ -7,6 +7,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,21 +17,11 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "importsNotUsedAsValues": "remove",
 //    "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "incremental": true,
     "sourceMap": true,
-    "downlevelIteration": true,
-    "baseUrl": ".",
-    "paths": {
-      "$components": ["./src/components"],
-      "$components/*": ["./src/components/*"],
-      "$lib":["./src/lib"],
-      "$lib/*":["./src/lib/*"],
-      "$css": ["./src/css"],
-      "$css/*": ["./src/css/*"],
-    }
+    "downlevelIteration": true
   },
   "include": [
     "*.ts",
