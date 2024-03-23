@@ -1,6 +1,6 @@
 import { PUBLIC_ORIGIN } from '$env/static/public'
-import { Build } from '$lib/Build'
-import { type WritableLog } from '$lib/stores'
+import { Build } from '$lib/Build.ts'
+import { type WritableLog } from '$lib/stores.ts'
 import axios, { AxiosError } from 'axios'
 import { compareVersions } from 'compare-versions'
 import intersect from 'just-intersect'

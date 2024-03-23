@@ -9,6 +9,7 @@
     ],
     "allowImportingTsExtensions": true,
     "allowJs": true,
+    "checkJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -23,11 +24,4 @@
     "sourceMap": true,
     "downlevelIteration": true
   },
-  "include": [
-    "*.ts",
-    "*.js",
-    "src/**/*",
-    "tests/**/*",
-    ".svelte-kit/ambient.d.ts"
-  ]
 }
