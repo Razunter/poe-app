@@ -7,7 +7,7 @@
   import { type Build } from '$lib/Build'
   import { type BuildsDataWritable } from '$lib/BuildsData'
   import { getContext } from 'svelte'
-  import { Button } from 'sveltestrap'
+  import { Button } from '@sveltestrap/sveltestrap'
 
   export let buildData: Build
   export let outdated = false

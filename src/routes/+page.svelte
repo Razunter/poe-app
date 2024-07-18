@@ -2,17 +2,17 @@
   import circleSmall from '@iconify/icons-mdi/circle-small'
   import plusThick from '@iconify/icons-mdi/plus-thick'
   import Icon from '@iconify/svelte'
+  import { Button } from '@sveltestrap/sveltestrap'
   import Build from '$components/Build.svelte'
   import BuildEditModal from '$components/BuildEditModal.svelte'
-  import { type BuildsDataType, type BuildsDataWritable } from '$lib/BuildsData.ts'
+  import type { BuildsDataType, BuildsDataWritable } from '$lib/BuildsData.ts'
   import { BuildsDataClass } from '$lib/BuildsData.ts'
   import { getContext } from 'svelte'
-  import { type Writable } from 'svelte/store'
-  import { Button } from 'sveltestrap'
+  import type { Writable } from 'svelte/store'
 
-  export let data: { buildData: BuildsDataType }
+  export let data: { buildsData: BuildsDataType }
   const BuildsData: BuildsDataWritable = getContext('BuildsData')
-  $BuildsData = new BuildsDataClass(data.buildData)
+  $BuildsData = new BuildsDataClass(data.buildsData)
 
   const showOutdated = getContext<Writable<boolean>>('showOutdated')
 
@@ -65,11 +65,12 @@
             addBuild(buildCategory.type)
           }}
         >
-          <span class="btn-icon__inner"
-            ><Icon
+          <span class="btn-icon__inner">
+            <Icon
               icon={plusThick}
               class="btn-icon__icon"
-            /><span class="btn-icon__text">Add build</span></span
+            />
+            <span class="btn-icon__text">Add build</span></span
           >
         </Button>
       </div>

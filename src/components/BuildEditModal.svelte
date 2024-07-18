@@ -3,12 +3,12 @@
   import contentSave from '@iconify/icons-mdi/content-save'
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import Icon from '@iconify/svelte'
+  import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from '@sveltestrap/sveltestrap'
   import { Build } from '$lib/Build'
-  import { type BuildsDataWritable } from '$lib/BuildsData'
+  import type { BuildsDataWritable } from '$lib/BuildsData'
   import { BuildsDataClass } from '$lib/BuildsData'
   import Svelecte from 'svelecte'
   import { getContext } from 'svelte'
-  import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'sveltestrap'
 
   // Unique build url for editing
   export let buildUrl = ''
@@ -49,7 +49,6 @@
   const init = async () => {
     if (buildUrl) {
       for (const buildCategory of $BuildsData.buildList) {
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
         const existingBuild = buildCategory.builds.find((build_) => {
           return build_.url === buildUrl
         })
@@ -169,7 +168,6 @@
           clearable
           allowEditing
           creatable
-          labelAsValue
           creatablePrefix=""
         />
       </FormGroup>
@@ -198,7 +196,6 @@
           options={versionsArray}
           bind:value={build.versions}
           multiple
-          labelAsValue
         />
       </FormGroup>
       <FormGroup>

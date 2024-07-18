@@ -1,6 +1,6 @@
-// eslint-disable-next-line import/consistent-type-specifier-style
+import type { PageLoad } from './$types'
 import { error as kitError } from '@sveltejs/kit'
-import { type BuildsDataType } from '$lib/BuildsData.ts'
+import type { BuildsDataType } from '$lib/BuildsData.ts'
 
 const dataMaintenance = (data: BuildsDataType) => {
   const supportedVersions = data.versions.map((version) => {
@@ -19,7 +19,7 @@ const dataMaintenance = (data: BuildsDataType) => {
   return data
 }
 
-export const load = async ({ fetch }) => {
+export const load: PageLoad = async ({ fetch }) => {
   const response = await fetch('/api/load', {
     method: 'GET',
     credentials: 'same-origin',
@@ -31,11 +31,13 @@ export const load = async ({ fetch }) => {
 
   const data = (await response.json()) as BuildsDataType | Error
 
-  if (response.status !== 200) {
+  if (response.status !== 200 || data instanceof Error) {
     throw kitError(500, 'message' in data ? data.message : 'data')
   }
 
+  const cleanedData = dataMaintenance(data)
+
   return {
-    buildData: dataMaintenance(data as BuildsDataType),
+    buildsData: cleanedData,
   }
 }

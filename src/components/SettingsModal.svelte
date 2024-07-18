@@ -4,9 +4,6 @@
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import plusThick from '@iconify/icons-mdi/plus-thick'
   import Icon from '@iconify/svelte'
-  import { type BuildsDataWritable, type Versions } from '$lib/BuildsData.ts'
-  import Svelecte from 'svelecte'
-  import { getContext } from 'svelte'
   import {
     Accordion,
     AccordionItem,
@@ -18,7 +15,10 @@
     ModalBody,
     ModalFooter,
     ModalHeader,
-  } from 'sveltestrap'
+  } from '@sveltestrap/sveltestrap'
+  import { type BuildsDataWritable, type Versions } from '$lib/BuildsData.ts'
+  import Svelecte from 'svelecte'
+  import { getContext } from 'svelte'
 
   export let modalOpen = false
 

@@ -12,7 +12,7 @@
   import { type WritableLog } from '$lib/stores'
   import { getContext } from 'svelte'
   import { type Writable } from 'svelte/store'
-  import { Button, FormGroup, Input, Progress } from 'sveltestrap'
+  import { Button, FormGroup, Input, Progress } from '@sveltestrap/sveltestrap'
 
   const showOutdated = getContext<Writable<boolean>>('showOutdated')
 

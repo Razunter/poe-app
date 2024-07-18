@@ -3,7 +3,7 @@
   import Header from '$components/LayoutHeader.svelte'
   import Sidebar from '$components/Sidebar/Sidebar.svelte'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
-  import { type BuildsDataClass } from '$lib/BuildsData'
+  import type { BuildsDataClass } from '$lib/BuildsData'
   import { log, progressBar, showOutdated } from '$lib/stores'
   import { setContext } from 'svelte'
   import { writable } from 'svelte/store'

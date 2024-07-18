@@ -1,5 +1,13 @@
-import { FlatCompat } from '@eslint/eslintrc'
-import prettierConfig from 'eslint-config-canonical/configurations/prettier.js'
+import tsParser from '@typescript-eslint/parser'
+import auto from 'eslint-config-canonical/configurations/auto.js'
+import canonical from 'eslint-config-canonical/configurations/canonical.js'
+import canonicalJSDoc from 'eslint-config-canonical/configurations/jsdoc.js'
+import canonicalPrettier from 'eslint-config-canonical/configurations/prettier.js'
+import canonicalRegexp from 'eslint-config-canonical/configurations/regexp.js'
+import canonicalTS from 'eslint-config-canonical/configurations/typescript.js'
+import canonicalTSTC from 'eslint-config-canonical/configurations/typescript-type-checking.js'
+import * as depend from 'eslint-plugin-depend'
+import eslintPluginSvelte from 'eslint-plugin-svelte'
 import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,11 +16,7 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
-
-const newPrettierConfig = prettierConfig.rules['prettier/prettier'][1]
+const newPrettierConfig = canonicalPrettier.recommended.rules['prettier/prettier'][1]
 newPrettierConfig.semi = false
 newPrettierConfig.printWidth = 120
 
@@ -79,63 +83,67 @@ const ts = {
   'canonical/import-specifier-newline': 'off',
   'canonical/prefer-inline-type-import': 'off',
   'typescript-sort-keys/interface': 'off',
+  'import/consistent-type-specifier-style': 'off', // not granular enough
+  'import/no-duplicates': 'warn',
 }
 
 export default [
-  // mimic ESLintRC-style extends
-  ...compat.extends('canonical/auto'),
-  ...compat.config({
-    extends: 'plugin:svelte/recommended',
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-      project: './tsconfig.json',
-      tsconfigRootDir: __dirname,
-      extraFileExtensions: ['.svelte'],
+  ...auto,
+  ...eslintPluginSvelte.configs['flat/recommended'],
+  depend.configs['flat/recommended'],
+  {
+    files: ['**/*.svelte'],
+    plugins: {
+      ...canonical.recommended.plugins,
+      ...canonicalTS.recommended.plugins,
+      ...canonicalTSTC.recommended.plugins,
+      ...canonicalRegexp.recommended.plugins,
+      ...canonicalPrettier.recommended.plugins,
+      ...canonicalJSDoc.recommended.plugins,
     },
-    overrides: [
-      {
-        files: ['**/*.svelte'],
-        plugins: ['prettier'],
-        extends: [
-          'canonical',
-          'canonical/regexp',
-          'canonical/jsdoc',
-          'canonical/node',
-          'canonical/typescript',
-          'canonical/prettier',
-        ],
-        parser: 'svelte-eslint-parser',
-        parserOptions: {
-          parser: '@typescript-eslint/parser',
-          project: './tsconfig.json',
-          tsconfigRootDir: __dirname,
+    rules: {
+      ...canonical.recommended.rules,
+      ...canonicalTS.recommended.rules,
+      ...canonicalTSTC.recommended.rules,
+      ...canonicalRegexp.recommended.rules,
+      ...canonicalPrettier.recommended.rules,
+      ...canonicalJSDoc.recommended.rules,
+      ...generalJS,
+      ...ts,
+      // 'import/first': 'off',
+      // 'import/no-duplicates': 'off',
+      'import/no-mutable-exports': 'off',
+      // 'import/no-unresolved': 'off',
+      // 'import/prefer-default-export': 'off',
+      'no-multiple-empty-lines': 0,
+      '@typescript-eslint/no-unused-vars': 'off', // Breaks Svelte Stores
+      'no-self-assign': 'off', // Triggers Svelte variable update
+      'no-undef-init': 'off', // Marks variable as optional for components
+      'canonical/filename-match-regex': 'off',
+      'svelte/no-at-html-tags': 'off',
+      'prettier/prettier': [
+        2,
+        {
+          ...newPrettierConfig,
+          plugins: ['prettier-plugin-svelte'],
+          parser: 'svelte',
         },
-        rules: {
-          ...generalJS,
-          ...ts,
-          'import/first': 'off',
-          'import/no-duplicates': 'off',
-          'import/no-mutable-exports': 'off',
-          'import/no-unresolved': 'off',
-          'import/prefer-default-export': 'off',
-          'no-multiple-empty-lines': 0,
-          '@typescript-eslint/no-unused-vars': 'off', // Breaks Svelte Stores
-          'no-self-assign': 'off', // Triggers Svelte variable update
-          'no-undef-init': 'off', // Marks variable as optional for components
-          'canonical/filename-match-regex': 'off',
-          'svelte/no-at-html-tags': 'off',
-          'prettier/prettier': [
-            2,
-            {
-              ...newPrettierConfig,
-              plugins: ['prettier-plugin-svelte'],
-              parser: 'svelte',
-            },
-          ],
-        },
+      ],
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
       },
-    ],
-  }),
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+        parser: tsParser,
+        extraFileExtensions: ['.svelte'],
+      },
+    },
+  },
   {
     files: ['**/*.js'],
     rules: {
@@ -146,8 +154,7 @@ export default [
         ...globals.browser,
       },
       parserOptions: {
-        // eslint-disable-next-line unicorn/numeric-separators-style
-        ecmaVersion: 2022,
+        ecmaVersion: 'latest',
         sourceType: 'module',
       },
     },
@@ -159,8 +166,7 @@ export default [
         ...globals.browser,
       },
       parserOptions: {
-        // eslint-disable-next-line unicorn/numeric-separators-style
-        ecmaVersion: 2022,
+        ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.json',
         tsconfigRootDir: __dirname,

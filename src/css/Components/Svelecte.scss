@@ -2,17 +2,16 @@
 
 :root {
   --sv-bg: #{$input-bg};
+  --sv-item-selected-bg: #{color.adjust($input-bg, $lightness: +10%)};
+  --sv-dropdown-active-bg: var(--sv-item-selected-bg);
+  --sv-color: #{$input-color};
   --sv-icon-color: #{$input-color};
+  --sv-placeholder-color: #{$input-placeholder-color};
   --sv-border: 1px solid #{$input-border-color};
-  --sv-active-border: 1px solid #{$input-focus-border-color};
 }
 
 .sv-dd-item {
   cursor: pointer;
-}
-
-.sv-dd-item-active {
-  background-color: color.adjust($input-bg, $lightness: +10%);
 }
 
 .sv-content.has-multiSelection {
