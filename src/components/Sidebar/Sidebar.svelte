@@ -6,24 +6,20 @@
   import sortAscending from '@iconify/icons-mdi/sort-ascending'
   import vacuumIcon from '@iconify/icons-mdi/vacuum'
   import Icon from '@iconify/svelte'
+  import { Button, FormGroup, Input, Progress } from '@sveltestrap/sveltestrap'
   import SettingsModal from '$components/SettingsModal.svelte'
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
-  import { type BuildsDataWritable } from '$lib/BuildsData'
-  import { type WritableLog } from '$lib/stores'
-  import { getContext } from 'svelte'
-  import { type Writable } from 'svelte/store'
-  import { Button, FormGroup, Input, Progress } from '@sveltestrap/sveltestrap'
+  import { buildList } from '$lib/BuildsData.svelte.ts'
+  import { removeOutdatedBuilds } from '$lib/BuildsProcessing/removeOutdatedBuilds.ts'
+  import { exportBuilds } from '$lib/BuildsProcessing/exportBuilds.ts'
+  import { randomizeBuildsOrder } from '$lib/BuildsProcessing/randomizeBuildsOrder.ts'
+  import { sortBuilds } from '$lib/BuildsProcessing/sortBuilds.ts'
+  import { updateBuilds } from '$lib/BuildsProcessing/updateBuilds.ts'
+  import { progressBar, showOutdated } from '$lib/stores'
 
-  const showOutdated = getContext<Writable<boolean>>('showOutdated')
+  const { class: className }: { class?: string } = $props()
 
-  let className: string
-  export { className as class }
-
-  let showSettings = false
-
-  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
-  const progressBar = getContext<Writable<number>>('progressBar')
-  const log = getContext<WritableLog>('log')
+  let showSettings = $state(false)
 </script>
 
 <SidebarWrap class={className}>
@@ -56,8 +52,8 @@
         size="lg"
         class="btn-icon"
         on:click={async () => {
-          await $BuildsData.syncBuilds(progressBar, log)
-          $BuildsData = $BuildsData.sortBuilds()
+          await updateBuilds($buildList)
+          $buildList = sortBuilds($buildList)
         }}
       >
         <span class="btn-icon__inner"
@@ -76,7 +72,7 @@
         size="lg"
         class="btn-icon"
         on:click={() => {
-          $BuildsData = $BuildsData.sortBuilds()
+          $buildList = sortBuilds($buildList)
         }}
       >
         <span class="btn-icon__inner"
@@ -91,8 +87,8 @@
         size="lg"
         class="btn-icon"
         on:click={() => {
-          $BuildsData.randomizeOrder()
-          $BuildsData = $BuildsData.sortBuilds()
+          $buildList = randomizeBuildsOrder($buildList)
+          $buildList = sortBuilds($buildList)
         }}
       >
         <span class="btn-icon__inner"
@@ -107,7 +103,7 @@
         size="lg"
         class="btn-icon"
         on:click={() => {
-          $BuildsData = $BuildsData.cleanup(log)
+          $buildList = removeOutdatedBuilds($buildList)
         }}
       >
         <span class="btn-icon__inner"
@@ -122,7 +118,7 @@
         color="success"
         size="lg"
         on:click={() => {
-          $BuildsData.save(log)
+          void exportBuilds($buildList)
         }}
       >
         <span class="btn-icon__inner"

@@ -10,8 +10,16 @@
   --sv-border: 1px solid #{$input-border-color};
 }
 
+.svelecte button {
+  color: var(--sv-color);
+}
+
 .sv-dd-item {
   cursor: pointer;
+}
+
+.sv-input--text {
+  color: var(--sv-color);
 }
 
 .sv-content.has-multiSelection {

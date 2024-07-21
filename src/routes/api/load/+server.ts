@@ -1,12 +1,11 @@
-// eslint-disable-next-line canonical/filename-match-exported
-import { error as kitError, json } from '@sveltejs/kit'
+import { error as kitError, json, type RequestHandler } from '@sveltejs/kit'
 import { JSON_PATH } from '$env/static/private'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
 const jsonPath = path.normalize(JSON_PATH)
 
-export const GET = async () => {
+export const GET: RequestHandler = async () => {
   let versionsData
   let buildsData
 

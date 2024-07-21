@@ -3,22 +3,21 @@
   import Header from '$components/LayoutHeader.svelte'
   import Sidebar from '$components/Sidebar/Sidebar.svelte'
   import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
-  import type { BuildsDataClass } from '$lib/BuildsData'
-  import { log, progressBar, showOutdated } from '$lib/stores'
-  import { setContext } from 'svelte'
-  import { writable } from 'svelte/store'
+  import {
+    allPoeVersions,
+    buildList,
+    type BuildsDataType,
+    buildTypes,
+    currentPoeVersion,
+  } from '$lib/BuildsData.svelte.ts'
 
-  $showOutdated = false
-  setContext('showOutdated', showOutdated)
+  // eslint-disable-next-line prefer-const
+  let { data, children }: { data: { buildsData: BuildsDataType }; children: Function } = $props()
 
-  $progressBar = 0
-  setContext('progressBar', progressBar)
-
-  $log = new Map([[new Date(), 'Init']])
-  setContext('log', log)
-
-  const BuildsData = writable<BuildsDataClass>()
-  setContext('BuildsData', BuildsData)
+  buildList.set(data.buildsData.buildList)
+  buildTypes.set(data.buildsData.types)
+  allPoeVersions.set(data.buildsData.versions)
+  currentPoeVersion.set(data.buildsData.currentVersion)
 </script>
 
 <div class="page">
@@ -27,7 +26,7 @@
   <Sidebar class="sidebar--left" />
 
   <main class="page__main">
-    <slot />
+    {@render children()}
   </main>
 
   <SidebarLog class="sidebar--right" />

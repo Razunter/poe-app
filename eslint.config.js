@@ -121,6 +121,7 @@ export default [
       'no-undef-init': 'off', // Marks variable as optional for components
       'canonical/filename-match-regex': 'off',
       'svelte/no-at-html-tags': 'off',
+      'prefer-const': 'warn',
       'prettier/prettier': [
         2,
         {

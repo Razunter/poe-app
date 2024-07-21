@@ -1,10 +1,9 @@
-// eslint-disable-next-line canonical/filename-match-exported
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { ApiClient } from '@twurple/api'
 import { AppTokenAuthProvider } from '@twurple/auth'
 import { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET } from '$env/static/private'
 
-export const GET: RequestHandler = (async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const videoID = url.searchParams.get('videoID')
 
   if (!videoID) {
@@ -19,6 +18,6 @@ export const GET: RequestHandler = (async ({ url }) => {
 
     return json(videoData)
   } catch (error_) {
-    error(500, error_ instanceof Error ? error_.message : String(error_))
+    return error(500, error_ instanceof Error ? error_.message : String(error_))
   }
-}) satisfies RequestHandler
+}

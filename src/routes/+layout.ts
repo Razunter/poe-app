@@ -1,6 +1,6 @@
-import type { PageLoad } from './$types'
+import type { LayoutLoad } from './$types'
 import { error as kitError } from '@sveltejs/kit'
-import type { BuildsDataType } from '$lib/BuildsData.ts'
+import type { BuildsDataType } from '$lib/BuildsData.svelte.ts'
 
 const dataMaintenance = (data: BuildsDataType) => {
   const supportedVersions = data.versions.map((version) => {
@@ -19,7 +19,7 @@ const dataMaintenance = (data: BuildsDataType) => {
   return data
 }
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: LayoutLoad = async ({ fetch }) => {
   const response = await fetch('/api/load', {
     method: 'GET',
     credentials: 'same-origin',

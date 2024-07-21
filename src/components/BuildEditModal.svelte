@@ -1,120 +1,142 @@
 <script lang="ts">
+  import type { SvelecteOption } from '../app'
   import backupRestore from '@iconify/icons-mdi/backup-restore'
   import contentSave from '@iconify/icons-mdi/content-save'
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import Icon from '@iconify/svelte'
-  import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from '@sveltestrap/sveltestrap'
-  import { Build } from '$lib/Build'
-  import type { BuildsDataWritable } from '$lib/BuildsData'
-  import { BuildsDataClass } from '$lib/BuildsData'
+  import {
+    Button,
+    FormGroup,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Modal,
+    ModalBody,
+    ModalFooter,
+  } from '@sveltestrap/sveltestrap'
+  import {
+    allBuildAuthors,
+    allPoeVersions,
+    type Build,
+    buildList,
+    buildTypes,
+    currentPoeVersion,
+  } from '$lib/BuildsData.svelte.ts'
+  import { checkBuildsForDuplicates } from '$lib/BuildsProcessing/checkBuildsForDuplicates.ts'
   import Svelecte from 'svelecte'
-  import { getContext } from 'svelte'
 
   // Unique build url for editing
-  export let buildUrl = ''
-
-  export let modalOpen = false
-
-  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
+  let {
+    buildUrl = '',
+    modalOpen = $bindable(false),
+    buildType = $bindable($buildTypes[0]),
+  }: {
+    buildUrl?: string
+    modalOpen?: boolean
+    buildType?: string
+  } = $props()
 
   const modalToggle = () => {
     return (modalOpen = !modalOpen)
   }
 
-  const authorsArray: string[] = []
-  for (const author of $BuildsData.authors.values()) {
-    authorsArray.push(author)
-  }
-  authorsArray.sort()
-
-  const versionsArray: string[] = $BuildsData.versions.map((version) => {
-    return version.version
+  const authorsArray: string[] = $derived.by(() => {
+    const deriveAuthorsArray: string[] = Array.from($allBuildAuthors.values())
+    return deriveAuthorsArray.sort((a, b) => a.localeCompare(b))
   })
 
-  const buildTypesArray: Array<{ value: string; label: string }> = []
-  for (const typeKey in $BuildsData.types) {
-    buildTypesArray.push({ value: typeKey, label: $BuildsData.types[typeKey] })
-  }
+  const versionsArray: string[] = $derived($allPoeVersions.map((version) => version.version))
 
-  let build: Build
-  let buildOriginalTitle: string | undefined
-  let buildOriginalType: string | undefined
+  const buildTypesArray: Array<{ value: string; label: string }> = $derived.by(() => {
+    const deriveBuildTypesArray: Array<{ value: string; label: string }> = []
+    for (const typeKey in $buildTypes) {
+      if (Object.hasOwn($buildTypes, typeKey)) {
+        deriveBuildTypesArray.push({ value: typeKey, label: $buildTypes[typeKey] })
+      }
+    }
 
-  // can be set on modal creation
-  export let buildType: string = $BuildsData.types[0]
+    return deriveBuildTypesArray
+  })
 
-  let form: HTMLFormElement
-  let invalidUrl = ''
+  let buildOriginalTitle: string = $state('')
+  let buildOriginalType: string = $state('')
 
-  const init = async () => {
+  const initBuild = (): Build => {
     if (buildUrl) {
-      for (const buildCategory of $BuildsData.buildList) {
+      for (const buildCategory of $buildList) {
         const existingBuild = buildCategory.builds.find((build_) => {
           return build_.url === buildUrl
         })
 
         if (existingBuild) {
-          build = new Build(existingBuild)
           buildType = buildCategory.type
           buildOriginalType = buildCategory.type
           buildOriginalTitle = existingBuild.title
-          break
+          return structuredClone(existingBuild)
         }
       }
-    } else {
-      build = new Build({ versions: [$BuildsData.currentVersion] })
     }
+
+    return { title: '', url: '', versions: [$currentPoeVersion] }
   }
 
-  // On open
-  init()
+  let build: Build = $state(initBuild())
+
+  let form: HTMLFormElement
+  let invalidUrl = $state('')
 
   const saveBuild = () => {
     if (buildOriginalType && buildOriginalType !== buildType) {
-      const buildOriginalTypeIndex = $BuildsData.buildList.findIndex((buildCategory) => {
+      const buildOriginalTypeIndex = $buildList.findIndex((buildCategory) => {
         return buildCategory.type === buildOriginalType
       })
 
-      const buildOriginalIndex = $BuildsData.buildList[buildOriginalTypeIndex].builds.findIndex((build_) => {
-        return build_.url === build.url
+      const buildOriginalIndex = $buildList[buildOriginalTypeIndex].builds.findIndex((build_) => {
+        return build_.url === build?.url
       })
 
-      $BuildsData.buildList[buildOriginalTypeIndex].builds.splice(buildOriginalIndex, 1)
+      $buildList[buildOriginalTypeIndex].builds.splice(buildOriginalIndex, 1)
     }
 
-    const buildTypeIndex = $BuildsData.buildList.findIndex((buildCategory) => {
+    let buildTypeIndex = $buildList.findIndex((buildCategory) => {
       return buildCategory.type === buildType
     })
 
     // not found, add new
     if (buildTypeIndex === -1) {
-      $BuildsData.buildList.push({
-        type: buildType,
-        builds: [build],
-      })
+      const buildTypeSnapshot = $state.snapshot(buildType)
+      const buildTypeLowercase = buildTypeSnapshot.toLowerCase()
+      $buildTypes[buildTypeLowercase] = buildTypeSnapshot
+      buildTypeIndex =
+        $buildList.push({
+          type: buildTypeLowercase,
+          builds: [$state.snapshot(build)],
+        }) - 1
     }
 
-    const foundBuildIndex = $BuildsData.buildList[buildTypeIndex].builds.findIndex((build_) => {
+    const foundBuildIndex = $buildList[buildTypeIndex].builds.findIndex((build_) => {
       return build_.url === build.url
     })
 
     if (foundBuildIndex >= 0) {
-      $BuildsData.buildList[buildTypeIndex].builds[foundBuildIndex] = build
+      $buildList[buildTypeIndex].builds[foundBuildIndex] = $state.snapshot(build)
     } else {
       // not found, add new
-      $BuildsData.buildList[buildTypeIndex].builds.push(build)
+      $buildList[buildTypeIndex].builds.push($state.snapshot(build))
     }
 
     // Trigger update
-    $BuildsData = $BuildsData
+    $buildList = $buildList
   }
 
-  const formSubmit = () => {
+  const formSubmit = (event: SubmitEvent | MouseEvent) => {
+    event.preventDefault()
+
     if (!form.reportValidity()) {
       return
     }
 
-    invalidUrl = BuildsDataClass.checkForDuplicates($BuildsData.buildList, build.url, buildOriginalTitle)
+    invalidUrl = checkBuildsForDuplicates($buildList, build.url, buildOriginalTitle)
     if (invalidUrl) {
       return
     }
@@ -129,37 +151,74 @@
   toggle={modalToggle}
   size="lg"
 >
-  <ModalHeader toggle={modalToggle}>
-    <Icon
-      icon={pencilIcon}
-      style="vertical-align: -0.15em;"
-    />
-    Edit build
-  </ModalHeader>
   <ModalBody>
+    <h5 class="modal-title border-bottom mb-3 py-2">
+      <Icon
+        icon={pencilIcon}
+        style="vertical-align: -0.15em;"
+      />
+      Edit build
+    </h5>
     <form
       bind:this={form}
-      on:submit|preventDefault={formSubmit}
+      onsubmit={formSubmit}
     >
       <FormGroup>
-        <Label for="editBuildType">Type</Label>
+        <label
+          class="form-label"
+          for="editBuildType"
+        >
+          Type
+        </label>
         <Svelecte
           inputId="editBuildType"
           class="svelecte--dark"
           options={buildTypesArray}
           bind:value={buildType}
+          allowEditing
+          creatable
+          creatablePrefix=""
+          keepCreated
+          onCreateOption={(newOption: SvelecteOption) => {
+            buildType = newOption.value
+          }}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="editBuildTitle">Title</Label>
-        <Input
-          id="editBuildTitle"
-          required
-          bind:value={build.title}
-        />
+        <label
+          class="form-label"
+          for="editBuildTitle"
+        >
+          Title
+        </label>
+        <InputGroup>
+          <Input
+            id="editBuildTitle"
+            required
+            bind:value={build.title}
+          />
+          <InputGroupText class="p-1 bg-dark">
+            <Button
+              type="button"
+              title="lowercase"
+              color="dark"
+              class="py-0"
+              on:click={() => {
+                build.title = build.title.toLowerCase()
+              }}
+            >
+              low
+            </Button>
+          </InputGroupText>
+        </InputGroup>
       </FormGroup>
       <FormGroup>
-        <Label for="editBuildAuthor">Author</Label>
+        <label
+          class="form-label"
+          for="editBuildAuthor"
+        >
+          Author
+        </label>
         <Svelecte
           inputId="editBuildAuthor"
           class="svelecte--dark"
@@ -169,10 +228,19 @@
           allowEditing
           creatable
           creatablePrefix=""
+          keepCreated
+          onCreateOption={(newOption: SvelecteOption) => {
+            build.author = newOption.value
+          }}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="editBuildURL">URL</Label>
+        <label
+          class="form-label"
+          for="editBuildURL"
+        >
+          URL
+        </label>
         <Input
           id="editBuildURL"
           invalid={invalidUrl.length > 0}
@@ -182,14 +250,24 @@
         />
       </FormGroup>
       <FormGroup>
-        <Label for="editBuildVideoURL">Video URL</Label>
+        <label
+          class="form-label"
+          for="editBuildVideoURL"
+        >
+          Video URL
+        </label>
         <Input
           id="editBuildVideoURL"
           bind:value={build.video}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="editBuildVersions">Compatible game versions</Label>
+        <label
+          class="form-label"
+          for="editBuildVersions"
+        >
+          Compatible game versions
+        </label>
         <Svelecte
           inputId="editBuildVersions"
           class="svelecte--dark"
@@ -199,18 +277,28 @@
         />
       </FormGroup>
       <FormGroup>
+        <label
+          class="form-label"
+          for="pinBuild"
+        >
+          Pin build
+        </label>
         <Input
           id="pinBuild"
           type="switch"
-          label="Pin build"
           bind:checked={build.pin}
         />
       </FormGroup>
       <FormGroup>
+        <label
+          class="form-label"
+          for="pinBuild"
+        >
+          Skip build
+        </label>
         <Input
           id="skipBuild"
           type="switch"
-          label="Skip build"
           bind:checked={build.skip}
         />
       </FormGroup>
@@ -220,7 +308,9 @@
     <Button
       type="reset"
       color="warning"
-      on:click={init}
+      on:click={() => {
+        build = initBuild()
+      }}
     >
       <span class="btn-icon__inner">
         <Icon

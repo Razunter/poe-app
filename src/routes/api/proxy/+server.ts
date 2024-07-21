@@ -1,5 +1,4 @@
-// eslint-disable-next-line canonical/filename-match-exported
-import { error as kitError, json, type RequestHandler } from '@sveltejs/kit'
+import { error, error as kitError, json, type RequestHandler } from '@sveltejs/kit'
 import { type Browser, launch } from 'puppeteer'
 
 let browser: Browser
@@ -10,7 +9,7 @@ const getVersionFromTitle = (title: string) => {
   return version?.[0] ?? ''
 }
 
-export const GET = (async ({ url }) => {
+export const GET: RequestHandler = (async ({ url }) => {
   const mode = url.searchParams.get('mode')
   const targetUrl = url.searchParams.get('targetUrl')
 
@@ -19,9 +18,7 @@ export const GET = (async ({ url }) => {
   }
 
   if (mode === 'start') {
-    browser = await launch({
-      headless: 'new',
-    })
+    browser = await launch()
     return new Response('success')
   } else if (mode === 'end') {
     browser?.close()
@@ -43,11 +40,17 @@ export const GET = (async ({ url }) => {
       }
     })
     await page.setJavaScriptEnabled(false)
-    await page.goto(targetUrl)
+    const response = await page.goto(targetUrl)
 
-    const versionOutput = getVersionFromTitle(await page.title())
+    if (response && response.ok()) {
+      const versionOutput = getVersionFromTitle(await page.title())
 
-    return json(versionOutput)
+      return json(versionOutput)
+    } else if (response) {
+      return error(response.status(), response.statusText())
+    } else {
+      return error(500, 'Internal Server Error')
+    }
   }
 
   return new Response('Error: browser undefined')

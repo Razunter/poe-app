@@ -1,7 +1,6 @@
-// eslint-disable-next-line canonical/filename-match-exported
 import { error as kitError, type RequestHandler } from '@sveltejs/kit'
 import { JSON_PATH } from '$env/static/private'
-import { type BuildsDataType } from '$lib/BuildsData.ts'
+import type { BuildsDataType } from '$lib/BuildsData.svelte.ts'
 import fs from 'node:fs'
 import path from 'node:path'
 

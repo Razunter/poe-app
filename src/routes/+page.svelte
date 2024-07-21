@@ -5,16 +5,9 @@
   import { Button } from '@sveltestrap/sveltestrap'
   import Build from '$components/Build.svelte'
   import BuildEditModal from '$components/BuildEditModal.svelte'
-  import type { BuildsDataType, BuildsDataWritable } from '$lib/BuildsData.ts'
-  import { BuildsDataClass } from '$lib/BuildsData.ts'
-  import { getContext } from 'svelte'
-  import type { Writable } from 'svelte/store'
-
-  export let data: { buildsData: BuildsDataType }
-  const BuildsData: BuildsDataWritable = getContext('BuildsData')
-  $BuildsData = new BuildsDataClass(data.buildsData)
-
-  const showOutdated = getContext<Writable<boolean>>('showOutdated')
+  import { buildList } from '$lib/BuildsData.svelte.ts'
+  import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
+  import { showOutdated } from '$lib/stores.ts'
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
@@ -49,7 +42,7 @@
     {/if}
   </div>
   <div class="card-body">
-    {#each $BuildsData.buildList as buildCategory}
+    {#each $buildList as buildCategory}
       <div class="d-flex justify-content-between align-center">
         <h3 class="display-6 icon-wrap">
           <Icon
@@ -76,7 +69,7 @@
       </div>
       <hr />
       {#each buildCategory.builds as build}
-        {@const outdated = BuildsDataClass.isOutdatedBuild($BuildsData, build.versions)}
+        {@const outdated = isOutdatedBuild(build.versions)}
         {#if !outdated || ($showOutdated && outdated)}
           <Build
             buildData={build}

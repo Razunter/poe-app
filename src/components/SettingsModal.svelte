@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { SvelecteOption } from '../app'
   import contentSave from '@iconify/icons-mdi/content-save'
   import deleteIcon from '@iconify/icons-mdi/delete'
   import pencilIcon from '@iconify/icons-mdi/pencil'
@@ -10,45 +11,43 @@
     Button,
     FormGroup,
     Input,
-    Label,
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader,
   } from '@sveltestrap/sveltestrap'
-  import { type BuildsDataWritable, type Versions } from '$lib/BuildsData.ts'
+  import { allPoeVersions, currentPoeVersion, type Versions } from '$lib/BuildsData.svelte.ts'
   import Svelecte from 'svelecte'
-  import { getContext } from 'svelte'
 
-  export let modalOpen = false
+  let { modalOpen = $bindable(false) }: { modalOpen?: boolean } = $props()
 
   let form: HTMLFormElement
-
-  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
 
   const modalToggle = () => {
     return (modalOpen = !modalOpen)
   }
 
-  const localConfig: LocalConfig = {
-    versions: structuredClone($BuildsData.versions).reverse(),
-    currentVersion: $BuildsData.currentVersion,
-  }
+  const localConfig: LocalConfig = $state({
+    versions: structuredClone($allPoeVersions).reverse(),
+    currentVersion: $currentPoeVersion,
+  })
 
-  $: localConfig.versionNumbers = localConfig.versions.map((version) => {
+  localConfig.versionNumbers = localConfig.versions.map((version) => {
     return {
       text: version.version,
       value: version.version,
-    } satisfies SvelecteValue
+    } satisfies SvelecteOption
   })
 
-  const formSubmit = () => {
+  const formSubmit = (event: SubmitEvent | MouseEvent) => {
+    event.preventDefault()
+
     if (!form.reportValidity()) {
       return
     }
 
-    $BuildsData.versions = localConfig.versions.reverse()
-    $BuildsData.currentVersion = localConfig.currentVersion
+    const localConfigSnapshot = $state.snapshot(localConfig)
+    $allPoeVersions = localConfigSnapshot.versions.reverse()
+    $currentPoeVersion = localConfigSnapshot.currentVersion
 
     modalOpen = false
   }
@@ -70,10 +69,8 @@
   type LocalConfig = {
     versions: Versions[]
     currentVersion: string
-    versionNumbers?: SvelecteValue[]
+    versionNumbers?: SvelecteOption[]
   }
-
-  type SvelecteValue = { text: string; value: string }
 </script>
 
 <Modal
@@ -82,25 +79,31 @@
   size="lg"
   scrollable
 >
-  <ModalHeader toggle={modalToggle}>
-    <Icon
-      icon={pencilIcon}
-      style="vertical-align: -0.15em;"
-    />
-    Edit versions config
-  </ModalHeader>
   <ModalBody>
+    <h5 class="modal-title border-bottom mb-3 py-2">
+      <Icon
+        icon={pencilIcon}
+        style="vertical-align: -0.15em;"
+      />
+      Edit versions config
+    </h5>
     <form
       bind:this={form}
-      on:submit|preventDefault={formSubmit}
+      onsubmit={formSubmit}
     >
       <FormGroup>
-        <Label for="editCurrentVersion">Current version</Label>
+        <label
+          class="form-label"
+          for="editCurrentVersion"
+        >
+          Current version
+        </label>
         <Svelecte
           inputId="editCurrentVersion"
           class="svelecte--dark"
           options={localConfig.versionNumbers}
           bind:value={localConfig.currentVersion}
+          name="editCurrentVersionSelect"
           required
         />
       </FormGroup>
@@ -164,7 +167,12 @@
               <Input bind:value={version.note} />
             </FormGroup>
             <FormGroup>
-              <Label for={`editCompatible-${version.version}`}>Compatible versions</Label>
+              <label
+                class="form-label"
+                for={`editCompatible-${version.version}`}
+              >
+                Compatible versions
+              </label>
               <Svelecte
                 inputId={`editCompatible-${version.version}`}
                 class="svelecte--dark"
@@ -213,6 +221,3 @@
     </Button>
   </ModalFooter>
 </Modal>
-
-<style lang="scss">
-</style>

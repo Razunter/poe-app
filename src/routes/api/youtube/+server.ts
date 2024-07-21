@@ -1,13 +1,12 @@
-// eslint-disable-next-line canonical/filename-match-exported
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { YOUTUBE_API_KEY } from '$env/static/private'
 import axios from 'axios'
 
-export const GET: RequestHandler = (async ({ url }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const videoID = url.searchParams.get('videoID')
 
   if (!videoID) {
-    error(400, 'Error: No VideoID');
+    error(400, 'Error: No VideoID')
   }
 
   try {
@@ -18,12 +17,12 @@ export const GET: RequestHandler = (async ({ url }) => {
     if (data) {
       return json(data)
     } else {
-      error(500, "Can't get YouTube data");
+      return error(500, "Can't get YouTube data")
     }
   } catch (error_) {
-    error(500, error_ instanceof Error ? error_.message : String(error_));
+    return error(500, error_ instanceof Error ? error_.message : String(error_))
   }
-}) satisfies RequestHandler
+}
 
 export type YouTubeData = {
   kind: string

@@ -1,14 +1,10 @@
 <script lang="ts">
   import SidebarWrap from '$components/Sidebar/SidebarWrap.svelte'
-  import { type WritableLog } from '$lib/stores'
-  import { getContext } from 'svelte'
+  import { log } from '$lib/stores.ts'
 
-  let className: string
-  export { className as class }
+  let { class: className }: { class?: string } = $props()
 
-  const log = getContext<WritableLog>('log')
-  let logKeys: Array<[Date, string]>
-  $: logKeys = Array.from($log).reverse()
+  let logKeys: Array<[Date, string]> = $derived(Array.from($log).reverse())
 </script>
 
 <SidebarWrap

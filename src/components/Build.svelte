@@ -3,18 +3,13 @@
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import pinIcon from '@iconify/icons-mdi/pin'
   import Icon from '@iconify/svelte'
-  import BuildEditModal from '$components/BuildEditModal.svelte'
-  import { type Build } from '$lib/Build'
-  import { type BuildsDataWritable } from '$lib/BuildsData'
-  import { getContext } from 'svelte'
   import { Button } from '@sveltestrap/sveltestrap'
+  import BuildEditModal from '$components/BuildEditModal.svelte'
+  import { type Build, buildList } from '$lib/BuildsData.svelte.ts'
 
-  export let buildData: Build
-  export let outdated = false
+  const { buildData, outdated }: { buildData: Build; outdated: boolean } = $props()
 
-  let editModalOpen = false
-
-  const BuildsData = getContext<BuildsDataWritable>('BuildsData')
+  let editModalOpen = $state(false)
 
   const deleteBuild = () => {
     // eslint-disable-next-line no-alert
@@ -23,11 +18,10 @@
     }
 
     let buildIndex = -1
-    let categoryIndex: string | undefined
+    let categoryIndex: number | undefined
 
-    for (const buildCategory in $BuildsData.buildList) {
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
-      buildIndex = $BuildsData.buildList[buildCategory].builds.findIndex((build) => {
+    for (const buildCategory of $buildList.keys()) {
+      buildIndex = $buildList[buildCategory].builds.findIndex((build) => {
         return build.url === buildData.url
       })
 
@@ -37,10 +31,12 @@
       }
     }
 
-    if (buildIndex >= 0 && categoryIndex) {
-      $BuildsData.buildList[categoryIndex].builds.splice(buildIndex, 1)
-      // trigger update
-      $BuildsData = $BuildsData
+    if (buildIndex >= 0 && categoryIndex !== undefined) {
+      buildList.update((currentBuildList) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        currentBuildList[categoryIndex!].builds.splice(buildIndex, 1)
+        return currentBuildList
+      })
     }
   }
 </script>
@@ -67,8 +63,8 @@
     {buildData.title}
     {#if outdated && buildData.versions.length > 0}
       - <span class="build__version text-warning">
-        {buildData.versions[buildData.versions.length - 1]}
-      </span>
+      {buildData.versions[buildData.versions.length - 1]}
+    </span>
     {/if}
   </h4>
   <div class="build__url card-text">
