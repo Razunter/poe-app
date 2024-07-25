@@ -6,7 +6,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // prependData: `@import 'src/styles/variables.scss';`,
+        // prependData: `@import '/src/css/variables.scss';`,
         quietDeps: true,
       },
     },

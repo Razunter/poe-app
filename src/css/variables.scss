@@ -3,14 +3,14 @@
 $white: #ffffff;
 
 $theme-colors: (
-        "light": #111629,
-        "dark": #22222d,
-        "primary": #1e2464,
-        "secondary": #bc6e39,
-        "info": #e95e20,
-        "success": #0e804b,
-        "warning": #dfc913,
-        "danger": #ec1f07,
+    "light": #111629,
+    "dark": #22222d,
+    "primary": #1e2464,
+    "secondary": #bc6e39,
+    "info": #e95e20,
+    "success": #0e804b,
+    "warning": #dfc913,
+    "danger": #ec1f07,
 );
 
 $body-bg: #22222d;
@@ -39,7 +39,13 @@ $progress-bg: $card-bg;
 
 $list-group-bg: $card-bg;
 $list-group-color: $white;
-$list-group-border-color:           rgba($white, .125);
+$list-group-border-color: rgba($white, .125);
+
+$navbar-dark-color: #EEE;
+$navbar-dark-hover-color: #FFF;
+$navbar-dark-active-color: $white !default;
+$nav-link-font-size: 1.5rem;
+$nav-underline-gap: 2rem;
 
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
@@ -51,4 +57,9 @@ $list-group-border-color:           rgba($white, .125);
 :root {
   --bs-grid-gutter-width: #{$grid-gutter-width};
   --bs-grid-gutter-width-half: #{math.div($grid-gutter-width, 2)};
+  --poeapp-header-height: calc(
+      #{$navbar-padding-y * 2 + $nav-link-padding-y * 2 + $nav-link-font-size * $line-height-base} + 1px
+  );
+
+  scroll-padding-top: calc(var(--poeapp-header-height) + 1rem);
 }

@@ -43,3 +43,7 @@
 @import "Components/Buttons";
 @import "Components/Svelecte";
 @import "Components/Forms";
+
+.p-header {
+  padding-top: var(--poeapp-header-height);
+}

@@ -7,11 +7,8 @@
   import BuildEditModal from '$components/BuildEditModal.svelte'
   import { buildList } from '$lib/BuildsData.svelte.ts'
   import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
+  import { capitalizeFirstLetter } from '$lib/capitalizeFirstLetter.ts'
   import { showOutdated } from '$lib/stores.ts'
-
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  }
 
   let showAddBuildModal = false
 
@@ -43,40 +40,42 @@
   </div>
   <div class="card-body">
     {#each $buildList as buildCategory}
-      <div class="d-flex justify-content-between align-center">
-        <h3 class="display-6 icon-wrap">
-          <Icon
-            class="icon"
-            icon={circleSmall}
-          />
-          <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span>
-        </h3>
-        <Button
-          color="success"
-          size="lg"
-          on:click={() => {
-            addBuild(buildCategory.type)
-          }}
-        >
-          <span class="btn-icon__inner">
+      <section id={buildCategory.type}>
+        <div class="d-flex justify-content-between align-center">
+          <h3 class="display-6 icon-wrap">
             <Icon
-              icon={plusThick}
-              class="btn-icon__icon"
+              class="icon"
+              icon={circleSmall}
             />
-            <span class="btn-icon__text">Add build</span></span
+            <span class="text">{capitalizeFirstLetter(buildCategory.type)}</span>
+          </h3>
+          <Button
+            color="success"
+            size="lg"
+            on:click={() => {
+              addBuild(buildCategory.type)
+            }}
           >
-        </Button>
-      </div>
-      <hr />
-      {#each buildCategory.builds as build}
-        {@const outdated = isOutdatedBuild(build.versions)}
-        {#if !outdated || ($showOutdated && outdated)}
-          <Build
-            buildData={build}
-            {outdated}
-          />
-        {/if}
-      {/each}
+            <span class="btn-icon__inner">
+              <Icon
+                icon={plusThick}
+                class="btn-icon__icon"
+              />
+              <span class="btn-icon__text">Add build</span></span
+            >
+          </Button>
+        </div>
+        <hr />
+        {#each buildCategory.builds as build}
+          {@const outdated = isOutdatedBuild(build.versions)}
+          {#if !outdated || ($showOutdated && outdated)}
+            <Build
+              buildData={build}
+              {outdated}
+            />
+          {/if}
+        {/each}
+      </section>
     {/each}
   </div>
 </section>

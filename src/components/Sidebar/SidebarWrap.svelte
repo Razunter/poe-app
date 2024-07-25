@@ -52,7 +52,7 @@
 
   .sidebar__content {
     position: sticky;
-    top: 0;
+    top: calc(var(--poeapp-header-height) + 1rem);
     left: 0;
   }
 </style>

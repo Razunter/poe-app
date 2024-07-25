@@ -33,10 +33,14 @@
 </div>
 
 <style lang="scss">
+  @import 'bootstrap/scss/functions';
+  @import 'src/css/variables.scss';
+  @import 'bootstrap/scss/variables';
+
   .page {
     display: grid;
     grid-template-columns: 18rem auto minmax(18rem, 24rem);
-    padding-top: 0.5rem;
+    padding-top: var(--poeapp-header-height);
 
     :global(.page__header) {
       grid-column: 1 / span 3;
