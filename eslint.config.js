@@ -4,13 +4,14 @@ import canonical from 'eslint-config-canonical/configurations/canonical.js'
 import canonicalJSDoc from 'eslint-config-canonical/configurations/jsdoc.js'
 import canonicalPrettier from 'eslint-config-canonical/configurations/prettier.js'
 import canonicalRegexp from 'eslint-config-canonical/configurations/regexp.js'
-import canonicalTS from 'eslint-config-canonical/configurations/typescript.js'
 import canonicalTSTC from 'eslint-config-canonical/configurations/typescript-type-checking.js'
+import canonicalTS from 'eslint-config-canonical/configurations/typescript.js'
 import * as depend from 'eslint-plugin-depend'
 import eslintPluginSvelte from 'eslint-plugin-svelte'
 import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import svelteParser from 'svelte-eslint-parser'
 
 // mimic CommonJS variables -- not needed if using CommonJS
 const __filename = fileURLToPath(import.meta.url)
@@ -19,11 +20,11 @@ const __dirname = path.dirname(__filename)
 const newPrettierConfig = canonicalPrettier.recommended.rules['prettier/prettier'][1]
 newPrettierConfig.semi = false
 newPrettierConfig.printWidth = 120
+newPrettierConfig.jsxSingleQuote = false
+newPrettierConfig.singleAttributePerLine = false
 
 const generalJS = {
-  '@babel/no-invalid-this': ['off'],
-  '@babel/semi': ['error', 'never'],
-  semi: ['error', 'never'],
+  '@stylistic/semi': [2, 'never'],
   'canonical/destructuring-property-newline': ['off'],
   'canonical/id-match': ['off'],
   'canonical/sort-keys': ['off'],
@@ -65,26 +66,34 @@ const generalJS = {
       },
     },
   ],
+  'perfectionist/sort-objects': 'off',
+  'perfectionist/sort-object-types': 'off',
+  'perfectionist/sort-intersection-types': 'off',
 }
 
 const ts = {
   '@typescript-eslint/naming-convention': ['warn'],
   '@typescript-eslint/no-extra-parens': 'off',
-  '@typescript-eslint/semi': ['error', 'never'],
-  '@typescript-eslint/space-before-function-paren': [
-    'error',
-    {
-      anonymous: 'always',
-      asyncArrow: 'always',
-      named: 'never',
-    },
-  ],
   // '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
   'canonical/import-specifier-newline': 'off',
   'canonical/prefer-inline-type-import': 'off',
   'typescript-sort-keys/interface': 'off',
   'import/consistent-type-specifier-style': 'off', // not granular enough
   'import/no-duplicates': 'warn',
+  // Incompatible rules
+  '@typescript-eslint/dot-notation': 'off',
+}
+
+const canonicalStrictTSRules = canonicalTSTC.recommended.rules
+delete canonicalStrictTSRules['@typescript-eslint/no-throw-literal']
+
+const parserOptions = {
+  ecmaVersion: 'latest',
+  sourceType: 'module',
+  project: './tsconfig.json',
+  tsconfigRootDir: __dirname,
+  extraFileExtensions: ['.svelte'],
+  parser: tsParser,
 }
 
 export default [
@@ -104,7 +113,7 @@ export default [
     rules: {
       ...canonical.recommended.rules,
       ...canonicalTS.recommended.rules,
-      ...canonicalTSTC.recommended.rules,
+      ...canonicalStrictTSRules,
       ...canonicalRegexp.recommended.rules,
       ...canonicalPrettier.recommended.rules,
       ...canonicalJSDoc.recommended.rules,
@@ -128,21 +137,17 @@ export default [
           ...newPrettierConfig,
           plugins: ['prettier-plugin-svelte'],
           parser: 'svelte',
+          svelteSortOrder: 'scripts-markup-styles-options',
         },
       ],
+      'perfectionist/sort-svelte-attributes': 'off', // иначе возникают проблемы с валидацией TS
     },
     languageOptions: {
       globals: {
         ...globals.browser,
       },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: './tsconfig.json',
-        tsconfigRootDir: __dirname,
-        parser: tsParser,
-        extraFileExtensions: ['.svelte'],
-      },
+      parser: svelteParser,
+      parserOptions,
     },
   },
   {
@@ -154,10 +159,7 @@ export default [
       globals: {
         ...globals.browser,
       },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
+      parserOptions,
     },
   },
   {
@@ -166,12 +168,7 @@ export default [
       globals: {
         ...globals.browser,
       },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        project: './tsconfig.json',
-        tsconfigRootDir: __dirname,
-      },
+      parserOptions,
     },
     rules: {
       ...generalJS,
