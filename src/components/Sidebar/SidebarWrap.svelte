@@ -1,22 +1,15 @@
 <script lang="ts">
-  import { onMount, type Snippet } from 'svelte'
+  import { onMount } from 'svelte'
 
-  type Props = {
-    class?: string
-    stretch?: boolean
-    children?: Snippet
-  }
+  let className = 'sidebar'
+  export { className as class }
 
-  let sidebarElement: HTMLElement | undefined = $state()
-  let sidebarTop: number | undefined = $state()
+  let sidebarElement: HTMLElement
+  let sidebarTop: number | undefined
 
-  const { class: className = 'sidebar', stretch = false, children }: Props = $props()
+  export let stretch = false
 
   onMount(() => {
-    if (!sidebarElement) {
-      return
-    }
-
     const observer = new ResizeObserver((event) => {
       const clientRect = event[0].target.getBoundingClientRect()
       sidebarTop = clientRect.top > 0 ? clientRect.top : 0
@@ -25,10 +18,8 @@
     observer.observe(sidebarElement)
 
     window.addEventListener('scroll', () => {
-      if (sidebarElement) {
-        const clientRectTop = sidebarElement.getBoundingClientRect().top
-        sidebarTop = clientRectTop > 0 ? clientRectTop : 0
-      }
+      const clientRectTop = sidebarElement?.getBoundingClientRect().top
+      sidebarTop = clientRectTop > 0 ? clientRectTop : 0
     })
   })
 </script>
@@ -42,7 +33,7 @@
     class="card sidebar__content"
     style={stretch && sidebarTop !== undefined ? `height: calc(100vh - ${sidebarTop}px);` : ''}
   >
-    {@render children?.()}
+    <slot />
   </div>
 </aside>
 
