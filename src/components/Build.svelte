@@ -1,11 +1,11 @@
 <script lang="ts">
+  import BuildEditModal from '$components/BuildEditModal.svelte'
+  import { type Build, buildList } from '$lib/BuildsData.svelte.ts'
   import deleteIcon from '@iconify/icons-mdi/delete'
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import pinIcon from '@iconify/icons-mdi/pin'
   import Icon from '@iconify/svelte'
   import { Button } from '@sveltestrap/sveltestrap'
-  import BuildEditModal from '$components/BuildEditModal.svelte'
-  import { type Build, buildList } from '$lib/BuildsData.svelte.ts'
 
   const { buildData, outdated }: { buildData: Build; outdated: boolean } = $props()
 
@@ -41,19 +41,10 @@
   }
 </script>
 
-<article
-  class="build card text-bg-dark mb-4"
-  class:build--outdated={outdated}
-  class:build--skip={buildData.skip}
->
+<article class="build card text-bg-dark mb-4" class:build--outdated={outdated} class:build--skip={buildData.skip}>
   <div class="build__image rounded-start">
     {#if buildData.videothumb?.['480w']}
-      <img
-        src={buildData.videothumb['480w']}
-        class="img-fluid rounded-start"
-        alt={buildData.title}
-        loading="lazy"
-      />
+      <img src={buildData.videothumb['480w']} class="img-fluid rounded-start" alt={buildData.title} loading="lazy" />
     {/if}
   </div>
   <h4 class="build__title card-title">
@@ -63,16 +54,12 @@
     {buildData.title}
     {#if outdated && buildData.versions.length > 0}
       - <span class="build__version text-warning">
-      {buildData.versions[buildData.versions.length - 1]}
-    </span>
+        {buildData.versions[buildData.versions.length - 1]}
+      </span>
     {/if}
   </h4>
   <div class="build__url card-text">
-    <a
-      href={buildData.url}
-      target="_blank"
-      title={buildData.title}>{buildData.url}</a
-    >
+    <a href={buildData.url} target="_blank" title={buildData.title}>{buildData.url}</a>
   </div>
   <div class="build__footer card-text text-muted">
     {#each ['480w', '640w', '1280w'] as size}
@@ -81,10 +68,7 @@
         class:text-success={buildData.videothumb && Object.hasOwn(buildData.videothumb, size)}>{size}</span
       >
     {/each}
-    <span
-      class="build__pinned"
-      class:text-success={buildData.pin}
-    >
+    <span class="build__pinned" class:text-success={buildData.pin}>
       <Icon icon={pinIcon} />
     </span>
     {#if buildData.skip}
@@ -100,34 +84,20 @@
       }}
     >
       <span class="btn-icon__inner">
-        <Icon
-          icon={pencilIcon}
-          class="btn-icon__icon"
-        />
+        <Icon icon={pencilIcon} class="btn-icon__icon" />
         <span class="btn-icon__text">Edit</span>
       </span>
     </Button>
-    <Button
-      color="danger"
-      size="lg"
-      class="text-white"
-      on:click={deleteBuild}
-    >
+    <Button color="danger" size="lg" class="text-white" on:click={deleteBuild}>
       <span class="btn-icon__inner">
-        <Icon
-          icon={deleteIcon}
-          class="btn-icon__icon"
-        />
+        <Icon icon={deleteIcon} class="btn-icon__icon" />
         <span class="btn-icon__text">Delete</span>
       </span>
     </Button>
   </div>
 </article>
 {#if editModalOpen}
-  <BuildEditModal
-    bind:modalOpen={editModalOpen}
-    buildUrl={buildData.url}
-  />
+  <BuildEditModal bind:modalOpen={editModalOpen} buildUrl={buildData.url} />
 {/if}
 
 <style lang="scss">

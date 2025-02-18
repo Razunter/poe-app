@@ -34,16 +34,24 @@ export type Build = {
   tags?: string[]
 }
 
-export type BuildTypes = {
-  [key: string]: string
-}
-
 export type BuildCategory = {
   type: string
   builds: Build[]
 }
 
 export type BuildList = BuildCategory[]
+
+export type BuildsDataType = {
+  buildList: BuildList
+  types: BuildTypes
+  versions: Versions[]
+  currentVersion: string
+  authors: Set<string>
+}
+
+export type BuildTypes = {
+  [key: string]: string
+}
 
 export type Versions = {
   version: string
@@ -52,12 +60,4 @@ export type Versions = {
   url?: string
   note?: string
   compatible?: string[]
-}
-
-export type BuildsDataType = {
-  buildList: BuildList
-  types: BuildTypes
-  versions: Versions[]
-  currentVersion: string
-  authors: Set<string>
 }
