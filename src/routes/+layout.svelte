@@ -34,7 +34,7 @@
 
 <style lang="scss">
   @import 'bootstrap/scss/functions';
-  @import 'src/css/variables.scss';
+  @import '$css/variables.scss';
   @import 'bootstrap/scss/variables';
 
   .page {

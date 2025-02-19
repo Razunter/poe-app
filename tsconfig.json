@@ -18,10 +18,10 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-//    "verbatimModuleSyntax": true,
+    //    "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "incremental": true,
     "sourceMap": true,
     "downlevelIteration": true
-  },
+  }
 }
