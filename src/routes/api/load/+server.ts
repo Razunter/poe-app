@@ -16,10 +16,10 @@ export const GET: RequestHandler = async () => {
     throw kitError(500, String(error))
   }
 
-  let file = path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-')) + '.json'
+  let file = path.join(jsonPath, 'data-' + versionsData.currentVersion.replaceAll('.', '-')) + '.json'
   if (!existsSync(file)) {
     const dataFile =
-      'data-' + versionsData.versions[versionsData.versions.length - 1].version.replace('.', '-') + '.json'
+      'data-' + versionsData.versions[versionsData.versions.length - 1].version.replaceAll('.', '-') + '.json'
     file = path.join(jsonPath, dataFile)
   }
 

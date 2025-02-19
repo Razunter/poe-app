@@ -29,7 +29,7 @@ export const POST = (async ({ request }) => {
 
       // Write data
       fs.promises.writeFile(
-        path.join(jsonPath, 'data-' + versionsData.currentVersion.replace('.', '-') + '.json'),
+        path.join(jsonPath, 'data-' + versionsData.currentVersion.replaceAll('.', '-') + '.json'),
         JSON.stringify(finalData, null, 2),
       ),
     ])
