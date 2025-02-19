@@ -70,6 +70,8 @@
   },
   "trustedDependencies": [
     "core-js-pure",
+    "esbuild",
+    "puppeteer",
     "svelte-preprocess"
   ]
 }
