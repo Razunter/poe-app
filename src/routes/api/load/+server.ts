@@ -1,5 +1,5 @@
-import { error as kitError, json, type RequestHandler } from '@sveltejs/kit'
 import { JSON_PATH } from '$env/static/private'
+import { json, error as kitError, type RequestHandler } from '@sveltejs/kit'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 
@@ -18,8 +18,7 @@ export const GET: RequestHandler = async () => {
 
   let file = path.join(jsonPath, 'data-' + versionsData.currentVersion.replaceAll('.', '-')) + '.json'
   if (!existsSync(file)) {
-    const dataFile =
-      'data-' + versionsData.versions[versionsData.versions.length - 1].version.replaceAll('.', '-') + '.json'
+    const dataFile = 'data-' + versionsData.versions.at(-1).version.replaceAll('.', '-') + '.json'
     file = path.join(jsonPath, dataFile)
   }
 

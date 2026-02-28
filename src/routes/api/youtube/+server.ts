@@ -1,5 +1,5 @@
-import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { YOUTUBE_API_KEY } from '$env/static/private'
+import { error, json, type RequestHandler } from '@sveltejs/kit'
 import axios from 'axios'
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -38,6 +38,16 @@ export type YouTubeItem = {
   snippet: YouTubeSnippet
 }
 
+export type YouTubeLocalized = {
+  title: string
+  description: string
+}
+
+export type YouTubePageInfo = {
+  totalResults: number
+  resultsPerPage: number
+}
+
 export type YouTubeSnippet = {
   publishedAt: Date
   channelId: string
@@ -53,9 +63,10 @@ export type YouTubeSnippet = {
   defaultAudioLanguage: string
 }
 
-export type YouTubeLocalized = {
-  title: string
-  description: string
+export type YouTubeThumbnailData = {
+  url: string
+  width: number
+  height: number
 }
 
 export type YouTubeThumbnails = {
@@ -64,15 +75,4 @@ export type YouTubeThumbnails = {
   high: YouTubeThumbnailData
   standard: YouTubeThumbnailData
   maxres: YouTubeThumbnailData
-}
-
-export type YouTubeThumbnailData = {
-  url: string
-  width: number
-  height: number
-}
-
-export type YouTubePageInfo = {
-  totalResults: number
-  resultsPerPage: number
 }

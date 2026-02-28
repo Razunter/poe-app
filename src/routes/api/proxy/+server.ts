@@ -1,4 +1,4 @@
-import { error, error as kitError, json, type RequestHandler } from '@sveltejs/kit'
+import { error, json, error as kitError, type RequestHandler } from '@sveltejs/kit'
 import { type Browser, launch } from 'puppeteer'
 
 let browser: Browser

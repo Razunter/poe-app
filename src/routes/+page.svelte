@@ -10,9 +10,9 @@
   import { capitalizeFirstLetter } from '$lib/capitalizeFirstLetter.ts'
   import { showOutdated } from '$lib/stores.ts'
 
-  let showAddBuildModal = false
+  let showAddBuildModal = $state(false)
 
-  let buildType: string | undefined
+  let buildType: string | undefined = $state()
 
   const addBuild = (buildType_?: string) => {
     buildType = buildType_

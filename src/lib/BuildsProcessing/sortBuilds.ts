@@ -97,8 +97,8 @@ export const sortBuilds = (currentBuildList = get(buildList)) => {
 
     buildCategory.builds.sort((buildA: Build, buildB: Build) => {
       // Sort by version
-      const buildAVersionLatest = buildA.versions[buildA.versions.length - 1]
-      const buildBVersionLatest = buildB.versions[buildB.versions.length - 1]
+      const buildAVersionLatest = buildA.versions.at(-1)
+      const buildBVersionLatest = buildB.versions.at(-1)
       return compareVersions(buildBVersionLatest, buildAVersionLatest)
     })
 

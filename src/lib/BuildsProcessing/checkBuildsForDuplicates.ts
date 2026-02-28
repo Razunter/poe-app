@@ -1,7 +1,6 @@
 // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.
 import type { Build, BuildList } from '$lib/BuildsData.svelte.ts'
 
-/* eslint-disable func-style */
 export function checkBuildsForDuplicates(currentBuildList: BuildList): Map<string, string>
 export function checkBuildsForDuplicates(currentBuildList: BuildList, singleUrl: string, buildTitle: string): string
 export function checkBuildsForDuplicates(
@@ -12,7 +11,7 @@ export function checkBuildsForDuplicates(
   const duplicateUrls: Map<string, string> = new Map()
   let flatBuildList: Build[] = []
   for (const buildCat of currentBuildList) {
-    flatBuildList = flatBuildList.concat(buildCat.builds)
+    flatBuildList = [...flatBuildList, ...buildCat.builds]
   }
 
   if (typeof singleUrl === 'string') {
@@ -25,7 +24,7 @@ export function checkBuildsForDuplicates(
     const map = new Set<string>()
     for (const build of flatBuildList) {
       if (map.has(build.url)) {
-        const originalItem = Array.from(map.keys()).indexOf(build.url)
+        const originalItem = [...map.keys()].indexOf(build.url)
         duplicateUrls.set(build.title, flatBuildList[originalItem].title)
       } else {
         map.add(build.url)
@@ -35,4 +34,3 @@ export function checkBuildsForDuplicates(
     return duplicateUrls
   }
 }
-/* eslint-enable func-style */

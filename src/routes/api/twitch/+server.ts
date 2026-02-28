@@ -1,7 +1,7 @@
+import { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET } from '$env/static/private'
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { ApiClient } from '@twurple/api'
 import { AppTokenAuthProvider } from '@twurple/auth'
-import { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET } from '$env/static/private'
 
 export const GET: RequestHandler = async ({ url }) => {
   const videoID = url.searchParams.get('videoID')

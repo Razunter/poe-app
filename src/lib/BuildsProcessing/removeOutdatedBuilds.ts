@@ -24,7 +24,7 @@ export const removeOutdatedBuilds = (currentBuildList = get(buildList)) => {
           count.Total += 1
         } else {
           // Very outdated
-          const lastV = convertVersionToInt(build.versions[build.versions.length - 1])
+          const lastV = convertVersionToInt(build.versions.at(-1))
           if (lastV < currentVersionInt - 2) {
             leave = false
             count.Total += 1

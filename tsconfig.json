@@ -1,27 +1,27 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "checkJs": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    //    "verbatimModuleSyntax": true,
+    "jsx": "preserve",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "allowImportingTsExtensions": true,
-    "allowJs": true,
-    "checkJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "noEmit": true,
     "resolveJsonModule": true,
-    //    "verbatimModuleSyntax": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "downlevelIteration": true
-  }
+    "strict": true,
+    "target": "es6"
+  },
+  "extends": "./.svelte-kit/tsconfig.json"
 }
