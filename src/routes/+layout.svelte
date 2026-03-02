@@ -1,65 +1,35 @@
 <script lang="ts">
-  import '$css/app.scss'
-  import Header from '$components/LayoutHeader.svelte'
-  import Sidebar from '$components/Sidebar/Sidebar.svelte'
-  import SidebarLog from '$components/Sidebar/SidebarLog.svelte'
-  import {
-    allPoeVersions,
-    buildList,
-    type BuildsDataType,
-    buildTypes,
-    currentPoeVersion,
-  } from '$lib/BuildsData.svelte.ts'
+  import '$css/app.css'
+  import { loadData } from '$lib/api/load.remote.ts'
+  import { buildsData } from '$lib/BuildsData.svelte.ts'
+  import Header from '$lib/components/LayoutHeader.svelte'
+  import Sidebar from '$lib/components/Sidebar/Sidebar.svelte'
+  import SidebarLog from '$lib/components/Sidebar/SidebarLog.svelte'
+  import type { Snippet } from 'svelte'
 
-  // eslint-disable-next-line prefer-const
-  let { data, children }: { data: { buildsData: BuildsDataType }; children: Function } = $props()
+  let { children }: { children: Snippet } = $props()
 
-  buildList.set(data.buildsData.buildList)
-  buildTypes.set(data.buildsData.types)
-  allPoeVersions.set(data.buildsData.versions)
-  currentPoeVersion.set(data.buildsData.currentVersion)
+  const loadedData = await loadData()
+  buildsData.buildList = loadedData.buildList
+  buildsData.types = loadedData.types
+  buildsData.currentVersion = loadedData.currentVersion
+  buildsData.versions = loadedData.versions
 </script>
 
-<div class="page">
-  <Header class="page__header" />
+<div class="min-h-screen bg-gray-900">
+  <Header />
 
-  <Sidebar class="sidebar--left" />
+  <div class="flex gap-5 p-5">
+    <aside class="w-72 hidden lg:block">
+      <Sidebar />
+    </aside>
 
-  <main class="page__main">
-    {@render children()}
-  </main>
+    <main class="flex-1">
+      {@render children()}
+    </main>
 
-  <SidebarLog class="sidebar--right" />
+    <aside class="w-72 hidden xl:block">
+      <SidebarLog />
+    </aside>
+  </div>
 </div>
-
-<style lang="scss">
-  @import 'bootstrap/scss/functions';
-  @import '$css/variables.scss';
-  @import 'bootstrap/scss/variables';
-
-  .page {
-    display: grid;
-    grid-template-columns: 18rem auto minmax(18rem, 24rem);
-    padding-top: var(--poeapp-header-height);
-
-    :global(.page__header) {
-      grid-column: 1 / span 3;
-      grid-row: 1;
-    }
-
-    :global(.page__main) {
-      grid-column: 2;
-      grid-row: 2;
-    }
-
-    :global(.sidebar--left) {
-      grid-column: 1;
-      grid-row: 2;
-    }
-
-    :global(.sidebar--right) {
-      grid-column: 3;
-      grid-row: 2;
-    }
-  }
-</style>

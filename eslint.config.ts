@@ -41,7 +41,7 @@ const generalJS = {
   ],
   "import/no-unassigned-import": [
     2,
-    { allow: ["**/*.css", "**/*.scss", "**/*.postcss"] },
+    { allow: ["**/*.css", "**/*.postcss"] },
   ],
   "linebreak-style": ["off"],
   "object-curly-newline": [
@@ -66,11 +66,11 @@ const generalJS = {
         graphql: "always",
         json: "always",
         css: "always",
-        scss: "always",
         webp: "always",
       },
     },
   ],
+  "perfectionist/sort-modules": "off",
   "perfectionist/sort-objects": "off",
   "perfectionist/sort-object-types": "off",
   "perfectionist/sort-intersection-types": "off",

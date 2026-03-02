@@ -9,9 +9,23 @@ const config = {
   kit: {
     adapter: adapter(),
 
+    csrf: {
+      trustedOrigins: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    },
+
+    experimental: {
+      remoteFunctions: true,
+    },
+
     alias: {
       $components: 'src/components',
       $css: 'src/css',
+    },
+  },
+
+  compilerOptions: {
+    experimental: {
+      async: true,
     },
   },
 }

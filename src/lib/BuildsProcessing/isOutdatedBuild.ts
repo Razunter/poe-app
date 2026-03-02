@@ -1,15 +1,14 @@
-import { allPoeVersions, currentPoeVersion } from '$lib/BuildsData.svelte.ts'
+import { buildsData } from '$lib/BuildsData.svelte.ts'
 import intersect from 'just-intersect'
-import { get } from 'svelte/store'
 
 export const isOutdatedBuild = (versions: string[], checkCompatibility = true) => {
-  const localCurrentPoeVersion = get(currentPoeVersion)
+  const localCurrentPoeVersion = buildsData.currentVersion
 
   // If build version list has current => not outdated, else check for compatible
   if (versions.includes(localCurrentPoeVersion)) {
     return false
   } else if (checkCompatibility) {
-    const currentPoeVersions = get(allPoeVersions)
+    const currentPoeVersions = buildsData.versions
     const versionData = currentPoeVersions.find((version) => {
       return version.version === localCurrentPoeVersion
     })

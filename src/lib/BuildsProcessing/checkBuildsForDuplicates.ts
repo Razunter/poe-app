@@ -1,5 +1,7 @@
 // If singleUrl provided, returns build title or empty string. Otherwise, returns duplicates titles Map.
-import type { Build, BuildList } from '$lib/BuildsData.svelte.ts'
+
+import type { Build } from '$lib/schema/Build.schema.ts'
+import type { BuildList } from '$lib/schema/BuildsData.schema.ts'
 
 export function checkBuildsForDuplicates(currentBuildList: BuildList): Map<string, string>
 export function checkBuildsForDuplicates(currentBuildList: BuildList, singleUrl: string, buildTitle: string): string

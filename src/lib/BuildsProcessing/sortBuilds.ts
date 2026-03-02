@@ -1,10 +1,10 @@
-import { type Build, buildList } from '$lib/BuildsData.svelte.ts'
+import { buildsData } from '$lib/BuildsData.svelte.ts'
 import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
+import type { Build } from '$lib/schema/Build.schema.ts'
 import { compareVersions } from 'compare-versions'
-import { get } from 'svelte/store'
 
-export const sortBuilds = (currentBuildList = get(buildList)) => {
-  for (const buildCategory of currentBuildList) {
+export const sortBuilds = () => {
+  for (const buildCategory of buildsData.buildList) {
     buildCategory.builds.sort((buildA, buildB) => {
       const build1outdated = isOutdatedBuild(buildA.versions)
       const build2outdated = isOutdatedBuild(buildB.versions)
@@ -99,7 +99,12 @@ export const sortBuilds = (currentBuildList = get(buildList)) => {
       // Sort by version
       const buildAVersionLatest = buildA.versions.at(-1)
       const buildBVersionLatest = buildB.versions.at(-1)
-      return compareVersions(buildBVersionLatest, buildAVersionLatest)
+
+      if (buildAVersionLatest && buildBVersionLatest) {
+        return compareVersions(buildBVersionLatest, buildAVersionLatest)
+      } else {
+        return 0
+      }
     })
 
     buildCategory.builds.sort((buildA: Build, buildB: Build) => {
@@ -113,6 +118,4 @@ export const sortBuilds = (currentBuildList = get(buildList)) => {
       return 0
     })
   }
-
-  return currentBuildList
 }

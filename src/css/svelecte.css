@@ -1,0 +1,36 @@
+@utility svelecte--dark {
+  --sv-min-height: 40px;
+  --sv-bg: var(--color-gray-900);
+  --sv-disabled-bg: #eee;
+  --sv-border: 1px solid var(--color-gray-600);
+  --sv-border-radius: calc(var(--radius) - 2px);
+  --sv-general-padding: 4px;
+  --sv-control-bg: var(--sv-bg);
+  --sv-item-wrap-padding: 3px 3px 3px 6px;
+  --sv-selection-wrap-padding: 3px 3px 3px 4px;
+  --sv-selection-multi-wrap-padding: 3px 3px 3px 6px;
+  --sv-item-selected-bg: var(--color-gray-600);
+  --sv-item-btn-color: var(--color-gray-100);
+  --sv-item-btn-color-hover: var(--color-gray-200);
+  --sv-item-btn-bg: var(--color-gray-600);
+  --sv-item-btn-bg-hover: var(--color-gray-700);
+  --sv-icon-color: #bbb;
+  --sv-icon-color-hover: #ccc;
+  --sv-icon-bg: transparent;
+  --sv-icon-size: 20px;
+  --sv-separator-bg: #626262;
+  --sv-btn-border: 0;
+  --sv-placeholder-color: #ccccd6;
+  --sv-dropdown-bg: var(--sv-bg);
+  --sv-dropdown-border: var(--sv-border);
+  --sv-dropdown-offset: 1px;
+  --sv-dropdown-width: auto;
+  --sv-dropdown-shadow: none;
+  --sv-dropdown-height: 320px;
+  --sv-dropdown-active-bg: var(--color-gray-600);
+  --sv-dropdown-selected-bg: #754545;
+  --sv-create-kbd-border: 1px solid #626262;
+  --sv-create-kbd-bg: #626262;
+  --sv-create-disabled-bg: #fcbaba;
+  --sv-loader-border: 2px solid #626262;
+}

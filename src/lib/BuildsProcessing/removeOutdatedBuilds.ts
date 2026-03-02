@@ -1,19 +1,18 @@
-import { buildList, currentPoeVersion } from '$lib/BuildsData.svelte.ts'
+import { buildsData } from '$lib/BuildsData.svelte.ts'
 import { convertVersionToInt } from '$lib/BuildsProcessing/convertVersionToInt.ts'
 import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
 import { log } from '$lib/stores.ts'
-import { get } from 'svelte/store'
 
-export const removeOutdatedBuilds = (currentBuildList = get(buildList)) => {
+export const removeOutdatedBuilds = () => {
   const count = {
     YT: 0,
     Total: 0,
   }
 
-  const currentVersionInt = convertVersionToInt(get(currentPoeVersion))
+  const currentVersionInt = convertVersionToInt(buildsData.currentVersion)
 
-  for (const buildCat of currentBuildList) {
-    buildCat.builds = buildCat.builds.filter((build) => {
+  for (const buildCatIndex of buildsData.buildList.keys()) {
+    buildsData.buildList[buildCatIndex].builds = buildsData.buildList[buildCatIndex].builds.filter((build) => {
       let leave = true
 
       if (isOutdatedBuild(build.versions)) {
@@ -24,7 +23,8 @@ export const removeOutdatedBuilds = (currentBuildList = get(buildList)) => {
           count.Total += 1
         } else {
           // Very outdated
-          const lastV = convertVersionToInt(build.versions.at(-1))
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const lastV = convertVersionToInt(build.versions.at(-1)!)
           if (lastV < currentVersionInt - 2) {
             leave = false
             count.Total += 1
@@ -39,6 +39,4 @@ export const removeOutdatedBuilds = (currentBuildList = get(buildList)) => {
   log.update((log_) => {
     return log_.set(new Date(), `Removed ${count.YT} YouTube builds and ${count.Total} in total`)
   })
-
-  return currentBuildList
 }

@@ -1,14 +1,12 @@
-import { PUBLIC_ORIGIN } from '$env/static/public'
-import { allPoeVersions, buildList, buildTypes, currentPoeVersion } from '$lib/BuildsData.svelte.ts'
+import { saveData } from '$lib/api/save.remote.ts'
 import { checkBuildsForDuplicates } from '$lib/BuildsProcessing/checkBuildsForDuplicates.ts'
+import type { BuildsData } from '$lib/schema/BuildsData.schema.ts'
 import { log } from '$lib/stores.ts'
-import axios, { AxiosError } from 'axios'
-import { get } from 'svelte/store'
 
 // Save builds to external file via server-side API
-export const exportBuilds = async (currentBuildList = get(buildList)) => {
+export const exportBuilds = async (buildsData: BuildsData) => {
   // Validation
-  const duplicateUrls = checkBuildsForDuplicates(currentBuildList)
+  const duplicateUrls = checkBuildsForDuplicates(buildsData.buildList)
 
   if (duplicateUrls.size > 0) {
     let logMessage = ''
@@ -24,7 +22,7 @@ export const exportBuilds = async (currentBuildList = get(buildList)) => {
   }
 
   // Cleanup
-  const buildListFinal = structuredClone(currentBuildList)
+  const buildListFinal = structuredClone(buildsData.buildList)
 
   for (const [catIndex, buildCat] of buildListFinal.entries()) {
     for (const [buildIndex, build] of buildCat.builds.entries()) {
@@ -33,19 +31,19 @@ export const exportBuilds = async (currentBuildList = get(buildList)) => {
   }
 
   const buildListFull = {
-    currentVersion: get(currentPoeVersion),
-    versions: get(allPoeVersions),
-    types: get(buildTypes),
+    currentVersion: buildsData.currentVersion,
+    versions: buildsData.versions,
+    types: buildsData.types,
     buildList: buildListFinal,
   }
 
   try {
-    const response = await axios.post(`${PUBLIC_ORIGIN}/api/save`, buildListFull)
+    await saveData(buildListFull)
     log.update((log_) => {
-      return log_.set(new Date(), response.data)
+      return log_.set(new Date(), 'File saved successfully')
     })
   } catch (error) {
-    const errorMessage = error instanceof AxiosError ? error.message : String(error)
+    const errorMessage = typeof error === 'object' && 'message' in error ? error.message : String(error)
     log.update((log_) => {
       return log_.set(new Date(), errorMessage)
     })
