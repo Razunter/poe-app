@@ -2,7 +2,6 @@
   import { onMount, type Snippet } from 'svelte'
 
   let sidebarElement = $state<HTMLElement>()
-  let sidebarTop: number | undefined = $state()
 
   type Props = {
     class?: string
@@ -16,7 +15,6 @@
   onMount(() => {
     const observer = new ResizeObserver((event) => {
       const clientRect = event[0].target.getBoundingClientRect()
-      sidebarTop = clientRect.top > 0 ? clientRect.top : 0
     })
 
     if (sidebarElement) {
@@ -25,19 +23,18 @@
       window.addEventListener('scroll', () => {
         if (sidebarElement) {
           const clientRectTop = sidebarElement.getBoundingClientRect().top
-          sidebarTop = clientRectTop > 0 ? clientRectTop : 0
         }
       })
     }
   })
 </script>
 
-<aside bind:this={sidebarElement} class="relative {className}" class:overflow-auto={stretch}>
+<aside bind:this={sidebarElement} class="relative {className}">
   <div
     class="bg-gray-800 rounded-lg p-4 sticky"
-    style={stretch && sidebarTop !== undefined
-      ? `height: calc(100vh - ${sidebarTop}px); top: calc(4rem + 1rem);`
-      : 'top: calc(4rem + 1rem);'}
+    class:overflow-auto={stretch}
+    style={stretch ? `height: calc(100dvh - var(--poe-navbar-height, 0) - 40px);` : ''}
+    style:top="calc(var(--poe-navbar-height, 0) + 20px);"
   >
     {#if title}
       <header class="bg-gray-800 rounded-t-lg px-4 pb-4 border-b border-gray-700">

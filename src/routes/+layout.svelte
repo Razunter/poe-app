@@ -20,16 +20,12 @@
   <Header />
 
   <div class="flex gap-5 p-5">
-    <aside class="w-72 hidden lg:block">
-      <Sidebar />
-    </aside>
+    <Sidebar class="w-72" />
 
     <main class="flex-1">
       {@render children()}
     </main>
 
-    <aside class="w-72 hidden xl:block">
-      <SidebarLog />
-    </aside>
+    <SidebarLog class="w-72" />
   </div>
 </div>
