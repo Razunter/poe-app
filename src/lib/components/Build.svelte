@@ -3,9 +3,9 @@
   import BuildEditModal from '#lib/components/BuildEditModal.svelte'
   import { Button } from '#lib/components/ui/button/index.ts'
   import type { Build } from '#lib/schema/Build.schema.ts'
-  import deleteIcon from '@iconify/icons-mdi/delete'
-  import pencilIcon from '@iconify/icons-mdi/pencil'
-  import pinIcon from '@iconify/icons-mdi/pin'
+  import deleteIcon from '@iconify-icons/mdi/delete'
+  import pencilIcon from '@iconify-icons/mdi/pencil'
+  import pinIcon from '@iconify-icons/mdi/pin'
   import Icon from '@iconify/svelte'
 
   const { buildData, outdated }: { buildData: Build; outdated: boolean } = $props()

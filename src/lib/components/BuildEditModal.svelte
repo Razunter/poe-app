@@ -9,9 +9,9 @@
   import * as Field from '#lib/components/ui/field/index.ts'
   import { Input } from '#lib/components/ui/input/index.ts'
   import type { Build } from '#lib/schema/Build.schema.ts'
-  import backupRestore from '@iconify/icons-mdi/backup-restore'
-  import contentSave from '@iconify/icons-mdi/content-save'
-  import pencilIcon from '@iconify/icons-mdi/pencil'
+  import backupRestore from '@iconify-icons/mdi/backup-restore'
+  import contentSave from '@iconify-icons/mdi/content-save'
+  import pencilIcon from '@iconify-icons/mdi/pencil'
   import Icon from '@iconify/svelte'
   import Svelecte from 'svelecte'
 

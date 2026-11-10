@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cn, type WithoutChild } from '#lib/utils.js'
-  import ChevronDownIcon from '@iconify/icons-mdi/chevron-down'
+  import ChevronDownIcon from '@iconify-icons/mdi/chevron-down'
   import Icon from '@iconify/svelte'
   import { Accordion as AccordionPrimitive } from 'bits-ui'
 

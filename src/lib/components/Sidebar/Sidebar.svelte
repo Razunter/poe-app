@@ -10,12 +10,12 @@
   import { Button } from '#lib/components/ui/button/index.ts'
   import { Progress } from '#lib/components/ui/progress/index.ts'
   import { progressBar, showOutdated } from '#lib/stores.ts'
-  import accessPointNetwork from '@iconify/icons-mdi/access-point-network'
-  import cogIcon from '@iconify/icons-mdi/cog'
-  import contentSave from '@iconify/icons-mdi/content-save'
-  import rotate3dVariant from '@iconify/icons-mdi/rotate-3d-variant'
-  import sortAscending from '@iconify/icons-mdi/sort-ascending'
-  import vacuumIcon from '@iconify/icons-mdi/vacuum'
+  import accessPointNetwork from '@iconify-icons/mdi/access-point-network'
+  import cogIcon from '@iconify-icons/mdi/cog'
+  import contentSave from '@iconify-icons/mdi/content-save'
+  import rotate3dVariant from '@iconify-icons/mdi/rotate-3d-variant'
+  import sortAscending from '@iconify-icons/mdi/sort-ascending'
+  import vacuumIcon from '@iconify-icons/mdi/vacuum'
   import Icon from '@iconify/svelte'
 
   const { class: className }: { class?: string } = $props()

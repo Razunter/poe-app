@@ -23,7 +23,7 @@
         "@e18e/eslint-plugin": "^0.8.1",
         "@eslint/compat": "^2.1.1",
         "@eslint/eslintrc": "^3.3.7",
-        "@iconify/icons-mdi": "^1.2.48",
+        "@iconify-icons/mdi": "1.2.48",
         "@iconify/svelte": "5.2.4",
         "@playwright/test": "^1.65.0",
         "@sveltejs/adapter-node": "^6.0.1",
@@ -333,7 +333,7 @@
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
-    "@iconify/icons-mdi": ["@iconify/icons-mdi@1.2.48", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-1Tiq+iX1d2MzrdDiw45Tc9HuhNgg8H4vvaKNV+kF+jmr/kPG+YyeLMyXUKp4bwv+gheIAgNpZPjuqAPRkmMieA=="],
+    "@iconify-icons/mdi": ["@iconify-icons/mdi@1.2.48", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-51bfNoRLhYDfxSu0Nyi/uRVq6q/tP4TyEc0vvuNwImrXpxrRJUAWJF2A36CfBkXm3hO9IBlph/CD/XNDJKgG6w=="],
 
     "@iconify/svelte": ["@iconify/svelte@5.2.4", "", { "dependencies": { "@iconify/types": "^2.0.0" }, "peerDependencies": { "svelte": ">5.0.0" } }, "sha512-rKIsZikeLb2D30WaOoA/B5ggwm9KelOu0gXizmPHCjcwBNNm6+AGi+16gQ9HNEfm6MvMQqEuGKcp068ZeAsiNw=="],
 

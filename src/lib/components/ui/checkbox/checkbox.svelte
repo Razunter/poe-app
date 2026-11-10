@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cn, type WithoutChildrenOrChild } from '#lib/utils.js'
-  import CheckIcon from '@iconify/icons-mdi/check'
-  import MinusIcon from '@iconify/icons-mdi/minus'
+  import CheckIcon from '@iconify-icons/mdi/check'
+  import MinusIcon from '@iconify-icons/mdi/minus'
   import Icon from '@iconify/svelte'
   import { Checkbox as CheckboxPrimitive } from 'bits-ui'
 

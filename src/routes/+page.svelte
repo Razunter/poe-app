@@ -6,8 +6,8 @@
   import BuildEditModal from '#lib/components/BuildEditModal.svelte'
   import { Button } from '#lib/components/ui/button/index.ts'
   import { showOutdated } from '#lib/stores.ts'
-  import circleSmall from '@iconify/icons-mdi/circle-small'
-  import plusThick from '@iconify/icons-mdi/plus-thick'
+  import circleSmall from '@iconify-icons/mdi/circle-small'
+  import plusThick from '@iconify-icons/mdi/plus-thick'
   import Icon from '@iconify/svelte'
 
   let showAddBuildModal = $state(false)
