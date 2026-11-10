@@ -5,7 +5,7 @@ import * as z from 'zod'
 
 let browser: Browser
 
-const versionRegex = /3\.\d{1,2}/u
+const versionRegex = /(?<![\w.])3\.\d{1,2}(?:\.\d{1,2})?(?![\w.])/u
 
 const getVersionFromTitle = (title: string) => {
   const version = versionRegex.exec(title)
@@ -20,7 +20,7 @@ export const proxy = command(
       browser = await launch()
       return 'success'
     } else if (mode === 'end') {
-      browser?.close()
+      await browser?.close()
       return 'success'
     }
 

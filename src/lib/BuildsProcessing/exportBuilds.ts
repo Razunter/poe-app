@@ -21,14 +21,7 @@ export const exportBuilds = async (buildsData: BuildsData) => {
     return
   }
 
-  // Cleanup
   const buildListFinal = structuredClone(buildsData.buildList)
-
-  for (const [catIndex, buildCat] of buildListFinal.entries()) {
-    for (const [buildIndex, build] of buildCat.builds.entries()) {
-      buildListFinal[catIndex].builds[buildIndex] = build
-    }
-  }
 
   const buildListFull = {
     currentVersion: buildsData.currentVersion,

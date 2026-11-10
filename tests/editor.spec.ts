@@ -1,4 +1,45 @@
-import { expect, test } from '@playwright/test'
+import { type BuildsDataFile, BuildsDataSchema } from '../src/lib/schema/BuildsData.schema.ts'
+import { GameVersionsSchema } from '../src/lib/schema/GameVersion.schema.ts'
+import { collectionPath, expect, test } from './collectionTest.ts'
+import { createSyncHarness } from './syncHarness.ts'
+import type { Page } from '@playwright/test'
+import { readFileSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
+
+const collectionFile = path.join(collectionPath, 'data-3-26.json')
+const readCollection = (): BuildsDataFile => JSON.parse(readFileSync(collectionFile, 'utf8'))
+const editorCollection = (): BuildsDataFile => ({
+  types: { melee: 'Melee', spells: 'Spells' },
+  buildList: [
+    {
+      type: 'melee',
+      builds: [
+        { title: 'Same title', url: 'https://example.com/original', versions: ['3.26'], skip: true },
+        { title: 'Same title', url: 'https://example.com/neighbor', versions: ['3.26'], skip: true },
+      ],
+    },
+    {
+      type: 'spells',
+      builds: [{ title: 'Destination', url: 'https://example.com/destination', versions: ['3.26'], skip: true }],
+    },
+  ],
+})
+
+const saveCollection = async (page: Page) => {
+  await page.getByRole('button', { name: 'Save', exact: true }).click()
+  await expect(page.getByText('File saved successfully', { exact: true })).toBeVisible()
+}
+
+const selectCategory = async (page: Page, category: string) => {
+  const input = page.getByLabel('Type', { exact: true })
+  await input.fill(category)
+  await input.press('ArrowDown')
+  await input.press('Enter')
+}
+
+const saveDialog = async (page: Page) => {
+  await page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true }).click()
+}
 
 test('renders bundled icons in actions and checked controls', async ({ page }) => {
   await page.goto('/')
@@ -31,4 +72,223 @@ test('edits an omitted work-in-progress flag in version settings', async ({ page
   await page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true }).click()
   await page.getByRole('button', { name: 'Settings', exact: true }).click()
   await expect(page.getByRole('checkbox', { name: 'Work in progress' })).toBeChecked()
+})
+
+for (const move of [false, true]) {
+  test(`build identity preserves neighbors after URL edit${move ? ' and category move' : ''}`, async ({ page }) => {
+    const collection = editorCollection()
+    writeFileSync(collectionFile, JSON.stringify(collection))
+    await page.goto('/')
+    await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+    await page.getByLabel('URL', { exact: true }).fill('https://example.com/edited')
+    if (move) {
+      await selectCategory(page, 'Spells')
+    }
+
+    await saveDialog(page)
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await saveCollection(page)
+    const edited = { ...collection.buildList[0].builds[0], url: 'https://example.com/edited' }
+    if (move) {
+      collection.buildList[0].builds.shift()
+      collection.buildList[1].builds.push(edited)
+    } else {
+      collection.buildList[0].builds[0] = edited
+    }
+
+    expect(readCollection()).toEqual(collection)
+    await page.reload()
+    await expect(page.locator('article')).toHaveCount(3)
+    await expect(page.getByRole('link', { name: 'https://example.com/original', exact: true })).toHaveCount(0)
+    await expect(
+      page.locator(move ? '#spells' : '#melee').getByRole('link', {
+        name: 'https://example.com/edited',
+        exact: true,
+      }),
+    ).toBeVisible()
+  })
+
+  test(`duplicate URL rejects same-title collision${move ? ' during category move' : ''}`, async ({ page }) => {
+    const collection = editorCollection()
+    writeFileSync(collectionFile, JSON.stringify(collection))
+    await page.goto('/')
+    await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+    await page.getByLabel('URL', { exact: true }).fill('https://example.com/neighbor')
+    if (move) {
+      await selectCategory(page, 'Spells')
+    }
+
+    await saveDialog(page)
+    await expect(page.getByText('Duplicate URL: Same title', { exact: true })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await saveCollection(page)
+    expect(readCollection()).toEqual(collection)
+  })
+}
+
+test('duplicate URL allows one original but rejects another record with that URL', async ({ page }) => {
+  const collection = editorCollection()
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  await page.goto('/')
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await page.getByLabel('Title', { exact: true }).fill('Renamed original')
+  await saveDialog(page)
+  await expect(page.getByRole('heading', { name: 'Renamed original', exact: true })).toBeVisible()
+  await saveCollection(page)
+  collection.buildList[0].builds[0].title = 'Renamed original'
+  expect(readCollection()).toEqual(collection)
+
+  collection.buildList[1].builds[0].url = 'https://example.com/original'
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  await page.reload()
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await saveDialog(page)
+  await expect(page.getByText('Duplicate URL: Destination', { exact: true })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Save', exact: true }).click()
+  await expect(page.getByText('Duplicate URLs detected:', { exact: true })).toBeVisible()
+  expect(readCollection()).toEqual(collection)
+})
+
+test('duplicate URL gives new builds no self exemption even when the existing title is empty', async ({ page }) => {
+  const collection = editorCollection()
+  collection.buildList[0].builds[0].title = ''
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  await page.goto('/')
+  await page.locator('#melee').getByRole('button', { name: 'Add build', exact: true }).click()
+  await page.getByLabel('Title', { exact: true }).fill('Same title')
+  await page.getByLabel('URL', { exact: true }).fill('https://example.com/original')
+  await saveDialog(page)
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('dialog').getByText('https://example.com/original', { exact: false })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await saveCollection(page)
+  expect(readCollection()).toEqual(collection)
+})
+
+test('optional video clears video and thumbnails through save and reload', async ({ page }) => {
+  const collection = editorCollection()
+  collection.buildList[0].builds[0].video = 'https://www.youtube.com/watch?v=fixture'
+  collection.buildList[0].builds[0].videothumb = { '480w': 'https://example.com/thumbnail.jpg' }
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  await page.goto('/')
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await page.getByLabel('Video URL', { exact: true }).fill('')
+  await saveDialog(page)
+  await saveCollection(page)
+  delete collection.buildList[0].builds[0].video
+  delete collection.buildList[0].builds[0].videothumb
+  expect(readCollection()).toEqual(collection)
+  await page.reload()
+  await expect(page.locator('#melee article').first().getByRole('img')).toHaveCount(0)
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue('')
+})
+
+test('optional video keeps malformed nonempty input rejected at persistence boundary', async ({ page }) => {
+  const collection = editorCollection()
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  await page.goto('/')
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await page.getByLabel('Video URL', { exact: true }).fill('not a URL')
+  await saveDialog(page)
+  const response = page.waitForResponse((result) => result.request().method() === 'POST')
+  await page.getByRole('button', { name: 'Save', exact: true }).click()
+  expect(await (await response).json()).toMatchObject({ type: 'error', error: { status: 400 } })
+  await expect(page.getByText('File saved successfully', { exact: true })).toHaveCount(0)
+  expect(readCollection()).toEqual(collection)
+})
+
+test('version format shares exact component limits at load and save boundaries', () => {
+  for (const [version, valid] of [
+    ['3.26', true],
+    ['3.26.1', true],
+    ['0.0', true],
+    ['9.99.99', true],
+    ['3.26a1', false],
+    ['33.26', false],
+    ['3.266', false],
+    ['3.26.123', false],
+    ['3.26.1.2', false],
+    ['3.26\n', false],
+  ] as const) {
+    const metadata = { currentVersion: version, versions: [{ version, name: 'Test', compatible: [version] }] }
+    expect(GameVersionsSchema.safeParse(metadata).success, version).toBe(valid)
+    expect(BuildsDataSchema.safeParse({ ...editorCollection(), ...metadata }).success, version).toBe(valid)
+    expect(
+      GameVersionsSchema.safeParse({
+        currentVersion: '3.26',
+        versions: [{ version: '3.26', name: 'Test', compatible: [version] }],
+      }).success,
+      `compatible ${version}`,
+    ).toBe(valid)
+    expect(
+      GameVersionsSchema.safeParse({
+        currentVersion: version,
+        versions: [{ version: '3.26', name: 'Test' }],
+      }).success,
+      `currentVersion ${version}`,
+    ).toBe(valid)
+  }
+})
+
+test('version format rejects malformed separator and saves valid multipart settings', async ({ page }) => {
+  const sync = await createSyncHarness(page)
+  try {
+    await sync.interceptApp()
+    writeFileSync(collectionFile, JSON.stringify(editorCollection()))
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    await page.getByRole('button', { name: 'Add new version', exact: true }).click()
+    const number = page.getByLabel('Version number', { exact: true }).first()
+    await number.fill('3.26a1')
+    await page.getByLabel('League name', { exact: true }).first().fill('Multipart league')
+    await saveDialog(page)
+    await expect(page.getByRole('dialog')).toBeVisible()
+    expect(await number.evaluate((input: HTMLInputElement) => input.validity.patternMismatch)).toBe(true)
+    await number.fill('3.26.1')
+    await saveDialog(page)
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await page.getByRole('button', { name: 'Sort builds', exact: true }).click()
+    await page.getByRole('button', { name: 'Sync builds', exact: true }).click()
+    await expect(page.getByText('Sync complete', { exact: true })).toBeVisible()
+    await saveCollection(page)
+    expect(JSON.parse(readFileSync(path.join(collectionPath, 'versions.json'), 'utf8')).versions).toContainEqual({
+      version: '3.26.1',
+      name: 'Multipart league',
+    })
+    await page.reload()
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    await expect(page.getByRole('button', { name: '3.26.1', exact: true })).toBeVisible()
+  } finally {
+    await sync.close()
+  }
+})
+
+test('build identity rejects a missing original without creating a category or deleting neighbors', async ({
+  page,
+}) => {
+  const sync = await createSyncHarness(page)
+  const data = {
+    ...editorCollection(),
+    currentVersion: '3.26',
+    versions: [{ version: '3.26', name: 'Test league' }],
+  }
+  data.types.uncreated = 'Uncreated'
+  try {
+    await sync.open(data)
+    await page.evaluate(() => syncHarness.mountEditor('https://example.com/original'))
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await page.getByLabel('URL', { exact: true }).fill('https://example.com/edited')
+    await selectCategory(page, 'Uncreated')
+    await page.evaluate(() => syncHarness.data.buildList[0].builds.shift())
+    data.buildList[0].builds.shift()
+    await saveDialog(page)
+    await expect(page.getByRole('alert')).toBeVisible()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    expect(await page.evaluate(() => JSON.parse(JSON.stringify(syncHarness.data)))).toEqual(data)
+  } finally {
+    await sync.close()
+  }
 })

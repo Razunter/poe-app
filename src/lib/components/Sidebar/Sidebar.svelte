@@ -9,7 +9,7 @@
   import SidebarWrap from '#lib/components/Sidebar/SidebarWrap.svelte'
   import { Button } from '#lib/components/ui/button/index.ts'
   import { Progress } from '#lib/components/ui/progress/index.ts'
-  import { progressBar, showOutdated } from '#lib/stores.ts'
+  import { progressBar, showOutdated, syncInProgress } from '#lib/stores.ts'
   import accessPointNetwork from '@iconify-icons/mdi/access-point-network'
   import cogIcon from '@iconify-icons/mdi/cog'
   import contentSave from '@iconify-icons/mdi/content-save'
@@ -44,6 +44,7 @@
       <Button
         class="w-full justify-center"
         size="xl"
+        disabled={$syncInProgress}
         onclick={async () => {
           await updateBuilds()
           sortBuilds()

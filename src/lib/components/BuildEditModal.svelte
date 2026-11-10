@@ -26,16 +26,6 @@
     buildType?: string
   } = $props()
 
-  const modalToggle = () => {
-    return (modalOpen = !modalOpen)
-  }
-
-  const handleKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      modalToggle()
-    }
-  }
-
   const authorsArray: string[] = $derived.by(() => {
     const deriveAuthorsArray: string[] = [...getAllBuildAuthors().values()]
     return deriveAuthorsArray.toSorted((a, b) => a.localeCompare(b))
@@ -54,9 +44,6 @@
     return deriveBuildTypesArray
   })
 
-  let buildOriginalTitle: string = $state('')
-  let buildOriginalType: string = $state('')
-
   const initBuild = (): Build => {
     if (buildUrl) {
       for (const buildCategory of buildsData.buildList) {
@@ -66,8 +53,6 @@
 
         if (existingBuild) {
           buildType = buildCategory.type
-          buildOriginalType = buildCategory.type
-          buildOriginalTitle = existingBuild.title
           return structuredClone($state.snapshot(existingBuild))
         }
       }
@@ -80,49 +65,43 @@
 
   let form = $state<HTMLFormElement>()
   let invalidUrl = $state('')
+  let saveError = $state('')
 
   const saveBuild = () => {
-    if (buildOriginalType && buildOriginalType !== buildType) {
-      const buildOriginalTypeIndex = buildsData.buildList.findIndex((buildCategory) => {
-        return buildCategory.type === buildOriginalType
-      })
-
-      const buildOriginalIndex = buildsData.buildList[buildOriginalTypeIndex].builds.findIndex((build_) => {
-        return build_.url === build?.url
-      })
-
-      buildsData.buildList[buildOriginalTypeIndex].builds.splice(buildOriginalIndex, 1)
+    const sourceCategory = buildUrl
+      ? buildsData.buildList.find((category) => category.builds.some((entry) => entry.url === buildUrl))
+      : undefined
+    const sourceIndex = sourceCategory?.builds.findIndex((entry) => entry.url === buildUrl) ?? -1
+    if (buildUrl && (!sourceCategory || sourceIndex < 0)) {
+      saveError = 'The original build no longer exists. Close the editor and try again.'
+      return false
     }
 
-    let buildTypeIndex = buildsData.buildList.findIndex((buildCategory) => {
-      return buildCategory.type === buildType
-    })
-
-    // not found, add new
-    if (buildTypeIndex === -1) {
-      const buildTypeSnapshot = $state.snapshot(buildType)
-      const buildTypeLowercase = buildTypeSnapshot.toLowerCase()
-      buildsData.types[buildTypeLowercase] = buildTypeSnapshot
-      buildTypeIndex =
-        buildsData.buildList.push({
-          type: buildTypeLowercase,
-          builds: [$state.snapshot(build)],
-        }) - 1
+    const savedBuild = $state.snapshot(build)
+    if (savedBuild.video === '') {
+      delete savedBuild.video
+      delete savedBuild.videothumb
     }
 
-    const foundBuildIndex = buildsData.buildList[buildTypeIndex].builds.findIndex((build_) => {
-      return build_.url === build.url
-    })
+    let destination = buildsData.buildList.find((category) => category.type === buildType)
+    if (!destination) {
+      const type = buildType.toLowerCase()
+      buildsData.types[type] = buildType
+      const destinationIndex = buildsData.buildList.push({ type, builds: [] }) - 1
+      destination = buildsData.buildList[destinationIndex]
+    }
 
-    if (foundBuildIndex >= 0) {
-      buildsData.buildList[buildTypeIndex].builds[foundBuildIndex] = $state.snapshot(build)
+    if (sourceCategory === destination) {
+      destination.builds[sourceIndex] = savedBuild
     } else {
-      // not found, add new
-      buildsData.buildList[buildTypeIndex].builds.push($state.snapshot(build))
+      if (sourceCategory) {
+        sourceCategory.builds.splice(sourceIndex, 1)
+      }
+
+      destination.builds.push(savedBuild)
     }
 
-    // Trigger update
-    buildsData.buildList = buildsData.buildList
+    return true
   }
 
   const formSubmit = (event: MouseEvent | SubmitEvent) => {
@@ -132,13 +111,14 @@
       return
     }
 
-    invalidUrl = checkBuildsForDuplicates(buildsData.buildList, build.url, buildOriginalTitle)
+    invalidUrl = checkBuildsForDuplicates(buildsData.buildList, build.url, buildUrl)
     if (invalidUrl) {
       return
     }
 
-    saveBuild()
-    modalOpen = false
+    if (saveBuild()) {
+      modalOpen = false
+    }
   }
 </script>
 
@@ -152,6 +132,9 @@
         </Dialog.Title>
       </Dialog.Header>
       <form bind:this={form} onsubmit={formSubmit} class="overflow-y-auto flex flex-col gap-4">
+        {#if saveError}
+          <p role="alert" class="text-red-500">{saveError}</p>
+        {/if}
         <Field.Field>
           <Field.Label for="editBuildType">Type</Field.Label>
           <Svelecte

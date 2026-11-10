@@ -1,4 +1,5 @@
 import { buildsData } from '#lib/BuildsData.svelte.ts'
+import { getNewestVersion } from '#lib/BuildsProcessing/getNewestVersion.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
 import type { Build } from '#lib/schema/Build.schema.ts'
 import { compareVersions } from 'compare-versions'
@@ -97,8 +98,8 @@ export const sortBuilds = () => {
 
     buildCategory.builds.sort((buildA: Build, buildB: Build) => {
       // Sort by version
-      const buildAVersionLatest = buildA.versions.at(-1)
-      const buildBVersionLatest = buildB.versions.at(-1)
+      const buildAVersionLatest = getNewestVersion(buildA.versions)
+      const buildBVersionLatest = getNewestVersion(buildB.versions)
 
       if (buildAVersionLatest && buildBVersionLatest) {
         return compareVersions(buildBVersionLatest, buildAVersionLatest)

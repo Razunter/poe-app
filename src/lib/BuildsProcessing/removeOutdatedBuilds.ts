@@ -1,7 +1,8 @@
 import { buildsData } from '#lib/BuildsData.svelte.ts'
-import { convertVersionToInt } from '#lib/BuildsProcessing/convertVersionToInt.ts'
+import { getNewestVersion } from '#lib/BuildsProcessing/getNewestVersion.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
 import { log } from '#lib/stores.ts'
+import { compareVersions } from 'compare-versions'
 
 export const removeOutdatedBuilds = () => {
   const count = {
@@ -9,7 +10,8 @@ export const removeOutdatedBuilds = () => {
     Total: 0,
   }
 
-  const currentVersionInt = convertVersionToInt(buildsData.currentVersion)
+  const releases = buildsData.versions.toSorted((a, b) => compareVersions(a.version, b.version))
+  const currentRelease = releases.findIndex(({ version }) => version === buildsData.currentVersion)
 
   for (const buildCatIndex of buildsData.buildList.keys()) {
     buildsData.buildList[buildCatIndex].builds = buildsData.buildList[buildCatIndex].builds.filter((build) => {
@@ -23,9 +25,9 @@ export const removeOutdatedBuilds = () => {
           count.Total += 1
         } else {
           // Very outdated
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const lastV = convertVersionToInt(build.versions.at(-1)!)
-          if (lastV < currentVersionInt - 2) {
+          const latestVersion = getNewestVersion(build.versions)
+          const latestRelease = latestVersion ? releases.findIndex(({ version }) => version === latestVersion) : -1
+          if (currentRelease !== -1 && latestRelease !== -1 && currentRelease - latestRelease > 2) {
             leave = false
             count.Total += 1
           }

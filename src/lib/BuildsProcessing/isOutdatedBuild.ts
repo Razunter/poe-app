@@ -1,5 +1,4 @@
 import { buildsData } from '#lib/BuildsData.svelte.ts'
-import intersect from 'just-intersect'
 
 export const isOutdatedBuild = (versions: string[], checkCompatibility = true) => {
   const localCurrentPoeVersion = buildsData.currentVersion
@@ -13,7 +12,7 @@ export const isOutdatedBuild = (versions: string[], checkCompatibility = true) =
       return version.version === localCurrentPoeVersion
     })
     if (versionData?.compatible) {
-      return intersect(versionData.compatible, versions).length === 0
+      return !versionData.compatible.some((version) => versions.includes(version))
     }
   }
 

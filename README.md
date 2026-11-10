@@ -50,8 +50,22 @@ The sample [versions](tests/fixtures/versions.json) and
 the [version schema](src/lib/schema/GameVersion.schema.ts) and
 [collection schema](src/lib/schema/BuildsData.schema.ts).
 
-Sidebar **Save** overwrites `versions.json` and the current version's build
-file in that directory.
+Sidebar **Save** writes `versions.json` and the current version's build file.
+Saves run one at a time. Staged files and `.collection-save.json` preserve the
+previous contents until both replacements finish. After a failed or interrupted
+save, the next load or save restores the previous pair before proceeding.
+If restoration fails, keep the recovery files named in the error.
+
+Loading preserves historical build version tags. If the current build file is
+missing, the editor searches configured releases newest-first without changing
+the current version. An existing corrupt file reports an error instead of falling
+back. The next explicit **Save** creates the current version's build file.
+
+Version numbers use two or three dotted components, such as `3.26` and `3.26.1`.
+The major component has one digit; the minor and patch components have one or two.
+
+Recovery covers one local server process and process interruption. It does not
+protect against independent external writers or arbitrary hardware failure.
 
 After changing `JSON_PATH`, `YOUTUBE_API_KEY`, or `PUBLIC_ORIGIN`, restart the
 development server or rebuild production output.
@@ -60,6 +74,15 @@ development server or rebuild production output.
 
 **Sync builds** checks game-version tags for Path of Exile forum and Maxroll
 links and fetches missing YouTube thumbnails.
+
+Only one sync runs at a time. The action stays disabled until browser shutdown
+finishes. Edits, additions, deletions, and category moves made during sync survive.
+Fetched fields apply only when their source values are unchanged.
+
+Supported YouTube watch URLs can include query parameters before or after `v`.
+An unsupported lookup leaves the stored video and thumbnail unchanged. Removing a
+video, manually or after a confirmed not-found result, keeps the collection
+save-valid.
 
 - For YouTube thumbnails, set `YOUTUBE_API_KEY` to a
   [YouTube Data API v3 key](https://developers.google.com/youtube/v3/getting-started).

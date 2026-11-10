@@ -10,7 +10,6 @@
   "dependencies": {
     "caniuse-lite": "^1.0.30001823",
     "compare-versions": "^6.1.1",
-    "just-intersect": "^4.3.0",
     "just-shuffle": "^4.2.0",
     "puppeteer": "^25.16.0",
     "runed": "^0.38.0",

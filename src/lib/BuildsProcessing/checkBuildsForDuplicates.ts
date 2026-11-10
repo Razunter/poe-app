@@ -4,11 +4,11 @@ import type { Build } from '#lib/schema/Build.schema.ts'
 import type { BuildList } from '#lib/schema/BuildsData.schema.ts'
 
 export function checkBuildsForDuplicates(currentBuildList: BuildList): Map<string, string>
-export function checkBuildsForDuplicates(currentBuildList: BuildList, singleUrl: string, buildTitle: string): string
+export function checkBuildsForDuplicates(currentBuildList: BuildList, singleUrl: string, originalUrl?: string): string
 export function checkBuildsForDuplicates(
   currentBuildList: BuildList,
   singleUrl?: string,
-  buildTitle?: string,
+  originalUrl?: string,
 ): Map<string, string> | string {
   const duplicateUrls: Map<string, string> = new Map()
   let flatBuildList: Build[] = []
@@ -17,11 +17,12 @@ export function checkBuildsForDuplicates(
   }
 
   if (typeof singleUrl === 'string') {
-    const foundBuild = flatBuildList.find((build) => {
-      return build.url === singleUrl && build.title !== buildTitle
+    const originalIndex = originalUrl ? flatBuildList.findIndex((build) => build.url === originalUrl) : -1
+    const foundBuild = flatBuildList.find((build, index) => {
+      return index !== originalIndex && build.url === singleUrl
     })
 
-    return foundBuild ? foundBuild.title : ''
+    return foundBuild ? foundBuild.title || foundBuild.url : ''
   } else {
     const map = new Set<string>()
     for (const build of flatBuildList) {

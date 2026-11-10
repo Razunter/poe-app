@@ -1,5 +1,5 @@
 import { BuildCategorySchema } from '#lib/schema/BuildsCategory.schema.ts'
-import { GameVersionSchema } from '#lib/schema/GameVersion.schema.ts'
+import { GameVersionSchema, VersionNumberSchema } from '#lib/schema/GameVersion.schema.ts'
 import * as z from 'zod'
 
 export const BuildListSchema = z.array(BuildCategorySchema)
@@ -15,7 +15,7 @@ export const BuildsDataSchema = z.object({
   buildList: BuildListSchema,
   types: BuildTypesSchema,
   versions: z.array(GameVersionSchema),
-  currentVersion: z.string(),
+  currentVersion: VersionNumberSchema,
 })
 
 export type BuildList = z.infer<typeof BuildListSchema>

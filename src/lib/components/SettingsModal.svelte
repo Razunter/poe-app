@@ -9,7 +9,7 @@
   // noinspection ES6UnusedImports
   import * as Field from '#lib/components/ui/field/index.ts'
   import { Input } from '#lib/components/ui/input/index.ts'
-  import type { GameVersion } from '#lib/schema/GameVersion.schema.ts'
+  import { type GameVersion, gameVersionPattern } from '#lib/schema/GameVersion.schema.ts'
   import contentSave from '@iconify-icons/mdi/content-save'
   import deleteIcon from '@iconify-icons/mdi/delete'
   import pencilIcon from '@iconify-icons/mdi/pencil'
@@ -108,7 +108,7 @@
                 <Field.Label for="version-{version.version}">Version number</Field.Label>
                 <Input
                   id="version-{version.version}"
-                  pattern={'\\d\\.\\d{1,2}(.\\d{1,2})?'}
+                  pattern={gameVersionPattern}
                   bind:value={version.version}
                   required
                 />

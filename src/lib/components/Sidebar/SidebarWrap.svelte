@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { onMount, type Snippet } from 'svelte'
-
-  let sidebarElement = $state<HTMLElement>()
+  import type { Snippet } from 'svelte'
 
   type Props = {
     class?: string
@@ -11,25 +9,9 @@
   }
 
   let { class: className = 'sidebar', stretch = false, children, title }: Props = $props()
-
-  onMount(() => {
-    const observer = new ResizeObserver((event) => {
-      const clientRect = event[0].target.getBoundingClientRect()
-    })
-
-    if (sidebarElement) {
-      observer.observe(sidebarElement)
-
-      window.addEventListener('scroll', () => {
-        if (sidebarElement) {
-          const clientRectTop = sidebarElement.getBoundingClientRect().top
-        }
-      })
-    }
-  })
 </script>
 
-<aside bind:this={sidebarElement} class="relative {className}">
+<aside class="relative {className}">
   <div
     class="bg-gray-800 rounded-lg p-4 sticky"
     class:overflow-auto={stretch}

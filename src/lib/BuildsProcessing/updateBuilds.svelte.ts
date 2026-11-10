@@ -3,7 +3,16 @@ import { proxy } from '#lib/api/proxy.remote.ts'
 import { buildsData } from '#lib/BuildsData.svelte.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
 import type { Build } from '#lib/schema/Build.schema.ts'
-import { log, progressBar } from '#lib/stores.ts'
+import { log, progressBar, syncInProgress } from '#lib/stores.ts'
+import { SvelteDate } from 'svelte/reactivity'
+import { get } from 'svelte/store'
+
+const videoIDPattern = /^[\w-]+$/u
+
+const logFailure = (error: unknown, title: string) => {
+  const message = typeof error === 'object' && error !== null && 'message' in error ? error.message : error
+  log.update((entries) => entries.set(new Date(), `${String(message)}\n${title}`))
+}
 
 // Update build versions from PoE Forum & PoE-vault
 const updateBuildVersions = async (build: Build) => {
@@ -26,14 +35,7 @@ const updateBuildVersions = async (build: Build) => {
   try {
     versionResponse = await proxy({ targetUrl: build.url })
   } catch (error) {
-    log.update((log_) => {
-      return log_.set(
-        new Date(),
-        typeof error === 'object' && error !== null && 'message' in error
-          ? error.message + '\n' + build.title
-          : String(error) + '\n' + build.title,
-      )
-    })
+    logFailure(error, build.title)
 
     return build
   }
@@ -56,55 +58,49 @@ const updateBuildVersions = async (build: Build) => {
 }
 
 const updateBuildVideo = async (build: Build) => {
-  if (build.video && build.video.indexOf('youtube.com') > 0) {
-    const videoID = build.video.slice(Math.max(0, build.video.lastIndexOf('?v=') + 3))
-
-    if (build.videothumb?.['480w'] && !build.videothumb['480w'].includes(videoID)) {
-      build.videothumb = {}
+  if (build.video) {
+    const videoUrl = new URL(build.video)
+    const videoID = videoUrl.searchParams.get('v')
+    if (
+      !['www.youtube.com', 'youtube.com'].includes(videoUrl.hostname) ||
+      videoUrl.pathname !== '/watch' ||
+      !videoID ||
+      !videoIDPattern.test(videoID)
+    ) {
+      log.update((entries) => entries.set(new Date(), `Unsupported YouTube lookup: ${build.title}\n${build.video}`))
+      return build
     }
 
-    if (!build.videothumb || Object.keys(build.videothumb).length === 0) {
+    if (
+      !build.videothumb ||
+      Object.keys(build.videothumb).length === 0 ||
+      (build.videothumb['480w'] && !build.videothumb['480w'].includes(videoID))
+    ) {
       let YTdata: YouTubeData
 
       try {
         YTdata = await getYouTubeData(videoID)
       } catch (error) {
-        // handle error
-        log.update((log_) => {
-          return log_.set(
-            new Date(),
-            (typeof error === 'object' && error !== null && 'message' in error
-              ? String(error.message)
-              : String(error)) +
-              '\n' +
-              build.title,
-          )
-        })
-
+        logFailure(error, build.title)
         return build
       }
 
-      /* eslint-disable require-atomic-updates */
       if (YTdata.items.length > 0) {
         const thumbs = YTdata.items[0].snippet.thumbnails
-        build.videothumb = {
-          '480w': thumbs.high.url,
-        }
-        if (thumbs.standard) {
-          build.videothumb['640w'] = thumbs.standard.url
-        }
-
-        if (thumbs.maxres) {
-          build.videothumb['1280w'] = thumbs.maxres.url
+        return {
+          ...build,
+          videothumb: {
+            '480w': thumbs.high.url,
+            ...(thumbs.standard ? { '640w': thumbs.standard.url } : {}),
+            ...(thumbs.maxres ? { '1280w': thumbs.maxres.url } : {}),
+          },
         }
       } else {
-        build.video = ''
-        build.videothumb = {}
         log.update((log_) => {
           return log_.set(new Date(), 'YouTube video not found: ' + build.title)
         })
+        return { ...build, video: undefined, videothumb: {} }
       }
-      /* eslint-enable require-atomic-updates */
     }
   }
 
@@ -112,43 +108,77 @@ const updateBuildVideo = async (build: Build) => {
 }
 
 export const updateBuilds = async () => {
-  progressBar.set(0)
-
-  const buildPromises: Array<{ function: Function; arguments: [Build] }> = []
-
-  const localBuildList = $state.snapshot(buildsData.buildList)
-
-  for (const buildCat of localBuildList) {
-    for (const build of buildCat.builds) {
-      buildPromises.push({ function: updateBuildVersions, arguments: [build] })
-      buildPromises.push({ function: updateBuildVideo, arguments: [build] })
-    }
+  if (get(syncInProgress)) {
+    return
   }
 
-  // Start browser
-  await proxy({ mode: 'start' })
+  syncInProgress.set(true)
 
-  let localCounter = buildPromises.length
-  await Promise.allSettled(
-    buildPromises.map(async (prom) => {
-      return await prom.function(prom.arguments[0]).then(() => {
-        localCounter--
-        progressBar.set(100 - Math.round((localCounter / buildPromises.length) * 100))
-      })
-    }),
-  )
+  try {
+    progressBar.set(0)
+    const sources = $state.snapshot(buildsData.buildList).flatMap((category) => category.builds)
+    await proxy({ mode: 'start' })
 
-  // ! possible race condition
-  // eslint-disable-next-line require-atomic-updates
-  buildsData.buildList = localBuildList
+    try {
+      let completed = 0
+      await Promise.all(
+        sources.map(async (build) => {
+          const versions = [...build.versions]
+          const video = build.video
+          const videothumb = build.videothumb
+          const results = await Promise.allSettled([updateBuildVersions(build), updateBuildVideo(build)])
+          for (const result of results) {
+            if (result.status === 'rejected') {
+              logFailure(result.reason, build.title)
+            }
+          }
 
-  log.update((log_) => {
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    return log_.set(new Date(), 'Sync complete')
-  })
+          const videoResult = results[1]
 
-  // Close browser
-  await proxy({ mode: 'end' })
+          let live: Build | undefined
+          for (const category of buildsData.buildList) {
+            live = category.builds.find((candidate) => candidate.url === build.url)
+            if (live) {
+              break
+            }
+          }
 
-  progressBar.set(100)
+          if (live) {
+            if (
+              live.versions.length === versions.length &&
+              live.versions.every((version, index) => version === versions[index])
+            ) {
+              live.versions = build.versions
+            }
+
+            if (
+              videoResult.status === 'fulfilled' &&
+              live.video === video &&
+              (['480w', '640w', '1280w'] as const).every((size) => live.videothumb?.[size] === videothumb?.[size])
+            ) {
+              if (videoResult.value.video === undefined) {
+                delete live.video
+              } else {
+                live.video = videoResult.value.video
+              }
+
+              live.videothumb = videoResult.value.videothumb
+            }
+          }
+
+          completed++
+          progressBar.set(Math.round((completed / sources.length) * 100))
+        }),
+      )
+    } finally {
+      await proxy({ mode: 'end' })
+    }
+
+    log.update((entries) => entries.set(new SvelteDate(), 'Sync complete'))
+    progressBar.set(100)
+  } catch (error) {
+    logFailure(error, 'Sync failed')
+  } finally {
+    syncInProgress.set(false)
+  }
 }
