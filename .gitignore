@@ -101,3 +101,20 @@ node_modules
 !.env.example
 .vercel
 .opencode
+
+.scratch
+/docs
+!/docs/solutions
+
+# Local code index
+/.codegraph/
+
+# Local agent and review guidance
+/AGENTS.md
+/CODING_STANDARDS.md
+/REVIEW.md
+/STRATEGY.md
+
+# Local Beads issue tracking
+/.beads/
+.beads.gate.lock
