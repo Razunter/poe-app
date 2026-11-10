@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { buildsData } from '$lib/BuildsData.svelte.ts'
-  import BuildEditModal from '$lib/components/BuildEditModal.svelte'
-  import { Button } from '$lib/components/ui/button'
-  import type { Build } from '$lib/schema/Build.schema.ts'
+  import { buildsData } from '#lib/BuildsData.svelte.ts'
+  import BuildEditModal from '#lib/components/BuildEditModal.svelte'
+  import { Button } from '#lib/components/ui/button/index.ts'
+  import type { Build } from '#lib/schema/Build.schema.ts'
   import deleteIcon from '@iconify/icons-mdi/delete'
   import pencilIcon from '@iconify/icons-mdi/pencil'
   import pinIcon from '@iconify/icons-mdi/pin'
@@ -64,8 +64,12 @@
         {/if}
       </h4>
       <div class="text-gray-300 mb-2">
-        <a href={buildData.url} target="_blank" title={buildData.title} class="text-blue-400 hover:text-blue-300"
-          >{buildData.url}</a
+        <a
+          href={buildData.url}
+          rel="external"
+          target="_blank"
+          title={buildData.title}
+          class="text-blue-400 hover:text-blue-300">{buildData.url}</a
         >
       </div>
     </div>

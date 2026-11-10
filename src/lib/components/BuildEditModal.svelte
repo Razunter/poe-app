@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { buildsData, getAllBuildAuthors } from '$lib/BuildsData.svelte.ts'
-  import { checkBuildsForDuplicates } from '$lib/BuildsProcessing/checkBuildsForDuplicates.ts'
-  import { Button } from '$lib/components/ui/button'
-  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { buildsData, getAllBuildAuthors } from '#lib/BuildsData.svelte.ts'
+  import { checkBuildsForDuplicates } from '#lib/BuildsProcessing/checkBuildsForDuplicates.ts'
+  import { Button } from '#lib/components/ui/button/index.ts'
+  import { Checkbox } from '#lib/components/ui/checkbox/index.ts'
   // noinspection ES6UnusedImports
-  import * as Dialog from '$lib/components/ui/dialog/index.ts'
+  import * as Dialog from '#lib/components/ui/dialog/index.ts'
   // noinspection ES6UnusedImports
-  import * as Field from '$lib/components/ui/field/index.ts'
-  import { Input } from '$lib/components/ui/input/index.ts'
-  import type { Build } from '$lib/schema/Build.schema.ts'
+  import * as Field from '#lib/components/ui/field/index.ts'
+  import { Input } from '#lib/components/ui/input/index.ts'
+  import type { Build } from '#lib/schema/Build.schema.ts'
   import backupRestore from '@iconify/icons-mdi/backup-restore'
   import contentSave from '@iconify/icons-mdi/content-save'
   import pencilIcon from '@iconify/icons-mdi/pencil'
@@ -41,7 +41,7 @@
     return deriveAuthorsArray.toSorted((a, b) => a.localeCompare(b))
   })
 
-  const versionsArray: string[] = $derived(buildsData.versions.map((version) => version.version).reverse())
+  const versionsArray: string[] = $derived(buildsData.versions.map((version) => version.version).toReversed())
 
   const buildTypesArray: Array<{ value: string; label: string }> = $derived.by(() => {
     const deriveBuildTypesArray: Array<{ value: string; label: string }> = []
@@ -206,7 +206,7 @@
             id="editBuildVideoURL"
             bind:value={build.video}
             onpaste={(event) => {
-              const paste = (event.clipboardData ?? window.clipboardData).getData('text')
+              const paste = event.clipboardData?.getData('text')
               if (paste && !build.url) {
                 build.url = paste
               }
@@ -231,11 +231,11 @@
           />
         </Field.Field>
         <Field.Field orientation="horizontal">
-          <Checkbox bind:checked={build.pin} class="size-4" />
+          <Checkbox bind:checked={() => build.pin ?? false, (checked) => (build.pin = checked)} class="size-4" />
           <Field.Label>Pin build</Field.Label>
         </Field.Field>
         <Field.Field orientation="horizontal">
-          <Checkbox bind:checked={build.skip} class="size-4" />
+          <Checkbox bind:checked={() => build.skip ?? false, (checked) => (build.skip = checked)} class="size-4" />
           <Field.Label>Skip build</Field.Label>
         </Field.Field>
       </form>

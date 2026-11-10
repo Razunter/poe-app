@@ -1,6 +1,6 @@
-import { buildsData } from '$lib/BuildsData.svelte.ts'
-import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
-import type { Build } from '$lib/schema/Build.schema.ts'
+import { buildsData } from '#lib/BuildsData.svelte.ts'
+import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
+import type { Build } from '#lib/schema/Build.schema.ts'
 import { compareVersions } from 'compare-versions'
 
 export const sortBuilds = () => {

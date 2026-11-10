@@ -1,4 +1,4 @@
-import { buildsData } from '$lib/BuildsData.svelte.ts'
+import { buildsData } from '#lib/BuildsData.svelte.ts'
 import shuffle from 'just-shuffle'
 
 export const randomizeBuildsOrder = () => {

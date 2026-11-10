@@ -97,6 +97,8 @@ sw.*
 node_modules
 /build
 /.svelte-kit
+/test-results/
+/playwright-report/
 /package
 !.env.example
 .vercel

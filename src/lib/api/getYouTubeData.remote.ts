@@ -1,5 +1,5 @@
+import { YOUTUBE_API_KEY } from '$app/env/private'
 import { command } from '$app/server'
-import { YOUTUBE_API_KEY } from '$env/static/private'
 import { error } from '@sveltejs/kit'
 import wretch from 'wretch'
 import * as z from 'zod'
@@ -30,15 +30,8 @@ export type YouTubeItem = {
   snippet: YouTubeSnippet
 }
 
-export type YouTubeLocalized = {
-  title: string
-  description: string
-}
-
-export type YouTubePageInfo = {
-  totalResults: number
-  resultsPerPage: number
-}
+export type YouTubeLocalized = { title: string; description: string }
+export type YouTubePageInfo = { totalResults: number; resultsPerPage: number }
 
 export type YouTubeSnippet = {
   publishedAt: Date

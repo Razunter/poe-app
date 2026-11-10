@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { cn, type WithoutChildrenOrChild } from '$lib/utils.js'
-  import * as Dialog from '.'
+  import { cn, type WithoutChildrenOrChild } from '#lib/utils.js'
   import DialogPortal from './dialog-portal.svelte'
+  import * as Dialog from './index.ts'
   import XIcon from '@iconify/icons-mdi/close'
   import Icon from '@iconify/svelte'
   import { Dialog as DialogPrimitive } from 'bits-ui'

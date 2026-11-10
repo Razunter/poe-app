@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { buildsData } from '$lib/BuildsData.svelte.ts'
-  import { capitalizeFirstLetter } from '$lib/capitalizeFirstLetter.ts'
+  import { buildsData } from '#lib/BuildsData.svelte.ts'
+  import { capitalizeFirstLetter } from '#lib/capitalizeFirstLetter.ts'
   import { useDebounce, useIntersectionObserver } from 'runed'
   import { onMount } from 'svelte'
 

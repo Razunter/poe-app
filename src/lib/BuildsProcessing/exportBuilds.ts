@@ -1,7 +1,7 @@
-import { saveData } from '$lib/api/save.remote.ts'
-import { checkBuildsForDuplicates } from '$lib/BuildsProcessing/checkBuildsForDuplicates.ts'
-import type { BuildsData } from '$lib/schema/BuildsData.schema.ts'
-import { log } from '$lib/stores.ts'
+import { saveData } from '#lib/api/save.remote.ts'
+import { checkBuildsForDuplicates } from '#lib/BuildsProcessing/checkBuildsForDuplicates.ts'
+import type { BuildsData } from '#lib/schema/BuildsData.schema.ts'
+import { log } from '#lib/stores.ts'
 
 // Save builds to external file via server-side API
 export const exportBuilds = async (buildsData: BuildsData) => {
@@ -43,7 +43,8 @@ export const exportBuilds = async (buildsData: BuildsData) => {
       return log_.set(new Date(), 'File saved successfully')
     })
   } catch (error) {
-    const errorMessage = typeof error === 'object' && 'message' in error ? error.message : String(error)
+    const errorMessage =
+      typeof error === 'object' && error !== null && 'message' in error ? String(error.message) : String(error)
     log.update((log_) => {
       return log_.set(new Date(), errorMessage)
     })

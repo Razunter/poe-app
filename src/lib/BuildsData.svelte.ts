@@ -1,4 +1,4 @@
-import type { BuildsData } from '$lib/schema/BuildsData.schema.ts'
+import type { BuildsData } from '#lib/schema/BuildsData.schema.ts'
 import { SvelteSet } from 'svelte/reactivity'
 
 export const buildsData = $state<BuildsData>({

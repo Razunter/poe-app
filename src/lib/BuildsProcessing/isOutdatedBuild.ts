@@ -1,4 +1,4 @@
-import { buildsData } from '$lib/BuildsData.svelte.ts'
+import { buildsData } from '#lib/BuildsData.svelte.ts'
 import intersect from 'just-intersect'
 
 export const isOutdatedBuild = (versions: string[], checkCompatibility = true) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn, type WithoutChildrenOrChild } from '$lib/utils.js'
+  import { cn, type WithoutChildrenOrChild } from '#lib/utils.js'
   import CheckIcon from '@iconify/icons-mdi/check'
   import MinusIcon from '@iconify/icons-mdi/minus'
   import Icon from '@iconify/svelte'
@@ -25,11 +25,11 @@
   bind:indeterminate
   {...restProps}
 >
-  {#snippet children({ checked, indeterminate })}
+  {#snippet children({ checked: isChecked, indeterminate: isIndeterminate })}
     <div data-slot="checkbox-indicator" class="text-current transition-none">
-      {#if checked}
+      {#if isChecked}
         <Icon icon={CheckIcon} class="size-3.5" />
-      {:else if indeterminate}
+      {:else if isIndeterminate}
         <Icon icon={MinusIcon} class="size-3.5" />
       {/if}
     </div>

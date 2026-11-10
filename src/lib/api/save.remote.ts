@@ -1,6 +1,6 @@
+import { type BuildsData, BuildsDataSchema } from '#lib/schema/BuildsData.schema.ts'
+import { JSON_PATH } from '$app/env/private'
 import { command } from '$app/server'
-import { JSON_PATH } from '$env/static/private'
-import { type BuildsData, BuildsDataSchema } from '$lib/schema/BuildsData.schema.ts'
 import { error as kitError } from '@sveltejs/kit'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -12,8 +12,8 @@ export const saveData = command(BuildsDataSchema, async (data: BuildsData) => {
     currentVersion: data.currentVersion,
     versions: data.versions,
   }
-
   const finalData: Partial<BuildsData> = structuredClone(data)
+
   delete finalData.currentVersion
   delete finalData.versions
 

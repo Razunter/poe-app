@@ -1,0 +1,15 @@
+{
+  "buildList": [
+    {
+      "builds": [
+        {"title": "Fixture starter",
+          "url": "https://example.com/starter",
+          "versions": [
+            "3.26"
+          ]}
+      ],
+      "type": "melee"
+    }
+  ],
+  "types": {"melee": "Melee"}
+}

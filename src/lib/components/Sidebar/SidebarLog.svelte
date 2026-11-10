@@ -1,6 +1,6 @@
 <script lang="ts">
-  import SidebarWrap from '$lib/components/Sidebar/SidebarWrap.svelte'
-  import { log } from '$lib/stores.ts'
+  import SidebarWrap from '#lib/components/Sidebar/SidebarWrap.svelte'
+  import { log } from '#lib/stores.ts'
 
   let { class: className }: { class?: string } = $props()
 

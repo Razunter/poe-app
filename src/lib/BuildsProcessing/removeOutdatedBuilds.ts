@@ -1,7 +1,7 @@
-import { buildsData } from '$lib/BuildsData.svelte.ts'
-import { convertVersionToInt } from '$lib/BuildsProcessing/convertVersionToInt.ts'
-import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
-import { log } from '$lib/stores.ts'
+import { buildsData } from '#lib/BuildsData.svelte.ts'
+import { convertVersionToInt } from '#lib/BuildsProcessing/convertVersionToInt.ts'
+import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
+import { log } from '#lib/stores.ts'
 
 export const removeOutdatedBuilds = () => {
   const count = {

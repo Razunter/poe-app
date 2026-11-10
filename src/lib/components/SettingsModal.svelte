@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { buildsData } from '$lib/BuildsData.svelte.ts'
+  import { buildsData } from '#lib/BuildsData.svelte.ts'
   // noinspection ES6UnusedImports
-  import * as Accordion from '$lib/components/ui/accordion/index.ts'
-  import { Button } from '$lib/components/ui/button/index.ts'
-  import { Checkbox } from '$lib/components/ui/checkbox'
+  import * as Accordion from '#lib/components/ui/accordion/index.ts'
+  import { Button } from '#lib/components/ui/button/index.ts'
+  import { Checkbox } from '#lib/components/ui/checkbox/index.ts'
   // noinspection ES6UnusedImports
-  import * as Dialog from '$lib/components/ui/dialog/index.ts'
+  import * as Dialog from '#lib/components/ui/dialog/index.ts'
   // noinspection ES6UnusedImports
-  import * as Field from '$lib/components/ui/field/index.ts'
-  import { Input } from '$lib/components/ui/input/index.ts'
-  import type { GameVersion } from '$lib/schema/GameVersion.schema.ts'
+  import * as Field from '#lib/components/ui/field/index.ts'
+  import { Input } from '#lib/components/ui/input/index.ts'
+  import type { GameVersion } from '#lib/schema/GameVersion.schema.ts'
   import contentSave from '@iconify/icons-mdi/content-save'
   import deleteIcon from '@iconify/icons-mdi/delete'
   import pencilIcon from '@iconify/icons-mdi/pencil'
@@ -122,7 +122,10 @@
                 <Input id="url-{version.version}" bind:value={version.url} />
               </Field.Field>
               <Field.Field orientation="horizontal">
-                <Checkbox id="wip-{version.version}" bind:checked={version.wip} class="" />
+                <Checkbox
+                  id="wip-{version.version}"
+                  bind:checked={() => version.wip ?? false, (checked) => (version.wip = checked)}
+                />
                 <Field.Label for="wip-{version.version}">Work in progress</Field.Label>
               </Field.Field>
               <Field.Field>

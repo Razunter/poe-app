@@ -1,5 +1,5 @@
-import { BuildCategorySchema } from '$lib/schema/BuildsCategory.schema.ts'
-import { GameVersionSchema } from '$lib/schema/GameVersion.schema.ts'
+import { BuildCategorySchema } from '#lib/schema/BuildsCategory.schema.ts'
+import { GameVersionSchema } from '#lib/schema/GameVersion.schema.ts'
 import * as z from 'zod'
 
 export const BuildListSchema = z.array(BuildCategorySchema)

@@ -1,9 +1,9 @@
-import { getYouTubeData, type YouTubeData } from '$lib/api/getYouTubeData.remote.ts'
-import { proxy } from '$lib/api/proxy.remote.ts'
-import { buildsData } from '$lib/BuildsData.svelte.ts'
-import { isOutdatedBuild } from '$lib/BuildsProcessing/isOutdatedBuild.ts'
-import type { Build } from '$lib/schema/Build.schema.ts'
-import { log, progressBar } from '$lib/stores.ts'
+import { getYouTubeData, type YouTubeData } from '#lib/api/getYouTubeData.remote.ts'
+import { proxy } from '#lib/api/proxy.remote.ts'
+import { buildsData } from '#lib/BuildsData.svelte.ts'
+import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
+import type { Build } from '#lib/schema/Build.schema.ts'
+import { log, progressBar } from '#lib/stores.ts'
 
 // Update build versions from PoE Forum & PoE-vault
 const updateBuildVersions = async (build: Build) => {
@@ -29,7 +29,9 @@ const updateBuildVersions = async (build: Build) => {
     log.update((log_) => {
       return log_.set(
         new Date(),
-        'message' in error ? error.message + '\n' + build.title : String(error) + '\n' + build.title,
+        typeof error === 'object' && error !== null && 'message' in error
+          ? error.message + '\n' + build.title
+          : String(error) + '\n' + build.title,
       )
     })
 
@@ -71,7 +73,11 @@ const updateBuildVideo = async (build: Build) => {
         log.update((log_) => {
           return log_.set(
             new Date(),
-            (typeof error === 'object' && 'message' in error ? error.message : String(error)) + '\n' + build.title,
+            (typeof error === 'object' && error !== null && 'message' in error
+              ? String(error.message)
+              : String(error)) +
+              '\n' +
+              build.title,
           )
         })
 
