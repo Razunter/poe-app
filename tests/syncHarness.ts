@@ -1,3 +1,4 @@
+import type { GuideVersion } from '../src/lib/BuildsProcessing/guideSource.ts'
 import type { BuildsData } from '../src/lib/schema/BuildsData.schema.ts'
 import type { Page, Route } from '@playwright/test'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
@@ -15,25 +16,19 @@ declare global {
   }
 }
 
-type ProxyInput = { mode?: string; targetUrl?: string }
-type ProxyCommand = (input: ProxyInput) => Promise<string>
+type GuideResponse = { status?: number; html?: string; location?: string }
 
 type SyncControl = {
-  starts: number
-  closing: number[]
-  closed: number[]
+  guideRequests: string[]
   requestedIDs: string[]
   titles: Map<string, string>
+  guideResponses: Map<string, GuideResponse>
   videoResults: Map<string, unknown>
   guideErrors: Map<string, Error>
   videoErrors: Map<string, Error>
-  startGate?: Promise<void>
   guideGate?: Promise<void>
   videoGate?: Promise<void>
   videoGates: Map<string, Array<Promise<void>>>
-  closeGate?: Promise<void>
-  startError?: Error
-  closeError?: Error
 }
 
 export type SyncHarness = {
@@ -45,63 +40,48 @@ export type SyncHarness = {
 
 export const deferred = () => Promise.withResolvers<undefined>()
 
+// SvelteKit's error() throws an HttpError, which is not an Error and keeps its text in body.message.
+const errorMessage = (error: unknown) =>
+  error instanceof Error
+    ? error.message
+    : ((error as undefined | { body?: { message?: string } })?.body?.message ?? String(error))
+
 export const createSyncHarness = async (page: Page) => {
   const control: SyncControl = {
-    starts: 0,
-    closing: [],
-    closed: [],
+    guideRequests: [],
     requestedIDs: [],
     titles: new Map(),
+    guideResponses: new Map(),
     videoResults: new Map(),
     guideErrors: new Map(),
     videoErrors: new Map(),
     videoGates: new Map(),
   }
   const shutdown = Promise.withResolvers<undefined>()
-  const globals = globalThis as typeof globalThis & { __poeSyncLaunch?: () => Promise<unknown> }
-  const previousLaunch = globals.__poeSyncLaunch
-  // The fixture owns this SSR launch hook until its server is closed.
-  const setLaunch = (value: typeof previousLaunch) => {
-    globals.__poeSyncLaunch = value
+  const previousFetch = globalThis.fetch
+  const setFetch = (value: typeof fetch) => {
+    globalThis.fetch = value
   }
 
-  const launch = async () => {
-    const identity = ++control.starts
-    await Promise.race([control.startGate, shutdown.promise])
-    if (control.startError) {
-      throw control.startError
+  const guideFetch: typeof fetch = async (input, init) => {
+    const url = input instanceof Request ? input.url : String(input)
+    if (['127.0.0.1', 'localhost'].includes(new URL(url).hostname)) {
+      return previousFetch(input, init)
     }
 
-    return {
-      newPage: async () => {
-        let target = ''
-        return {
-          setRequestInterception: async () => undefined,
-          on: () => undefined,
-          setJavaScriptEnabled: async () => undefined,
-          goto: async (url: string) => {
-            target = url
-            await Promise.race([control.guideGate, shutdown.promise])
-            const failure = control.guideErrors.get(url)
-            if (failure) {
-              throw failure
-            }
-
-            return { ok: () => true }
-          },
-          title: async () => control.titles.get(target) ?? '',
-        }
-      },
-      close: async () => {
-        control.closing.push(identity)
-        await Promise.race([control.closeGate, shutdown.promise])
-        if (control.closeError) {
-          throw control.closeError
-        }
-
-        control.closed.push(identity)
-      },
+    control.guideRequests.push(url)
+    await Promise.race([control.guideGate, shutdown.promise])
+    const failure = control.guideErrors.get(url)
+    if (failure) {
+      throw failure
     }
+
+    const {
+      status = 200,
+      html = `<html><head><title>${control.titles.get(url) ?? ''}</title></head><body></body></html>`,
+      location,
+    } = control.guideResponses.get(url) ?? {}
+    return new Response(html, { status, headers: location ? { location } : {} })
   }
 
   const entry = `
@@ -130,18 +110,17 @@ export const createSyncHarness = async (page: Page) => {
     logLevel: 'error',
     resolve: { alias: { '#lib': path.resolve('src/lib') } },
     server: { host: '127.0.0.1', port: 0 },
-    ssr: { noExternal: ['puppeteer'] },
     plugins: [
       {
         name: 'sync-test-boundaries',
         enforce: 'pre',
         resolveId(id, _importer, options) {
-          if (id === 'virtual:sync-entry' || id === '$app/server' || id === 'puppeteer') {
+          if (id === 'virtual:sync-entry' || id === '$app/server') {
             return '\0sync-test:' + id
           }
 
-          if (id.endsWith('/api/proxy.remote.ts') && !options?.ssr) {
-            return '\0sync-test:proxy-client'
+          if (id.endsWith('/api/getGuideVersion.remote.ts') && !options?.ssr) {
+            return '\0sync-test:guide-client'
           }
 
           if (id.endsWith('/api/getYouTubeData.remote.ts') && !options?.ssr) {
@@ -159,12 +138,8 @@ export const createSyncHarness = async (page: Page) => {
             return 'export const command = (schema, handler) => input => handler(schema.parse(input))'
           }
 
-          if (id === '\0sync-test:puppeteer') {
-            return 'export const launch = () => globalThis.__poeSyncLaunch()'
-          }
-
-          const command = id === '\0sync-test:proxy-client' ? 'proxy' : 'getYouTubeData'
-          if (id === '\0sync-test:proxy-client' || id === '\0sync-test:video-client') {
+          const command = id === '\0sync-test:guide-client' ? 'getGuideVersion' : 'getYouTubeData'
+          if (id === '\0sync-test:guide-client' || id === '\0sync-test:video-client') {
             return `export const ${command} = async input => {
               const response = await fetch('/__sync-control/${command}', {method: 'POST', body: JSON.stringify(input)})
               const value = await response.json()
@@ -193,15 +168,15 @@ export const createSyncHarness = async (page: Page) => {
       svelte({ configFile: false }),
     ],
   })
-  setLaunch(launch)
+  setFetch(guideFetch)
 
   try {
     const { parse, stringify } = (await server.ssrLoadModule('devalue')) as {
       parse: (value: string) => unknown
       stringify: (value: unknown) => string
     }
-    const { proxy } = (await server.ssrLoadModule(path.resolve('src/lib/api/proxy.remote.ts'))) as {
-      proxy: ProxyCommand
+    const { getGuideVersion } = (await server.ssrLoadModule(path.resolve('src/lib/api/getGuideVersion.remote.ts'))) as {
+      getGuideVersion: (guideUrl: string) => Promise<GuideVersion>
     }
     const video = async (id: string) => {
       control.requestedIDs.push(id)
@@ -218,10 +193,12 @@ export const createSyncHarness = async (page: Page) => {
     await page.route('**/__sync-control/*', async (route) => {
       try {
         const input = route.request().postDataJSON()
-        const value = route.request().url().endsWith('/proxy') ? await proxy(input) : await video(input)
+        const value = route.request().url().endsWith('/getGuideVersion')
+          ? await getGuideVersion(input)
+          : await video(input)
         await route.fulfill({ json: value })
       } catch (error) {
-        await route.fulfill({ status: 500, json: { message: error instanceof Error ? error.message : String(error) } })
+        await route.fulfill({ status: 500, json: { message: errorMessage(error) } })
       }
     })
     await server.listen()
@@ -240,28 +217,22 @@ export const createSyncHarness = async (page: Page) => {
       },
       interceptApp: async () => {
         await page.route('**/_app/remote/**', async (route: Route) => {
-          if (route.request().method() !== 'POST') {
+          // Command URLs end in /_app/remote/<hash>/<function name>.
+          const name = new URL(route.request().url()).pathname.split('/').at(-1)
+          if (route.request().method() !== 'POST' || (name !== 'getGuideVersion' && name !== 'getYouTubeData')) {
             await route.fallback()
             return
           }
 
           const body = route.request().postDataJSON()
-          const input = body.payload ? parse(Buffer.from(body.payload, 'base64url').toString('utf8')) : undefined
-          if (
-            typeof input !== 'string' &&
-            (!input || typeof input !== 'object' || (!('mode' in input) && !('targetUrl' in input)))
-          ) {
-            await route.fallback()
-            return
-          }
-
+          const input = parse(Buffer.from(body.payload, 'base64url').toString('utf8')) as string
           try {
-            const value = typeof input === 'string' ? await video(input) : await proxy(input as ProxyInput)
+            const value = name === 'getGuideVersion' ? await getGuideVersion(input) : await video(input)
             await route.fulfill({ json: { type: 'result', data: stringify({ _: value }) } })
           } catch (error) {
             await route.fulfill({
               status: 500,
-              json: { type: 'error', error: { message: error instanceof Error ? error.message : String(error) } },
+              json: { type: 'error', error: { message: errorMessage(error) } },
             })
           }
         })
@@ -271,7 +242,7 @@ export const createSyncHarness = async (page: Page) => {
         try {
           await server.close()
         } finally {
-          setLaunch(previousLaunch)
+          setFetch(previousFetch)
         }
       },
     }
@@ -279,7 +250,7 @@ export const createSyncHarness = async (page: Page) => {
     try {
       await server.close()
     } finally {
-      setLaunch(previousLaunch)
+      setFetch(previousFetch)
     }
 
     throw error

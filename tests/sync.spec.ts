@@ -21,9 +21,11 @@ const videoID = 'Abc_123-XYZ'
 const oldThumbnail = 'https://i.ytimg.com/vi/old/hqdefault.jpg'
 const thumbnail = `https://i.ytimg.com/vi/${videoID}/hqdefault.jpg`
 
+// Same-width thread ids keep one fixture URL from being a substring of another.
+let threadID = 3_000_000
 const build = (title: string): Build => ({
   title,
-  url: `https://www.pathofexile.com/forum/view-thread/${title}`,
+  url: `https://www.pathofexile.com/forum/view-thread/${++threadID}`,
   versions: ['3.25'],
   video: `https://www.youtube.com/watch?v=${videoID}`,
   videothumb: { '480w': oldThumbnail },
@@ -146,110 +148,91 @@ test('live edits survive delayed sync without stale field writeback', async ({ p
   )
 })
 
-test('single sync guards direct double invocation through awaited browser shutdown', async ({ page, sync }) => {
+test('single sync guards direct double invocation until the guide lookup settles', async ({ page, sync }) => {
   const item = build('direct')
-  sync.control.titles.set(item.url, '[3.26.1] Direct guide')
-  sync.control.videoResults.set(videoID, videoResult())
-  const start = deferred()
+  delete item.video
+  delete item.videothumb
+  sync.control.titles.set(item.url, '[3.26] Guide')
   const guide = deferred()
-  const close = deferred()
-  sync.control.startGate = start.promise
   sync.control.guideGate = guide.promise
-  sync.control.closeGate = close.promise
   await sync.open(collection([item]))
   const running = page.evaluate(async () => {
-    const first = syncHarness.run()
-    const second = syncHarness.run()
-    await Promise.all([first, second])
+    await Promise.all([syncHarness.run(), syncHarness.run()])
   })
-  await expect.poll(() => sync.control.starts).toBe(1)
+  await expect.poll(() => sync.control.guideRequests).toEqual([item.url])
   expect(await page.evaluate(() => syncHarness.busy())).toBe(true)
-  start.resolve(undefined)
-  await expect.poll(() => sync.control.requestedIDs).toEqual([videoID])
   await page.evaluate(() => syncHarness.run())
-  expect(sync.control.starts).toBe(1)
+  expect(sync.control.guideRequests).toEqual([item.url])
+  expect(await page.evaluate(() => syncHarness.busy())).toBe(true)
   guide.resolve(undefined)
-  await expect.poll(() => sync.control.closing).toEqual([1])
-  expect(sync.control.closed).toEqual([])
-  expect(await page.evaluate(() => syncHarness.busy())).toBe(true)
-  await page.evaluate(() => syncHarness.run())
-  expect(sync.control.starts).toBe(1)
-  close.resolve(undefined)
   await running
-  expect(sync.control.closed).toEqual([1])
   expect(await page.evaluate(() => syncHarness.busy())).toBe(false)
+  expect(await page.evaluate(() => syncHarness.data.buildList[0].builds[0].versions)).toEqual(['3.25', '3.26'])
   await page.evaluate(() => syncHarness.run())
-  expect(sync.control.starts).toBe(2)
-  expect(sync.control.closed).toEqual([1, 2])
+  expect(sync.control.guideRequests).toEqual([item.url, item.url])
 })
 
-for (const stage of ['launch', 'navigation', 'cleanup'] as const) {
-  test(`single sync recovers after controlled ${stage} failure`, async ({ page, sync }) => {
+for (const [stage, fail, reason] of [
+  [
+    'request',
+    (sync: SyncHarness, url: string) => sync.control.guideErrors.set(url, new Error('Controlled request failure')),
+    'Controlled request failure',
+  ],
+  ['HTTP', (sync: SyncHarness, url: string) => sync.control.guideResponses.set(url, { status: 503 }), 'HTTP 503'],
+] as const) {
+  test(`single sync recovers after a guide ${stage} failure`, async ({ page, sync }) => {
     const item = build('failure')
     delete item.video
     delete item.videothumb
-    const failure = new Error(`Controlled ${stage} failure`)
-    if (stage === 'launch') {
-      sync.control.startError = failure
-    } else if (stage === 'navigation') {
-      sync.control.guideErrors.set(item.url, failure)
-    } else {
-      sync.control.closeError = failure
-    }
-
+    fail(sync, item.url)
     sync.control.titles.set(item.url, '[3.26.1] Recovered')
     await sync.open(collection([item]))
     await page.evaluate(() => syncHarness.run())
-    expect(await page.evaluate(() => syncHarness.busy())).toBe(false)
-    expect(await page.evaluate(() => syncHarness.logs())).toEqual(
-      expect.arrayContaining([expect.stringContaining(failure.message)]),
-    )
-    if (stage === 'launch') {
-      expect(sync.control.closing).toEqual([])
-    } else {
-      expect(sync.control.closing).toEqual([1])
-    }
-
-    Object.assign(sync.control, { startError: undefined, closeError: undefined })
+    const failed = await page.evaluate(() => ({
+      busy: syncHarness.busy(),
+      logs: syncHarness.logs(),
+      versions: syncHarness.data.buildList[0].builds[0].versions,
+    }))
+    expect(failed.busy).toBe(false)
+    expect(failed.versions).toEqual(['3.25'])
+    expect(failed.logs).toEqual(expect.arrayContaining([expect.stringContaining(reason)]))
     sync.control.guideErrors.clear()
+    sync.control.guideResponses.clear()
     await page.evaluate(() => syncHarness.run())
-    expect(sync.control.starts).toBe(2)
-    expect(sync.control.closed).toContain(2)
-    expect(await page.evaluate(() => syncHarness.data.buildList[0].builds[0].versions)).toContain(currentVersion)
+    expect(await page.evaluate(() => syncHarness.data.buildList[0].builds[0].versions)).toEqual([
+      '3.25',
+      currentVersion,
+    ])
     expect(await page.evaluate(() => syncHarness.busy())).toBe(false)
   })
 }
 
-test('single sync disables the actual action until cleanup settles and after failure recovers', async ({
+test('single sync disables the actual action until the guide lookup settles and after failure recovers', async ({
   page,
   sync,
 }) => {
   const item = build('Visible starter')
-  item.versions = [currentVersion]
+  delete item.video
+  delete item.videothumb
   writeCollection(collection([item]))
+  const guide = deferred()
+  sync.control.guideGate = guide.promise
+  sync.control.guideErrors.set(item.url, new Error('Visible guide failure'))
   await sync.interceptApp()
-  Object.assign(sync.control, { startError: new Error('Visible launch failure') })
   await page.goto('/')
   const button = page.getByRole('button', { name: 'Sync builds', exact: true })
-  await button.click()
-  await expect(page.getByText('Visible launch failure', { exact: false })).toBeVisible()
   await expect(button).toBeEnabled()
-  Object.assign(sync.control, { startError: undefined })
-  sync.control.videoResults.set(videoID, videoResult())
-  const close = deferred()
-  sync.control.closeGate = close.promise
   await button.evaluate((element) => {
     const action = element as HTMLButtonElement
     action.click()
     action.click()
   })
-  await expect.poll(() => sync.control.closing).toEqual([2])
+  await expect.poll(() => sync.control.guideRequests).toEqual([item.url])
   await expect(button).toBeDisabled()
-  expect(sync.control.starts).toBe(2)
-  expect(sync.control.closed).toEqual([])
-  close.resolve(undefined)
+  guide.resolve(undefined)
+  await expect(page.getByText('Visible guide failure', { exact: false })).toBeVisible()
   await expect(button).toBeEnabled()
-  expect(sync.control.closed).toEqual([2])
+  expect(sync.control.guideRequests).toEqual([item.url])
 })
 
 test('optional video empty lookup removes the property and remains saveable after reload', async ({ page, sync }) => {
@@ -258,8 +241,10 @@ test('optional video empty lookup removes the property and remains saveable afte
   writeCollection(collection([item]))
   await sync.interceptApp()
   await page.goto('/')
-  await page.getByRole('button', { name: 'Sync builds', exact: true }).click()
-  await expect.poll(() => sync.control.closed).toEqual([1])
+  const button = page.getByRole('button', { name: 'Sync builds', exact: true })
+  await button.click()
+  await expect(page.getByText('Sync complete', { exact: false })).toBeVisible()
+  await expect(button).toBeEnabled()
   await expect(page.getByRole('article').getByRole('img')).toHaveCount(0)
   await page.getByRole('button', { name: 'Save', exact: true }).click()
   const savedPath = path.join(collectionPath, 'data-3-26-1.json')
@@ -293,6 +278,7 @@ test('YouTube ID query ordering preserves correct thumbnails and unsupported loo
   sync.control.videoResults.set('Before_ID-1', videoResult('https://i.ytimg.com/vi/Before_ID-1/hqdefault.jpg'))
   await sync.open(collection(items))
   await page.evaluate(() => syncHarness.run())
+  expect(sync.control.guideRequests).toEqual([])
   expect(sync.control.requestedIDs.toSorted()).toEqual(['After_ID-12', 'Before_ID-1'])
   const result = await page.evaluate(() => ({
     builds: syncHarness.data.buildList[0].builds,
@@ -362,4 +348,198 @@ test('guide version token checks compatible builds and preserves all fields when
   expect(await page.evaluate(() => syncHarness.logs())).toEqual(
     expect.arrayContaining([expect.stringContaining(item.url)]),
   )
+})
+
+const guidePage = (title: string, body = '') => `<html><head><title>${title}</title></head><body>${body}</body></html>`
+const maxrollTags = (...tags: string[]) => tags.map((tag) => `<div class="_Tags__tag_gmlgk_1">${tag}</div>`).join('')
+
+test('guide version outcomes use the real server parser with one request per supported guide URL', async ({
+  page,
+  sync,
+}) => {
+  const canonicalThread = 'https://www.pathofexile.com/forum/view-thread/3400007'
+  const rows: Array<{
+    title: string
+    url: string
+    versions?: string[]
+    response?: { status?: number; html?: string; location?: string }
+    tags: string[]
+    log?: string
+    request: boolean
+  }> = [
+    {
+      title: 'forum prose title',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400001',
+      response: {
+        html: guidePage("Witch - What Wrecker's Playing for 3.27 | A Stress-Free Build - Forum - Path of Exile"),
+      },
+      tags: ['3.25', '3.27'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'localized forum host',
+      url: 'https://br.pathofexile.com/forum/view-thread/3451000',
+      response: { html: guidePage('[3.29][Nerfed] Ivory Tower') },
+      tags: ['3.25', '3.29'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'PoE Vault title',
+      url: 'https://www.poe-vault.com/guides/cyclone-slayer-build-guide',
+      response: { html: guidePage('Cyclone Slayer Build Guide (PoE Curse of the Allflame 3.29) - PoE Vault') },
+      tags: ['3.25', '3.29'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'Maxroll tag badge',
+      url: 'https://maxroll.gg/poe/build-guides/winter-orb-elementalist-league-starter',
+      response: {
+        html: guidePage(
+          'Winter Orb Elementalist League Starter - POE Maxroll.gg',
+          `${maxrollTags('Elementalist', 'Curse of the Allflame 3.29')}<p>Update for Patch 3.29.3</p>`,
+        ),
+      },
+      tags: ['3.25', '3.29'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'Maxroll title over badge',
+      url: 'https://maxroll.gg/poe/build-guides/title-over-badge',
+      response: {
+        html: guidePage('Boneshatter Juggernaut 3.28 - POE Maxroll.gg', maxrollTags('Curse of the Allflame 3.29')),
+      },
+      tags: ['3.25', '3.28'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'conflicting title',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400002',
+      response: { html: guidePage('The Ultimate Uber Bosser (MSoZ) 3.27 - PoE 3.29 CotA Build Guide') },
+      tags: ['3.25'],
+      log: 'Ambiguous guide versions (3.27, 3.29)',
+      request: true,
+    },
+    {
+      title: 'repeated title version',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400003',
+      response: { html: guidePage('[3.27] Guide updated for 3.27') },
+      tags: ['3.25', '3.27'],
+      log: 'Updated',
+      request: true,
+    },
+    {
+      title: 'already recorded tag',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400004',
+      response: { html: guidePage('[3.25] Guide') },
+      tags: ['3.25'],
+      request: true,
+    },
+    ...[
+      'https://maxroll.gg/poe/news/3-30-patch-notes',
+      'https://maxroll.gg/poe2/build-guides/some-build',
+      'https://mobalytics.gg/poe/builds/tesla-hierophant-3-27',
+      'https://mobalytics.gg/poe/profile/fastaf/builds/the-ultimate-uber-bosser-msoz-3-27',
+    ].map((url, index) => ({
+      title: `unsupported route ${String.fromCodePoint(65 + index)}`,
+      url,
+      tags: ['3.25'],
+      log: 'Unsupported',
+      request: false,
+    })),
+    {
+      title: 'unrelated host',
+      url: 'https://example.com/guide?from=pathofexile.com',
+      tags: ['3.25'],
+      request: false,
+    },
+    {
+      title: 'blocked guide',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400005',
+      response: { status: 403, html: guidePage('[3.29] Guide') },
+      tags: ['3.25'],
+      log: 'HTTP 403',
+      request: true,
+    },
+    {
+      title: 'redirected guide',
+      url: 'https://www.pathofexile.com/forum/view-thread/3400006',
+      response: { status: 302, location: 'https://www.pathofexile.com/forum' },
+      tags: ['3.25'],
+      log: 'redirected',
+      request: true,
+    },
+    {
+      title: 'redirect to canonical host',
+      url: 'https://pathofexile.com/forum/view-thread/3400007',
+      response: { status: 301, location: canonicalThread },
+      tags: ['3.25', '3.28'],
+      log: 'Updated',
+      request: true,
+    },
+  ]
+  sync.control.titles.set(canonicalThread, '[3.28] Canonical guide')
+  const items = rows.map(({ title, url, versions = ['3.25'], response }): Build => {
+    if (response) {
+      sync.control.guideResponses.set(url, response)
+    }
+
+    return { title, url, versions: [...versions] }
+  })
+  await sync.open(collection(items))
+  await page.evaluate(() => syncHarness.run())
+  const result = await page.evaluate(() => ({
+    builds: syncHarness.data.buildList[0].builds,
+    logs: syncHarness.logs(),
+  }))
+  for (const [index, row] of rows.entries()) {
+    expect(result.builds[index].versions, row.title).toEqual(row.tags)
+    if (row.log) {
+      expect(
+        result.logs.filter((entry) => entry.includes(row.title)),
+        row.title,
+      ).toEqual(expect.arrayContaining([expect.stringContaining(row.log)]))
+    }
+  }
+
+  expect(sync.control.guideRequests.toSorted()).toEqual(
+    [canonicalThread, ...rows.filter((row) => row.request).map((row) => row.url)].toSorted(),
+  )
+})
+
+test('guide version lookups keep at most two requests in flight per host', async ({ page, sync }) => {
+  const forum = ['A', 'B', 'C', 'D', 'E'].map((name) => build(`forum ${name}`))
+  const maxroll: Build = {
+    title: 'maxroll',
+    url: 'https://maxroll.gg/poe/build-guides/per-host-limit',
+    versions: ['3.25'],
+  }
+  const items = [...forum, maxroll]
+  for (const item of items) {
+    delete item.video
+    delete item.videothumb
+  }
+
+  const guide = deferred()
+  sync.control.guideGate = guide.promise
+  await sync.open(collection(items))
+  const running = page.evaluate(() => syncHarness.run())
+  const inFlight = () => {
+    const forumCount = sync.control.guideRequests.filter(
+      (url) => new URL(url).hostname === 'www.pathofexile.com',
+    ).length
+    return { forum: forumCount, maxroll: sync.control.guideRequests.length - forumCount }
+  }
+
+  await expect.poll(inFlight).toEqual({ forum: 2, maxroll: 1 })
+  // Absence of a third forum request can only be observed over time.
+  await page.waitForTimeout(250)
+  expect(inFlight()).toEqual({ forum: 2, maxroll: 1 })
+  guide.resolve(undefined)
+  await running
+  expect(sync.control.guideRequests.toSorted()).toEqual(items.map((item) => item.url).toSorted())
 })

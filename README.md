@@ -103,11 +103,25 @@ development server or rebuild production output.
 
 ## Optional syncing
 
-**Sync builds** checks game-version tags for Path of Exile forum and Maxroll
-links and fetches missing YouTube thumbnails.
+**Sync builds** checks guide versions for outdated builds and fetches missing
+YouTube thumbnails. It reads the version a guide declares in its page title:
 
-Only one sync runs at a time. The action stays disabled until browser shutdown
-finishes. Edits, additions, deletions, and category moves made during sync survive.
+- Path of Exile forum threads (`/forum/view-thread/…`, including localized hosts)
+- Maxroll PoE 1 build guides (`/poe/build-guides/…`); when the title has no
+  version, the guide's league badge is used
+- PoE Vault guides (`/guides/…`)
+
+Mobalytics is not supported: it answers ordinary requests with a Cloudflare
+challenge. Other pages on these sites, such as news, listings, and PoE 2, are
+reported as unsupported.
+
+Each guide costs one page request, with at most two requests per site at a time
+and no retries. Sync adds the exact version the guide declares, even an older
+one. A title with conflicting versions, a missing version, or a failed request
+leaves the build's version tags unchanged and is reported in the log.
+
+Only one sync runs at a time. The action stays disabled until every lookup
+settles. Edits, additions, deletions, and category moves made during sync survive.
 Fetched fields apply only when their source values are unchanged.
 
 Supported YouTube watch URLs can include query parameters before or after `v`.
@@ -117,6 +131,3 @@ save-valid.
 
 - For YouTube thumbnails, set `YOUTUBE_API_KEY` to a
   [YouTube Data API v3 key](https://developers.google.com/youtube/v3/getting-started).
-- **Sync builds** launches Puppeteer's Chrome. If Chrome is missing, run
-  `bunx puppeteer browsers install`. On Linux it needs a working
-  [Chrome sandbox](https://pptr.dev/troubleshooting#setting-up-chrome-linux-sandbox).

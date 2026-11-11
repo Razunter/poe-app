@@ -1,53 +1,68 @@
+import { getGuideVersion } from '#lib/api/getGuideVersion.remote.ts'
 import { getYouTubeData, type YouTubeData } from '#lib/api/getYouTubeData.remote.ts'
-import { proxy } from '#lib/api/proxy.remote.ts'
 import { buildsData } from '#lib/BuildsData.svelte.ts'
+import { classifyGuideUrl, type GuideVersion } from '#lib/BuildsProcessing/guideSource.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
 import { getYouTubeVideoId } from '#lib/BuildsProcessing/youtubeIntake.ts'
 import type { Build } from '#lib/schema/Build.schema.ts'
 import { log, progressBar, syncInProgress } from '#lib/stores.ts'
+import { isHttpError } from '@sveltejs/kit'
 import { SvelteDate } from 'svelte/reactivity'
 import { get } from 'svelte/store'
 
 const logFailure = (error: unknown, title: string) => {
-  const message = typeof error === 'object' && error !== null && 'message' in error ? error.message : error
+  // Remote command errors arrive as HttpError, whose text lives in `body.message`.
+  const message = isHttpError(error)
+    ? error.body.message
+    : typeof error === 'object' && error !== null && 'message' in error
+      ? error.message
+      : error
   log.update((entries) => entries.set(new Date(), `${String(message)}\n${title}`))
 }
 
-// Update build versions from PoE Forum & PoE-vault
 const updateBuildVersions = async (build: Build) => {
   // Not outdated → nothing to do
   if (!isOutdatedBuild(build.versions, false)) {
     return build
   }
 
-  // URL isn't supported → nothing to do
-  if (
-    !build.url.includes('pathofexile.com') &&
-    // PoE Vault blocks requests
-    // !build.url.includes('poe-vault.com') &&
-    !build.url.includes('maxroll.gg')
-  ) {
+  const guide = classifyGuideUrl(build.url)
+  if (!guide) {
     return build
   }
 
-  let versionResponse: string
+  if (!guide.supported) {
+    log.update((entries) =>
+      entries.set(new Date(), `Unsupported ${guide.source.name} guide URL: ${build.title}\n${build.url}`),
+    )
+    return build
+  }
+
+  let guideVersion: GuideVersion
   try {
-    versionResponse = await proxy({ targetUrl: build.url })
+    guideVersion = await getGuideVersion(build.url)
   } catch (error) {
     logFailure(error, build.title)
 
     return build
   }
 
-  if (versionResponse === '') {
+  if (guideVersion.outcome === 'missing') {
     log.update((log_) => {
       return log_.set(
         new Date(),
         `Build or version not found: <a href="${build.url}" target="_blank" rel="noopener">${build.title}</a>.`,
       )
     })
-  } else if (!build.versions.includes(versionResponse)) {
-    build.versions.push(versionResponse)
+  } else if (guideVersion.outcome === 'ambiguous') {
+    log.update((entries) =>
+      entries.set(
+        new Date(),
+        `Ambiguous guide versions (${guideVersion.versions.join(', ')}): ${build.title}\n${build.url}`,
+      ),
+    )
+  } else if (!build.versions.includes(guideVersion.version)) {
+    build.versions.push(guideVersion.version)
     log.update((log_) => {
       return log_.set(new Date(), `Updated: ${build.title}\n${build.url}`)
     })
@@ -110,62 +125,57 @@ export const updateBuilds = async () => {
   try {
     progressBar.set(0)
     const sources = $state.snapshot(buildsData.buildList).flatMap((category) => category.builds)
-    await proxy({ mode: 'start' })
 
-    try {
-      let completed = 0
-      await Promise.all(
-        sources.map(async (build) => {
-          const versions = [...build.versions]
-          const video = build.video
-          const videothumb = build.videothumb
-          const results = await Promise.allSettled([updateBuildVersions(build), updateBuildVideo(build)])
-          for (const result of results) {
-            if (result.status === 'rejected') {
-              logFailure(result.reason, build.title)
-            }
+    let completed = 0
+    await Promise.all(
+      sources.map(async (build) => {
+        const versions = [...build.versions]
+        const video = build.video
+        const videothumb = build.videothumb
+        const results = await Promise.allSettled([updateBuildVersions(build), updateBuildVideo(build)])
+        for (const result of results) {
+          if (result.status === 'rejected') {
+            logFailure(result.reason, build.title)
           }
+        }
 
-          const videoResult = results[1]
+        const videoResult = results[1]
 
-          let live: Build | undefined
-          for (const category of buildsData.buildList) {
-            live = category.builds.find((candidate) => candidate.url === build.url)
-            if (live) {
-              break
-            }
-          }
-
+        let live: Build | undefined
+        for (const category of buildsData.buildList) {
+          live = category.builds.find((candidate) => candidate.url === build.url)
           if (live) {
-            if (
-              live.versions.length === versions.length &&
-              live.versions.every((version, index) => version === versions[index])
-            ) {
-              live.versions = build.versions
-            }
+            break
+          }
+        }
 
-            if (
-              videoResult.status === 'fulfilled' &&
-              live.video === video &&
-              (['480w', '640w', '1280w'] as const).every((size) => live.videothumb?.[size] === videothumb?.[size])
-            ) {
-              if (videoResult.value.video === undefined) {
-                delete live.video
-              } else {
-                live.video = videoResult.value.video
-              }
-
-              live.videothumb = videoResult.value.videothumb
-            }
+        if (live) {
+          if (
+            live.versions.length === versions.length &&
+            live.versions.every((version, index) => version === versions[index])
+          ) {
+            live.versions = build.versions
           }
 
-          completed++
-          progressBar.set(Math.round((completed / sources.length) * 100))
-        }),
-      )
-    } finally {
-      await proxy({ mode: 'end' })
-    }
+          if (
+            videoResult.status === 'fulfilled' &&
+            live.video === video &&
+            (['480w', '640w', '1280w'] as const).every((size) => live.videothumb?.[size] === videothumb?.[size])
+          ) {
+            if (videoResult.value.video === undefined) {
+              delete live.video
+            } else {
+              live.video = videoResult.value.video
+            }
+
+            live.videothumb = videoResult.value.videothumb
+          }
+        }
+
+        completed++
+        progressBar.set(Math.round((completed / sources.length) * 100))
+      }),
+    )
 
     log.update((entries) => entries.set(new SvelteDate(), 'Sync complete'))
     progressBar.set(100)
