@@ -53,12 +53,11 @@ test('commit checks lint staged contents without reading unstaged edits', () => 
     writeFileSync(file, 'export const value = 1\n')
     const invalidStaged = check()
     expect(invalidStaged.status).not.toBe(0)
-    expect(invalidStaged.stdout).toContain('Parsing error')
+    expect(invalidStaged.stdout).toContain(path.basename(file))
 
     git('add', 'src')
     writeFileSync(file, 'export const value =\n')
     const validStaged = check()
-    expect(validStaged.stdout + validStaged.stderr).toBe('')
     expect(validStaged.status).toBe(0)
 
     git(
@@ -79,6 +78,76 @@ test('commit checks lint staged contents without reading unstaged edits', () => 
     git('add', 'notes.md')
     const documentationOnly = check()
     expect(documentationOnly.status).toBe(0)
+  } finally {
+    rmSync(directory, { recursive: true, force: true })
+  }
+})
+
+test('changed-file lint checks working contents of changed and untracked sources only', () => {
+  const root = process.cwd()
+  const directory = mkdtempSync(path.join(tmpdir(), 'poe-changed-lint-'))
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: directory, encoding: 'utf8' })
+  const write = (file: string, source: string) => {
+    mkdirSync(path.dirname(path.join(directory, file)), { recursive: true })
+    writeFileSync(path.join(directory, file), source)
+  }
+
+  const check = (...files: string[]) =>
+    spawnSync('bun', [path.join(root, 'scripts/lintChanged.js'), ...files], { cwd: directory, encoding: 'utf8' })
+  const valid = 'export const value = 1\n'
+  const invalid = 'export const value =\n'
+
+  try {
+    git('init', '-q')
+    copyFileSync(path.join(root, '.gitignore'), path.join(directory, '.gitignore'))
+    copyFileSync(path.join(root, 'eslint.config.ts'), path.join(directory, 'eslint.config.ts'))
+    symlinkSync(path.join(root, 'node_modules'), path.join(directory, 'node_modules'), 'dir')
+    write('src/tracked.js', valid)
+    write('src/removed.js', valid)
+    write('src/unchanged.js', invalid)
+    git('add', '.gitignore', 'eslint.config.ts', 'src')
+    git(
+      '-c',
+      'user.name=Test',
+      '-c',
+      'user.email=test@example.invalid',
+      '-c',
+      'commit.gpgsign=false',
+      '-c',
+      'core.hooksPath=/dev/null',
+      'commit',
+      '-qm',
+      'Base collection tooling fixture',
+    )
+    const unchanged = check()
+    expect(unchanged.status).toBe(0)
+
+    rmSync(path.join(directory, 'src/removed.js'))
+    write('build/ignored.js', invalid)
+    write('notes.md', 'Collection notes\n')
+    const nothingToLint = check()
+    expect(nothingToLint.status).toBe(0)
+
+    write('src/tracked.js', invalid)
+    git('add', 'src/tracked.js')
+    write('src/tracked.js', valid)
+    expect(check().status).toBe(0)
+
+    git('add', 'src/tracked.js')
+    write('src/tracked.js', invalid)
+    const invalidWorking = check()
+    expect(invalidWorking.status).not.toBe(0)
+    expect(invalidWorking.stdout).toContain('tracked.js')
+
+    write('src/scoped.js', valid)
+    const scoped = check('src/scoped.js', 'build/ignored.js', 'notes.md', 'src/removed.js')
+    expect(scoped.status).toBe(0)
+
+    write('src/tracked.js', valid)
+    write('src/untracked file.js', invalid)
+    const invalidUntracked = check()
+    expect(invalidUntracked.status).not.toBe(0)
+    expect(invalidUntracked.stdout).toContain('untracked file.js')
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }

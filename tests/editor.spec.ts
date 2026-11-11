@@ -217,6 +217,35 @@ test('optional video clears video and thumbnails through save and reload', async
   await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue('')
 })
 
+test('replacing the collection on disk leaks no previous build into the next navigation', async ({ page }) => {
+  const previousTitle = 'Previous collection build'
+  const previousThumbnail = 'https://i.ytimg.com/vi/PreviousBld/hqdefault.jpg'
+  const previous = editorCollection()
+  previous.buildList[0].builds[0].title = previousTitle
+  previous.buildList[0].builds[0].videothumb = { '480w': previousThumbnail }
+  writeFileSync(collectionFile, JSON.stringify(previous))
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: previousTitle, exact: true })).toBeVisible()
+  await expect(page.getByRole('img', { name: previousTitle, exact: true })).toBeVisible()
+
+  const collection = editorCollection()
+  writeFileSync(collectionFile, JSON.stringify(collection))
+  const response = await page.goto('/')
+  expect(response?.ok()).toBe(true)
+  const html = await response?.text()
+  expect(html).not.toContain(previousTitle)
+  expect(html).not.toContain(previousThumbnail)
+  await expect(page.locator('#melee article')).toHaveCount(2)
+  await expect(page.getByText(previousTitle)).toHaveCount(0)
+
+  await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Same title')
+  await page.getByLabel('Title', { exact: true }).fill('Fresh collection build')
+  await saveDialog(page)
+  collection.buildList[0].builds[0].title = 'Fresh collection build'
+  await saveCollection(page, collection)
+})
+
 test('optional video rejects malformed nonempty input before applying any collection changes', async ({ page }) => {
   const collection = editorCollection()
   writeFileSync(collectionFile, JSON.stringify(collection))

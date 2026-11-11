@@ -190,6 +190,13 @@ export const createSyncHarness = async (page: Page) => {
       return control.videoResults.get(id) ?? { items: [] }
     }
 
+    await server.listen()
+    const address = server.resolvedUrls?.local[0]
+    if (!address) {
+      throw new Error('Sync harness server has no local address')
+    }
+
+    await page.route(address + '**', (route) => route.continue())
     await page.route('**/__sync-control/*', async (route) => {
       try {
         const input = route.request().postDataJSON()
@@ -201,11 +208,6 @@ export const createSyncHarness = async (page: Page) => {
         await route.fulfill({ status: 500, json: { message: errorMessage(error) } })
       }
     })
-    await server.listen()
-    const address = server.resolvedUrls?.local[0]
-    if (!address) {
-      throw new Error('Sync harness server has no local address')
-    }
 
     const url = address + '__sync-harness'
     return {
