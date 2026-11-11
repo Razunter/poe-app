@@ -53,7 +53,9 @@
       return undefined
     }
   }
-  const candidates = $derived(lookup.kind === 'ready' ? suggestBuilds(buildsData.buildList, lookup.video) : [])
+  const candidates = $derived(
+    lookup.kind === 'ready' ? suggestBuilds(buildsData.buildList, lookup.video).slice(0, 3) : [],
+  )
   const searchResults = $derived(searchBuilds(buildsData.buildList, query))
   const thumbnail = $derived(
     lookup.kind === 'ready'
@@ -74,8 +76,21 @@
     lookup = { kind: 'idle' }
   }
 
-  const findCandidates = async (event: SubmitEvent) => {
-    event.preventDefault()
+  const choose = (originalUrl?: string) => {
+    if (lookup.kind !== 'ready') {
+      return
+    }
+
+    const { url: selectedUrl, video } = lookup
+    generation += 1
+    onchoose(
+      originalUrl === undefined
+        ? { kind: 'new', url: selectedUrl, video }
+        : { kind: 'replace', url: selectedUrl, video, originalUrl },
+    )
+  }
+
+  const lookupVideo = async (intent: 'new' | 'suggestions') => {
     const request = ++generation
     const requestedUrl = url.trim()
     const videoId = getYouTubeVideoId(requestedUrl)
@@ -99,6 +114,12 @@
       }
 
       lookup = { kind: 'ready', url: requestedUrl, video }
+
+      if (intent === 'new') {
+        choose()
+        return
+      }
+
       await tick()
       if (mounted && request === generation) {
         previewHeading?.focus()
@@ -110,18 +131,23 @@
     }
   }
 
-  const choose = (originalUrl?: string) => {
-    if (lookup.kind !== 'ready') {
+  const findCandidates = (event: SubmitEvent) => {
+    event.preventDefault()
+    if (lookup.kind !== 'loading') {
+      void lookupVideo('suggestions')
+    }
+  }
+
+  const addAsNew = () => {
+    if (lookup.kind === 'loading') {
       return
     }
 
-    const { url: selectedUrl, video } = lookup
-    generation += 1
-    onchoose(
-      originalUrl === undefined
-        ? { kind: 'new', url: selectedUrl, video }
-        : { kind: 'replace', url: selectedUrl, video, originalUrl },
-    )
+    if (lookup.kind === 'ready' && lookup.url === url.trim()) {
+      choose()
+    } else {
+      void lookupVideo('new')
+    }
   }
 
   const manualEntry = () => {
@@ -149,113 +175,115 @@
 </script>
 
 <div class="build-intake">
-  <form aria-label="YouTube build intake" onsubmit={findCandidates} novalidate>
-    <Field.Field>
-      <Field.Label for={`${id}-url`}>New YouTube URL</Field.Label>
-      <div class="lookup-controls">
+  <div class="intake-content">
+    <form aria-label="YouTube build intake" onsubmit={findCandidates} novalidate>
+      <Field.Field>
+        <Field.Label for={`${id}-url`}>New YouTube URL</Field.Label>
+        <div class="lookup-controls">
+          <Input
+            id={`${id}-url`}
+            name="youtube-url"
+            type="url"
+            value={url}
+            bind:ref={urlInput}
+            oninput={(event) => changeUrl(event.currentTarget.value)}
+            aria-invalid={lookup.kind === 'invalid'}
+            aria-describedby={`${id}-url-help ${id}-lookup-error`}
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck={false}
+            placeholder="https://www.youtube.com/watch?v=…"
+            required
+          />
+          <Button type="submit" disabled={lookup.kind === 'loading'}>Find candidates</Button>
+        </div>
+        <p id={`${id}-url-help`} class="help">
+          Paste a YouTube watch, short, or share link. Review a draft before changing your collection.
+        </p>
+      </Field.Field>
+    </form>
+
+    <div id={`${id}-lookup-error`} class="error" role="alert">
+      {#if lookup.kind === 'invalid'}
+        Enter a valid HTTP(S) YouTube video URL, or continue with Manual entry.
+      {:else if lookup.kind === 'failure'}
+        {#if lookup.reason === 'not-found'}
+          Video not found. Check that the video is available and the URL is correct, then try Find candidates or Add as
+          new again, or use Manual entry.
+        {:else}
+          Could not load video details. Try Find candidates or Add as new again, correct the URL, or use Manual entry.
+        {/if}
+      {/if}
+    </div>
+    <p class="lookup-status" class:sr-only={!status} role="status" aria-live="polite" aria-atomic="true">{status}</p>
+
+    {#if lookup.kind === 'ready'}
+      <section class="video-preview" aria-labelledby={`${id}-video-title`}>
+        {#if thumbnail}
+          <img src={httpUrl(thumbnail.url)} alt="" width="160" height="90" />
+        {/if}
+        <div>
+          <p class="eyebrow">New video</p>
+          <h3 id={`${id}-video-title`} bind:this={previewHeading} tabindex="-1">{lookup.video.snippet.title}</h3>
+          <p class="muted">{lookup.video.snippet.channelTitle}</p>
+          <a href={httpUrl(lookup.url)} target="_blank" rel="external noopener noreferrer">
+            Open new video<span class="sr-only"> in a new tab</span>
+          </a>
+        </div>
+      </section>
+
+      <section aria-labelledby={`${id}-suggestions`}>
+        <h3 id={`${id}-suggestions`}>Suggested builds</h3>
+        <p class="help">
+          Suggestions are clues, not confirmed matches. Choose a saved build to review its replacement.
+        </p>
+        {#if candidates.length}
+          <div class="candidate-list">
+            {#each candidates as candidate (JSON.stringify([candidate.category, candidate.build.url]))}
+              {@render candidateRow(candidate)}
+            {/each}
+          </div>
+        {:else}
+          <p class="empty">No suggestions found. Search all saved builds below or add this video as a new build.</p>
+        {/if}
+      </section>
+    {/if}
+
+    <search aria-labelledby={`${id}-search-label`}>
+      <Field.Field>
+        <Field.Label id={`${id}-search-label`} for={`${id}-search`}>Search all saved builds</Field.Label>
         <Input
-          id={`${id}-url`}
-          name="youtube-url"
-          type="url"
-          value={url}
-          bind:ref={urlInput}
-          oninput={(event) => changeUrl(event.currentTarget.value)}
-          aria-invalid={lookup.kind === 'invalid'}
-          aria-describedby={`${id}-url-help ${id}-lookup-error`}
+          id={`${id}-search`}
+          name="saved-build-search"
+          type="search"
+          bind:value={query}
+          aria-describedby={`${id}-search-help`}
+          placeholder="Title, author, or guide URL"
           autocomplete="off"
-          autocapitalize="none"
           spellcheck={false}
-          placeholder="https://www.youtube.com/watch?v=…"
-          required
         />
-        <Button type="submit">Find candidates</Button>
-      </div>
-      <p id={`${id}-url-help`} class="help">
-        Paste a YouTube watch, short, or share link. Review a draft before changing your collection.
-      </p>
-    </Field.Field>
-  </form>
-
-  <div id={`${id}-lookup-error`} class="error" role="alert">
-    {#if lookup.kind === 'invalid'}
-      Enter a valid HTTP(S) YouTube video URL, or continue with Manual entry.
-    {:else if lookup.kind === 'failure'}
-      {#if lookup.reason === 'not-found'}
-        Video not found. Check that the video is available and the URL is correct, then try Find candidates again or use
-        Manual entry.
-      {:else}
-        Could not load video details. Try Find candidates again, correct the URL, or use Manual entry.
+        <p id={`${id}-search-help`} class="help">
+          Search the whole collection, including builds outside suggestions.
+          {#if lookup.kind !== 'ready'}Load a video to enable replacement review.{/if}
+        </p>
+      </Field.Field>
+      {#if query.trim()}
+        <p class="help" role="status">{searchResults.length} saved builds found.</p>
+        {#if searchResults.length}
+          <div class="candidate-list">
+            {#each searchResults as candidate (JSON.stringify([candidate.category, candidate.build.url]))}
+              {@render candidateRow(candidate)}
+            {/each}
+          </div>
+        {:else}
+          <p class="empty">No saved builds match your search. Try another title, author, or guide URL.</p>
+        {/if}
       {/if}
-    {/if}
+    </search>
   </div>
-  <p class="lookup-status" class:sr-only={!status} role="status" aria-live="polite" aria-atomic="true">{status}</p>
-
-  {#if lookup.kind === 'ready'}
-    <section class="video-preview" aria-labelledby={`${id}-video-title`}>
-      {#if thumbnail}
-        <img src={httpUrl(thumbnail.url)} alt="" width="160" height="90" />
-      {/if}
-      <div>
-        <p class="eyebrow">New video</p>
-        <h3 id={`${id}-video-title`} bind:this={previewHeading} tabindex="-1">{lookup.video.snippet.title}</h3>
-        <p class="muted">{lookup.video.snippet.channelTitle}</p>
-        <a href={httpUrl(lookup.url)} target="_blank" rel="external noopener noreferrer">
-          Open new video<span class="sr-only"> in a new tab</span>
-        </a>
-      </div>
-    </section>
-
-    <section aria-labelledby={`${id}-suggestions`}>
-      <h3 id={`${id}-suggestions`}>Suggested builds</h3>
-      <p class="help">Suggestions are clues, not confirmed matches. Choose a saved build to review its replacement.</p>
-      {#if candidates.length}
-        <div class="candidate-list">
-          {#each candidates as candidate (JSON.stringify([candidate.category, candidate.build.url]))}
-            {@render candidateRow(candidate)}
-          {/each}
-        </div>
-      {:else}
-        <p class="empty">No suggestions found. Search all saved builds below or add this video as a new build.</p>
-      {/if}
-    </section>
-  {/if}
-
-  <search aria-labelledby={`${id}-search-label`}>
-    <Field.Field>
-      <Field.Label id={`${id}-search-label`} for={`${id}-search`}>Search all saved builds</Field.Label>
-      <Input
-        id={`${id}-search`}
-        name="saved-build-search"
-        type="search"
-        bind:value={query}
-        aria-describedby={`${id}-search-help`}
-        placeholder="Title, author, or guide URL"
-        autocomplete="off"
-        spellcheck={false}
-      />
-      <p id={`${id}-search-help`} class="help">
-        Search the whole collection, including builds outside suggestions.
-        {#if lookup.kind !== 'ready'}Load a video to enable replacement review.{/if}
-      </p>
-    </Field.Field>
-    {#if query.trim()}
-      <p class="help" role="status">{searchResults.length} saved builds found.</p>
-      {#if searchResults.length}
-        <div class="candidate-list">
-          {#each searchResults as candidate (JSON.stringify([candidate.category, candidate.build.url]))}
-            {@render candidateRow(candidate)}
-          {/each}
-        </div>
-      {:else}
-        <p class="empty">No saved builds match your search. Try another title, author, or guide URL.</p>
-      {/if}
-    {/if}
-  </search>
 
   <div class="intake-actions">
-    {#if lookup.kind === 'ready'}
-      <Button type="button" variant="success" onclick={() => choose()}>Add as new</Button>
-    {/if}
+    <Button type="button" variant="success" disabled={lookup.kind === 'loading'} onclick={addAsNew}>Add as new</Button>
     <Button type="button" onclick={manualEntry}>Manual entry</Button>
     <p class="help">Nothing changes until you save the full editor. Saving to disk remains separate.</p>
   </div>
@@ -296,16 +324,21 @@
   .build-intake {
     display: flex;
     flex-direction: column;
-    gap: 16px;
     min-width: 0;
+    min-height: 0;
+    color: #f4f6fa;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .intake-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-color: #66758d #0c1525;
     padding: 16px 20px;
-    color: #f4f6fa;
-    font-size: 14px;
-    line-height: 1.5;
   }
   .build-intake :global([data-slot='field']) {
     gap: 8px;
@@ -447,17 +480,19 @@
   }
   .intake-actions {
     display: flex;
+    flex: none;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    padding-top: 16px;
+    padding: 16px 20px;
     border-top: 1px solid #3b4b63;
   }
   .intake-actions p {
     flex-basis: 100%;
   }
   @media (max-width: 580px) {
-    .build-intake {
+    .intake-content,
+    .intake-actions {
       padding: 14px;
     }
     .lookup-controls,

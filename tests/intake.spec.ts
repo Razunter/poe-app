@@ -161,7 +161,8 @@ const assertOriginal = async (page: Page) => {
 test('AE1 AE2 offers mismatched-author and mismatched-title candidates with review details', async ({ page, sync }) => {
   await page.goto('/')
   await add(page)
-  await lookup(page)
+  await page.getByLabel('New YouTube URL', { exact: true }).fill(newUrl)
+  await page.getByLabel('New YouTube URL', { exact: true }).press('Enter')
   const row = candidate(page)
   for (const text of ['Mage Fist', 'Melee', '3.28', '3.29']) {
     await expect(row).toContainText(text)
@@ -184,30 +185,58 @@ test('AE1 AE2 offers mismatched-author and mismatched-title candidates with revi
   await assertOriginal(page)
 })
 
-test('AE3 distinguishes invalid, failed, empty and retry states without stale manual metadata', async ({
+test('AE3 direct import exposes invalid, failed and not-found states and allows retry or manual recovery', async ({
   page,
   sync,
 }) => {
   await page.goto('/')
   await add(page)
-  await lookup(page, 'https://not-youtube.example/watch?v=fjCN-vN_Tvk')
+  const importNew = page.getByRole('button', { name: 'Add as new', exact: true })
+  const manual = page.getByRole('button', { name: 'Manual entry', exact: true })
+  await page.getByLabel('New YouTube URL', { exact: true }).fill('https://not-youtube.example/watch?v=fjCN-vN_Tvk')
+  await importNew.click()
   await expect(page.getByRole('alert')).toBeVisible()
+  await expect(page.getByLabel('New YouTube URL', { exact: true })).toHaveAttribute('aria-invalid', 'true')
+  await expect(manual).toBeEnabled()
   expect(sync.control.requestedIDs).toEqual([])
+  await openManualEditor(page)
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('')
+  await expect(page.getByLabel('URL', { exact: true })).toHaveValue('https://not-youtube.example/watch?v=fjCN-vN_Tvk')
+  await page.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
   sync.control.videoErrors.set(newId, new Error('Controlled lookup failure'))
-  await lookup(page)
+  await page.getByLabel('New YouTube URL', { exact: true }).fill(newUrl)
+  await importNew.click()
   await expect.poll(() => sync.control.requestedIDs.length).toBe(1)
   await expect(page.getByRole('alert')).toBeVisible()
+  await expect(importNew).toBeEnabled()
+  await expect(manual).toBeEnabled()
+  await expect(page.getByLabel('Title', { exact: true })).toHaveCount(0)
+  await openManualEditor(page)
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('')
+  await expect(page.getByLabel('URL', { exact: true })).toHaveValue(newUrl)
+  await page.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
   sync.control.videoErrors.delete(newId)
   sync.control.videoResults.set(newId, { items: [] })
-  await page.getByRole('button', { name: 'Find candidates', exact: true }).click()
+  await importNew.click()
   await expect.poll(() => sync.control.requestedIDs.length).toBe(2)
   await expect(page.getByRole('alert')).toBeVisible()
+  await expect(importNew).toBeEnabled()
+  await expect(manual).toBeEnabled()
+  await expect(page.getByLabel('Title', { exact: true })).toHaveCount(0)
+  await openManualEditor(page)
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('')
+  await expect(page.getByLabel('URL', { exact: true })).toHaveValue(newUrl)
+  await page.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
   sync.control.videoResults.set(newId, metadata())
-  await page.getByRole('button', { name: 'Find candidates', exact: true }).click()
+  await importNew.click()
   await expect.poll(() => sync.control.requestedIDs.length).toBe(3)
+  await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Flicker Strike 3.30 starter')
+  await page.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
   await expect(candidate(page)).toBeVisible()
   await page.getByLabel('New YouTube URL', { exact: true }).fill(otherUrl)
-  await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toHaveCount(0)
+  await expect(importNew).toBeVisible()
+  await expect(importNew).toBeEnabled()
+  expect(sync.control.requestedIDs).toEqual([newId, newId, newId])
   await openManualEditor(page)
   await expect(page.getByLabel('Title', { exact: true })).toHaveValue('')
   await expect(page.locator('.field-author .in-selection')).toHaveCount(0)
@@ -229,7 +258,129 @@ test('AE2 empty suggestions still allow searching all saved builds', async ({ pa
   await assertOriginal(page)
 })
 
-test('AE3 manual continuation invalidates an in-flight lookup without importing its metadata', async ({
+test('AE2 keeps one visible footer across states and long unrestricted search reaches a fourth-ranked replacement', async ({
+  page,
+  sync,
+}, testInfo) => {
+  const ranked = seed()
+  ranked.buildList[0].builds = [
+    {
+      title: 'Flicker Strike experimental archive',
+      author: 'Unrelated archivist',
+      url: 'https://example.com/ranked-fourth',
+      versions: ['3.28'],
+    },
+    {
+      title: 'Cyclone archive',
+      author: 'MAGEFIST',
+      url: 'https://example.com/ranked-third',
+      versions: ['3.29'],
+    },
+    {
+      title: 'Flicker Strike atlas mapping',
+      author: 'MAGEFIST',
+      url: 'https://example.com/ranked-second',
+      versions: ['3.29'],
+    },
+    {
+      title: 'Flicker Strike starter',
+      author: 'MAGEFIST',
+      url: 'https://example.com/ranked-first',
+      versions: ['3.30'],
+    },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      title: `Collection archive ${index + 1}`,
+      url: `https://example.com/ranked-archive-${index + 1}`,
+      versions: ['3.28'],
+    })),
+  ]
+  writeFileSync(collectionFile, JSON.stringify(ranked))
+  await page.setViewportSize({ width: 1_440, height: 900 })
+  await page.goto('/')
+  await add(page)
+  const dialog = page.getByRole('dialog')
+  const footer = dialog.locator('.intake-actions')
+  const importNew = dialog.getByRole('button', { name: 'Add as new', exact: true })
+  const manual = dialog.getByRole('button', { name: 'Manual entry', exact: true })
+  const find = dialog.getByRole('button', { name: 'Find candidates', exact: true })
+  const assertFooter = async (loading = false) => {
+    await expect(footer).toHaveCount(1)
+    await expect(importNew).toHaveCount(1)
+    await expect(manual).toHaveCount(1)
+    await expect(footer).toBeInViewport({ ratio: 1 })
+    await expect(importNew).toBeInViewport({ ratio: 1 })
+    await expect(manual).toBeInViewport({ ratio: 1 })
+    await expect(manual).toBeEnabled()
+    if (loading) {
+      await expect(importNew).toBeDisabled()
+      await expect(find).toBeDisabled()
+    } else {
+      await expect(importNew).toBeEnabled()
+      await expect(find).toBeEnabled()
+    }
+  }
+
+  await assertFooter()
+  sync.control.videoErrors.set(newId, new Error('Controlled lookup failure'))
+  await lookup(page)
+  await expect(dialog.getByRole('alert')).toBeVisible()
+  await expect(dialog.getByRole('alert')).not.toBeEmpty()
+  await assertFooter()
+  sync.control.videoErrors.delete(newId)
+  const gate = deferred()
+  sync.control.videoGates.set(newId, [gate.promise])
+  await find.click()
+  await expect.poll(() => sync.control.requestedIDs.length).toBe(2)
+  await assertFooter(true)
+  gate.resolve(undefined)
+  const suggestions = page.getByRole('region', { name: 'Suggested builds', exact: true })
+  await expect(suggestions.getByRole('heading', { level: 4 })).toHaveText([
+    'Flicker Strike starter',
+    'Flicker Strike atlas mapping',
+    'Cyclone archive',
+  ])
+  await assertFooter()
+  await dialog.getByRole('searchbox', { name: 'Search all saved builds', exact: true }).fill('ranked')
+  const results = dialog.getByRole('search')
+  await expect(results.locator('article')).toHaveCount(12)
+  await assertFooter()
+  const firstBefore = await results.locator('article').first().boundingBox()
+  const last = results.locator('article').last()
+  await last.getByRole('button', { name: 'Review replacement', exact: true }).scrollIntoViewIfNeeded()
+  await expect(last).toBeInViewport({ ratio: 1 })
+  await assertFooter()
+  const firstAfter = await results.locator('article').first().boundingBox()
+  const lastBox = await last.boundingBox()
+  const footerBox = await footer.boundingBox()
+  if (!firstBefore || !firstAfter || !lastBox || !footerBox) {
+    throw new Error('Search results and footer must have measurable bounds')
+  }
+
+  expect(firstAfter.y).toBeLessThan(firstBefore.y)
+  expect(lastBox.y + lastBox.height).toBeLessThanOrEqual(footerBox.y)
+  await testInfo.attach('intake-long-search-footer', {
+    body: await page.screenshot(),
+    contentType: 'image/png',
+  })
+  await testInfo.attach('intake-long-search-accessibility', {
+    body: await dialog.ariaSnapshot(),
+    contentType: 'text/plain',
+  })
+  await replace(page, 'Flicker Strike experimental archive')
+  await expect(page.getByLabel('URL', { exact: true })).toHaveValue('https://example.com/ranked-fourth')
+  await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue(newUrl)
+  await apply(page)
+  const expected = structuredClone(ranked)
+  Object.assign(expected.buildList[0].builds[0], {
+    video: newUrl,
+    videothumb: thumbs(),
+    versions: ['3.28', '3.30'],
+  })
+  await persist(page, expected)
+  expect(sync.control.requestedIDs).toEqual([newId, newId])
+})
+
+test('AE3 manual continuation invalidates an in-flight direct import without importing its metadata', async ({
   page,
   sync,
 }) => {
@@ -237,8 +388,12 @@ test('AE3 manual continuation invalidates an in-flight lookup without importing 
   sync.control.videoGates.set(newId, [gate.promise])
   await page.goto('/')
   await add(page)
-  await lookup(page)
+  await page.getByLabel('New YouTube URL', { exact: true }).fill(newUrl)
+  await page.getByRole('button', { name: 'Add as new', exact: true }).click()
   await expect.poll(() => sync.control.requestedIDs.length).toBe(1)
+  await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Find candidates', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Manual entry', exact: true })).toBeEnabled()
   await openManualEditor(page)
   await expect(page.getByLabel('URL', { exact: true })).toHaveValue(newUrl)
   const response = page.waitForResponse((result) => result.request().method() === 'POST')
@@ -289,8 +444,9 @@ test('AE3 AE9 manual written-guide continuation trims the URL and saves without 
   expect(sync.control.requestedIDs).toEqual([newId])
 })
 
-for (const aba of [false, true]) {
-  test(`AE3 rejects late ${aba ? 'A/B/A generations' : 'out-of-order A/B responses'}`, async ({ page, sync }) => {
+for (const sequence of ['edited URL only', 'out-of-order A/B responses', 'A/B/A generations']) {
+  test(`AE3 direct import rejects late ${sequence}`, async ({ page, sync }) => {
+    const aba = sequence === 'A/B/A generations'
     const first = deferred()
     const second = deferred()
     const third = deferred()
@@ -298,12 +454,28 @@ for (const aba of [false, true]) {
     sync.control.videoGates.set(otherId, [second.promise])
     await page.goto('/')
     await add(page)
-    await lookup(page)
+    const url = page.getByLabel('New YouTube URL', { exact: true })
+    const importNew = page.getByRole('button', { name: 'Add as new', exact: true })
+    await url.fill(newUrl)
+    await importNew.click()
     await expect.poll(() => sync.control.requestedIDs.length).toBe(1)
-    await lookup(page, otherUrl)
+    await url.fill(otherUrl)
+    await expect(importNew).toBeEnabled()
+    await expect(page.getByRole('button', { name: 'Find candidates', exact: true })).toBeEnabled()
+    if (sequence === 'edited URL only') {
+      const response = page.waitForResponse((result) => result.request().method() === 'POST')
+      first.resolve(undefined)
+      await (await response).finished()
+      await expect(page.getByLabel('Title', { exact: true })).toHaveCount(0)
+      await expect(url).toHaveValue(otherUrl)
+      await expect(importNew).toBeEnabled()
+    }
+
+    await importNew.click()
     await expect.poll(() => sync.control.requestedIDs.length).toBe(2)
     if (aba) {
-      await lookup(page)
+      await url.fill(newUrl)
+      await importNew.click()
       await expect.poll(() => sync.control.requestedIDs.length).toBe(3)
     }
 
@@ -311,25 +483,29 @@ for (const aba of [false, true]) {
       const firstResponse = page.waitForResponse((response) => response.request().method() === 'POST')
       first.resolve(undefined)
       await firstResponse
-      await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toHaveCount(0)
+      await expect(importNew).toBeDisabled()
+      await expect(page.getByLabel('Title', { exact: true })).toHaveCount(0)
       const secondResponse = page.waitForResponse((response) => response.request().method() === 'POST')
       second.resolve(undefined)
       await secondResponse
-      await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toHaveCount(0)
+      await expect(importNew).toBeDisabled()
+      await expect(page.getByLabel('Title', { exact: true })).toHaveCount(0)
       third.resolve(undefined)
     } else {
       second.resolve(undefined)
-      await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toBeVisible()
-      const firstResponse = page.waitForResponse((response) => response.request().method() === 'POST')
-      first.resolve(undefined)
-      await firstResponse
+      await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Other video title')
+      if (sequence !== 'edited URL only') {
+        const firstResponse = page.waitForResponse((response) => response.request().method() === 'POST')
+        first.resolve(undefined)
+        await (await firstResponse).finished()
+      }
     }
 
-    await page.getByRole('button', { name: 'Add as new', exact: true }).click()
     await expect(page.getByLabel('Title', { exact: true })).toHaveValue(
       aba ? 'Flicker Strike 3.30 starter' : 'Other video title',
     )
     await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue(aba ? newUrl : otherUrl)
+    expect(sync.control.requestedIDs).toEqual(aba ? [newId, otherId, newId] : [newId, otherId])
     await page.keyboard.press('Escape')
     await assertOriginal(page)
   })
@@ -404,13 +580,21 @@ test('AE5 keeps written guides and already-current compatibility editable', asyn
 })
 
 for (const reuse of [false, true]) {
-  test(`AE6 AE8 new import ${reuse ? 'reuses selected saved spelling' : 'keeps deliberately new author'} in originating category`, async ({
+  test(`AE6 AE8 initial direct import and cached re-add ${reuse ? 'reuse selected saved spelling' : 'keep deliberately new author'} in originating category`, async ({
     page,
     sync,
   }) => {
     await page.goto('/')
     await add(page, 'spells')
-    await lookup(page)
+    await page.getByLabel('New YouTube URL', { exact: true }).fill(`  ${newUrl}  `)
+    await page.getByRole('button', { name: 'Add as new', exact: true }).click()
+    await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Flicker Strike 3.30 starter')
+    await expect(page.getByLabel('URL', { exact: true })).toHaveValue(newUrl)
+    await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue(newUrl)
+    await expect(page.getByRole('searchbox', { name: 'Search all saved builds', exact: true })).toHaveCount(0)
+    await page.getByRole('button', { name: 'Back to suggestions', exact: true }).click()
+    await expect(candidate(page)).toBeVisible()
+    expect(sync.control.requestedIDs).toEqual([newId])
     await page.getByRole('button', { name: 'Add as new', exact: true }).click()
     await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Flicker Strike 3.30 starter')
     await expect(page.locator('.field-author .in-selection')).toHaveText('MAGEFIST')

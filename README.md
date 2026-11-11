@@ -46,11 +46,16 @@ Set `YOUTUBE_API_KEY` to a
 to load video details.
 
 1. Click **Add build** in a category and paste the new YouTube URL.
-2. Click **Find candidates**. Review the suggestions, or search all saved builds
-   by title, author, or guide URL.
-3. Choose **Review replacement** for an existing build, or **Add as new**.
+2. To create a new build, click **Add as new** to load video details and open
+   the full editor directly.
+3. To update an existing build, click **Find candidates** and review up to three
+   suggestions. Search all saved builds by title, author, or guide URL to find
+   entries outside those suggestions, then choose **Review replacement**.
 4. Review the full editor and click **Save** to apply the draft.
 5. Click **Save** in the sidebar when you want to write the collection to disk.
+
+**Add as new** and **Manual entry** stay visible in the intake footer while you
+scroll. **Back to suggestions** returns to the loaded video without another lookup.
 
 Replacement keeps curated fields and historical version tags, adds the current
 version once, and updates the video and thumbnail. A separate written guide URL
