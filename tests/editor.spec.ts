@@ -74,6 +74,27 @@ test('edits an omitted work-in-progress flag in version settings', async ({ page
   await expect(page.getByRole('checkbox', { name: 'Work in progress' })).toBeChecked()
 })
 
+test('new version can include the current version as compatible before saving settings', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Settings', exact: true }).click()
+  await page.getByRole('button', { name: 'Add new version', exact: true }).click()
+  await page.getByLabel('Version number', { exact: true }).first().fill('3.27')
+  await page.getByLabel('League name', { exact: true }).first().fill('Next league')
+  const compatible = page.getByLabel('Compatible versions', { exact: true }).first()
+  await compatible.fill('3.27')
+  await expect(page.getByText('No matching options', { exact: true })).toBeVisible()
+  await compatible.fill('3.26')
+  await expect(page.getByText('No matching options', { exact: true })).not.toBeVisible()
+  await compatible.press('ArrowDown')
+  await compatible.press('Enter')
+  await saveDialog(page)
+  await page.getByRole('button', { name: 'Settings', exact: true }).click()
+  const savedCompatible = page
+    .locator('.sv-control')
+    .filter({ has: page.getByLabel('Compatible versions', { exact: true }).first() })
+  await expect(savedCompatible.locator('.sv-item--container')).toHaveText('3.26')
+})
+
 for (const move of [false, true]) {
   test(`build identity preserves neighbors after URL edit${move ? ' and category move' : ''}`, async ({ page }) => {
     const collection = editorCollection()

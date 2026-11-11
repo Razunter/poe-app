@@ -137,9 +137,7 @@
                 <Svelecte
                   inputId={`editCompatible-${version.version}`}
                   class="svelecte--dark"
-                  options={versionNumbers.filter((fVersion) => {
-                    return fVersion.value !== localConfig.currentVersion && fVersion.value !== version.version
-                  })}
+                  options={versionNumbers.filter((fVersion) => fVersion.value !== version.version)}
                   bind:value={version.compatible}
                   placeholder="Add version..."
                   multiple

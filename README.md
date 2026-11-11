@@ -83,6 +83,10 @@ missing, the editor searches configured releases newest-first without changing
 the current version. An existing corrupt file reports an error instead of falling
 back. The next explicit **Save** creates the current version's build file.
 
+In **Settings**, each version can list any other configured version as compatible,
+including the current version. You can set compatibility on a new version before
+saving it or changing **Current version**.
+
 Version numbers use two or three dotted components, such as `3.26` and `3.26.1`.
 The major component has one digit; the minor and patch components have one or two.
 
