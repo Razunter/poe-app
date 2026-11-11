@@ -4,60 +4,47 @@ import { error } from '@sveltejs/kit'
 import wretch from 'wretch'
 import * as z from 'zod'
 
-export const getYouTubeData = command(z.string(), async (videoID) => {
+const videoIdSchema = z.string().regex(/^[\w-]{11}$/u)
+const thumbnailSchema = z.object({
+  url: z.httpUrl(),
+  width: z.number().positive().optional(),
+  height: z.number().positive().optional(),
+})
+const thumbnailsSchema = z.object({
+  default: thumbnailSchema.optional(),
+  medium: thumbnailSchema.optional(),
+  high: thumbnailSchema.optional(),
+  standard: thumbnailSchema.optional(),
+  maxres: thumbnailSchema.optional(),
+})
+const snippetSchema = z.looseObject({
+  title: z.string().trim().min(1),
+  channelTitle: z.string().trim().min(1),
+  thumbnails: thumbnailsSchema.default({}),
+})
+const itemSchema = z.looseObject({
+  id: videoIdSchema,
+  snippet: snippetSchema,
+})
+const dataSchema = z.looseObject({ items: z.array(itemSchema) })
+
+export const getYouTubeData = command(videoIdSchema, async (videoID) => {
+  const url = new URL('https://www.googleapis.com/youtube/v3/videos')
+  url.searchParams.set('id', videoID)
+  url.searchParams.set('key', YOUTUBE_API_KEY)
+  url.searchParams.set('part', 'snippet')
+
   try {
-    return await wretch(
-      `https://www.googleapis.com/youtube/v3/videos?id=${videoID}&key=${YOUTUBE_API_KEY}&part=snippet`,
-    )
-      .get()
-      .json<YouTubeData>()
-  } catch (error_) {
-    return error(500, error_ instanceof Error ? error_.message : String(error_))
+    const data = dataSchema.parse(await wretch(url.toString()).get().json<unknown>())
+    if (data.items.some((item) => item.id !== videoID)) {
+      throw new Error('YouTube returned a different video')
+    }
+
+    return data
+  } catch {
+    return error(500, 'YouTube metadata lookup failed')
   }
 })
 
-export type YouTubeData = {
-  kind: string
-  etag: string
-  items: YouTubeItem[]
-  pageInfo: YouTubePageInfo
-}
-
-export type YouTubeItem = {
-  kind: string
-  etag: string
-  id: string
-  snippet: YouTubeSnippet
-}
-
-export type YouTubeLocalized = { title: string; description: string }
-export type YouTubePageInfo = { totalResults: number; resultsPerPage: number }
-
-export type YouTubeSnippet = {
-  publishedAt: Date
-  channelId: string
-  title: string
-  description: string
-  thumbnails: YouTubeThumbnails
-  channelTitle: string
-  tags: string[]
-  categoryId: string
-  liveBroadcastContent: string
-  defaultLanguage: string
-  localized: YouTubeLocalized
-  defaultAudioLanguage: string
-}
-
-export type YouTubeThumbnailData = {
-  url: string
-  width: number
-  height: number
-}
-
-export type YouTubeThumbnails = {
-  default: YouTubeThumbnailData
-  medium: YouTubeThumbnailData
-  high: YouTubeThumbnailData
-  standard: YouTubeThumbnailData
-  maxres: YouTubeThumbnailData
-}
+export type YouTubeData = z.infer<typeof dataSchema>
+export type YouTubeItem = z.infer<typeof itemSchema>

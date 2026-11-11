@@ -30,6 +30,7 @@ type SyncControl = {
   startGate?: Promise<void>
   guideGate?: Promise<void>
   videoGate?: Promise<void>
+  videoGates: Map<string, Array<Promise<void>>>
   closeGate?: Promise<void>
   startError?: Error
   closeError?: Error
@@ -54,6 +55,7 @@ export const createSyncHarness = async (page: Page) => {
     videoResults: new Map(),
     guideErrors: new Map(),
     videoErrors: new Map(),
+    videoGates: new Map(),
   }
   const shutdown = Promise.withResolvers<undefined>()
   const globals = globalThis as typeof globalThis & { __poeSyncLaunch?: () => Promise<unknown> }
@@ -203,7 +205,8 @@ export const createSyncHarness = async (page: Page) => {
     }
     const video = async (id: string) => {
       control.requestedIDs.push(id)
-      await Promise.race([control.videoGate, shutdown.promise])
+      const gate = control.videoGates.get(id)?.shift() ?? control.videoGate
+      await Promise.race([gate, shutdown.promise])
       const failure = control.videoErrors.get(id)
       if (failure) {
         throw failure

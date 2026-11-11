@@ -39,6 +39,28 @@ the files. Reload to confirm the title was saved.
 
 Dialog **Save** changes the loaded collection; sidebar **Save** writes to disk.
 
+## Add or replace a build from YouTube
+
+Set `YOUTUBE_API_KEY` to a
+[YouTube Data API v3 key](https://developers.google.com/youtube/v3/getting-started)
+to load video details.
+
+1. Click **Add build** in a category and paste the new YouTube URL.
+2. Click **Find candidates**. Review the suggestions, or search all saved builds
+   by title, author, or guide URL.
+3. Choose **Review replacement** for an existing build, or **Add as new**.
+4. Review the full editor and click **Save** to apply the draft.
+5. Click **Save** in the sidebar when you want to write the collection to disk.
+
+Replacement keeps curated fields and historical version tags, adds the current
+version once, and updates the video and thumbnail. A separate written guide URL
+stays unchanged. Suggestions never replace a build or merge author names automatically.
+For a **New author**, select a similar saved name or keep the new spelling.
+
+**Manual entry** skips lookup and keeps the pasted URL. Direct **Edit** still
+opens the full editor. **Reset** restores the saved original for a replacement
+or ordinary blank defaults for a new build. Closing the dialog discards the draft.
+
 ## Use your collection
 
 Point `JSON_PATH` at your collection directory. It needs `versions.json` and

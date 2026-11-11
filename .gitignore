@@ -120,10 +120,9 @@ node_modules
 /DESIGN.md
 /GLOSSARY.md
 /PRODUCT.md
+.omp
+.agents
 
 # Local Beads issue tracking
 /.beads/
 .beads.gate.lock
-
-# Local application verification skill and proof artifacts
-/.agents/skills/verify-poe-editor/

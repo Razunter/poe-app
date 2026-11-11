@@ -2,12 +2,11 @@ import { getYouTubeData, type YouTubeData } from '#lib/api/getYouTubeData.remote
 import { proxy } from '#lib/api/proxy.remote.ts'
 import { buildsData } from '#lib/BuildsData.svelte.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
+import { getYouTubeVideoId } from '#lib/BuildsProcessing/youtubeIntake.ts'
 import type { Build } from '#lib/schema/Build.schema.ts'
 import { log, progressBar, syncInProgress } from '#lib/stores.ts'
 import { SvelteDate } from 'svelte/reactivity'
 import { get } from 'svelte/store'
-
-const videoIDPattern = /^[\w-]+$/u
 
 const logFailure = (error: unknown, title: string) => {
   const message = typeof error === 'object' && error !== null && 'message' in error ? error.message : error
@@ -59,14 +58,8 @@ const updateBuildVersions = async (build: Build) => {
 
 const updateBuildVideo = async (build: Build) => {
   if (build.video) {
-    const videoUrl = new URL(build.video)
-    const videoID = videoUrl.searchParams.get('v')
-    if (
-      !['www.youtube.com', 'youtube.com'].includes(videoUrl.hostname) ||
-      videoUrl.pathname !== '/watch' ||
-      !videoID ||
-      !videoIDPattern.test(videoID)
-    ) {
+    const videoID = getYouTubeVideoId(build.video)
+    if (!videoID) {
       log.update((entries) => entries.set(new Date(), `Unsupported YouTube lookup: ${build.title}\n${build.video}`))
       return build
     }
@@ -90,7 +83,7 @@ const updateBuildVideo = async (build: Build) => {
         return {
           ...build,
           videothumb: {
-            '480w': thumbs.high.url,
+            ...(thumbs.high ? { '480w': thumbs.high.url } : {}),
             ...(thumbs.standard ? { '640w': thumbs.standard.url } : {}),
             ...(thumbs.maxres ? { '1280w': thumbs.maxres.url } : {}),
           },

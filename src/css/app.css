@@ -330,6 +330,81 @@
 .build-editor .editor-title-row > button {
   height: 44px;
 }
+.build-editor-form:has(.editor-review) {
+  grid-template-areas: "review review" "title title" "type author" "video url" "versions versions" "pin skip";
+}
+.build-editor .editor-review {
+  grid-area: review;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #3b4b63;
+}
+.build-editor .editor-review > button {
+  justify-self: start;
+}
+.build-editor .editor-review h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.build-editor .editor-review p {
+  color: #b4bfd0;
+}
+.build-editor .editor-review a {
+  color: #c4d9f8;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.build-editor .editor-media-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+.build-editor .editor-media-comparison > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+.build-editor .editor-media-comparison img {
+  width: 160px;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.build-editor .editor-author-suggestions,
+.build-editor .editor-version-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.build-editor .editor-author-suggestions > span {
+  width: 100%;
+  color: #b4bfd0;
+  font-size: 12px;
+}
+.build-editor .editor-version {
+  border: 1px solid #66758d;
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #b4bfd0;
+  font-size: 12px;
+}
+.build-editor .editor-version-current {
+  border-color: #547c65;
+  color: #b9dfc7;
+}
+.build-editor :is(button, a, input, [role="combobox"]):focus-visible {
+  outline: 2px solid #c4d9f8;
+  outline-offset: 2px;
+}
+.build-editor .editor-intake-error {
+  padding: 16px 20px 0;
+}
 @media (max-width: 580px) {
   .build-editor-form {
     display: flex;

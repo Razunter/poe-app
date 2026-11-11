@@ -12,7 +12,11 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import * as depend from 'eslint-plugin-depend'
 import { createNodeResolver } from 'eslint-plugin-import-x'
 import eslintPluginSvelte from 'eslint-plugin-svelte'
+import { includeIgnoreFile } from 'eslint/config'
 import globals from 'globals'
+import { fileURLToPath } from 'node:url'
+
+const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url))
 
 const newPrettierConfig = (canonicalPrettier[0].rules?.['prettier/prettier'] as [number, Record<string, unknown>])[1]
 newPrettierConfig.semi = false
@@ -89,6 +93,7 @@ const canonicalStrictTSRules = { ...canonicalTSTC[0].rules }
 delete canonicalStrictTSRules['@typescript-eslint/no-throw-literal']
 
 export default [
+  includeIgnoreFile(gitignorePath, { gitignoreResolution: true }),
   ...auto,
   ...eslintPluginSvelte.configs['flat/recommended'],
   depend.configs['flat/recommended'],
