@@ -1,6 +1,13 @@
-import { type BuildsDataFile, BuildsDataSchema } from '../src/lib/schema/BuildsData.schema.ts'
+import { type BuildsData, type BuildsDataFile, BuildsDataSchema } from '../src/lib/schema/BuildsData.schema.ts'
 import { GameVersionsSchema } from '../src/lib/schema/GameVersion.schema.ts'
-import { collectionPath, expect, test } from './collectionTest.ts'
+import {
+  collectionPath,
+  expect,
+  openAddBuild,
+  openManualEditor,
+  saveBrowserCollection,
+  test,
+} from './collectionTest.ts'
 import { createSyncHarness } from './syncHarness.ts'
 import type { Page } from '@playwright/test'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -25,9 +32,16 @@ const editorCollection = (): BuildsDataFile => ({
   ],
 })
 
-const saveCollection = async (page: Page) => {
-  await page.getByRole('button', { name: 'Save', exact: true }).click()
-  await expect(page.getByText('File saved successfully', { exact: true })).toBeVisible()
+const editorVersions = {
+  currentVersion: '3.26',
+  versions: [{ version: '3.26', name: 'Test league' }],
+}
+const saveCollection = async (
+  page: Page,
+  expected: BuildsDataFile,
+  versions: Pick<BuildsData, 'currentVersion' | 'versions'> = editorVersions,
+) => {
+  await saveBrowserCollection(page, { ...expected, ...versions })
 }
 
 const selectCategory = async (page: Page, category: string) => {
@@ -108,7 +122,6 @@ for (const move of [false, true]) {
 
     await saveDialog(page)
     await expect(page.getByRole('dialog')).toHaveCount(0)
-    await saveCollection(page)
     const edited = { ...collection.buildList[0].builds[0], url: 'https://example.com/edited' }
     if (move) {
       collection.buildList[0].builds.shift()
@@ -117,7 +130,7 @@ for (const move of [false, true]) {
       collection.buildList[0].builds[0] = edited
     }
 
-    expect(readCollection()).toEqual(collection)
+    await saveCollection(page, collection)
     await page.reload()
     await expect(page.locator('article')).toHaveCount(3)
     await expect(page.getByRole('link', { name: 'https://example.com/original', exact: true })).toHaveCount(0)
@@ -143,8 +156,7 @@ for (const move of [false, true]) {
     await expect(page.getByText('Duplicate URL: Same title', { exact: true })).toBeVisible()
     await page.keyboard.press('Escape')
     await expect(page.getByRole('dialog')).toHaveCount(0)
-    await saveCollection(page)
-    expect(readCollection()).toEqual(collection)
+    await saveCollection(page, collection)
   })
 }
 
@@ -156,9 +168,8 @@ test('duplicate URL allows one original but rejects another record with that URL
   await page.getByLabel('Title', { exact: true }).fill('Renamed original')
   await saveDialog(page)
   await expect(page.getByRole('heading', { name: 'Renamed original', exact: true })).toBeVisible()
-  await saveCollection(page)
   collection.buildList[0].builds[0].title = 'Renamed original'
-  expect(readCollection()).toEqual(collection)
+  await saveCollection(page, collection)
 
   collection.buildList[1].builds[0].url = 'https://example.com/original'
   writeFileSync(collectionFile, JSON.stringify(collection))
@@ -177,16 +188,15 @@ test('duplicate URL gives new builds no self exemption even when the existing ti
   collection.buildList[0].builds[0].title = ''
   writeFileSync(collectionFile, JSON.stringify(collection))
   await page.goto('/')
-  await page.locator('#melee').getByRole('button', { name: 'Add build', exact: true }).click()
-  await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
+  await openAddBuild(page)
+  await openManualEditor(page)
   await page.getByLabel('Title', { exact: true }).fill('Same title')
   await page.getByLabel('URL', { exact: true }).fill('https://example.com/original')
   await saveDialog(page)
   await expect(page.getByRole('dialog')).toBeVisible()
   await expect(page.getByRole('dialog').getByText('https://example.com/original', { exact: false })).toBeVisible()
   await page.keyboard.press('Escape')
-  await saveCollection(page)
-  expect(readCollection()).toEqual(collection)
+  await saveCollection(page, collection)
 })
 
 test('optional video clears video and thumbnails through save and reload', async ({ page }) => {
@@ -198,10 +208,9 @@ test('optional video clears video and thumbnails through save and reload', async
   await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
   await page.getByLabel('Video URL', { exact: true }).fill('')
   await saveDialog(page)
-  await saveCollection(page)
   delete collection.buildList[0].builds[0].video
   delete collection.buildList[0].builds[0].videothumb
-  expect(readCollection()).toEqual(collection)
+  await saveCollection(page, collection)
   await page.reload()
   await expect(page.locator('#melee article').first().getByRole('img')).toHaveCount(0)
   await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
@@ -220,7 +229,7 @@ test('optional video rejects malformed nonempty input before applying any collec
   await expect(page.getByRole('dialog')).toBeVisible()
   expect(readCollection()).toEqual(collection)
   await page.getByRole('button', { name: 'Close', exact: true }).click()
-  await saveCollection(page)
+  await saveCollection(page, collection)
   await page.reload()
   await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
   await expect(page.getByLabel('Title', { exact: true })).toHaveValue('Same title')
@@ -281,10 +290,9 @@ test('version format rejects malformed separator and saves valid multipart setti
     await page.getByRole('button', { name: 'Sort builds', exact: true }).click()
     await page.getByRole('button', { name: 'Sync builds', exact: true }).click()
     await expect(page.getByText('Sync complete', { exact: true })).toBeVisible()
-    await saveCollection(page)
-    expect(JSON.parse(readFileSync(path.join(collectionPath, 'versions.json'), 'utf8')).versions).toContainEqual({
-      version: '3.26.1',
-      name: 'Multipart league',
+    await saveCollection(page, editorCollection(), {
+      ...editorVersions,
+      versions: [...editorVersions.versions, { version: '3.26.1', name: 'Multipart league' }],
     })
     await page.reload()
     await page.getByRole('button', { name: 'Settings', exact: true }).click()

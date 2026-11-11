@@ -106,7 +106,9 @@ export default [
       },
     },
     settings: {
-      'import-x/resolver-next': [createTypeScriptImportResolver({ extensions: ['.ts', '.tsx'] }), createNodeResolver()],
+      // Runtime entrypoints can share declarations without being the same module.
+      'import-x/resolver-next': [createNodeResolver(), createTypeScriptImportResolver({ extensions: ['.ts', '.tsx'] })],
+      'import-x/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx', '.js', '.mjs', '.cjs'] },
     },
   },
   {

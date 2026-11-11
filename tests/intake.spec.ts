@@ -1,6 +1,13 @@
 import type { Build } from '../src/lib/schema/Build.schema.ts'
 import { type BuildsDataFile } from '../src/lib/schema/BuildsData.schema.ts'
-import { collectionPath, test as collectionTest, expect } from './collectionTest.ts'
+import {
+  openAddBuild as add,
+  collectionPath,
+  test as collectionTest,
+  expect,
+  openManualEditor,
+  saveBrowserCollection,
+} from './collectionTest.ts'
 import { createSyncHarness, deferred, type SyncHarness } from './syncHarness.ts'
 import type { Locator, Page } from '@playwright/test'
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -114,10 +121,6 @@ const test = collectionTest.extend<{ sync: SyncHarness }>({
     }
   },
 })
-const add = async (page: Page, category = 'melee') => {
-  await page.locator(`#${category}`).getByRole('button', { name: 'Add build', exact: true }).click()
-  await expect(page.getByLabel('New YouTube URL', { exact: true })).toBeFocused()
-}
 
 const lookup = async (page: Page, url = newUrl) => {
   await page.getByLabel('New YouTube URL', { exact: true }).fill(url)
@@ -145,20 +148,7 @@ const apply = async (page: Page) => {
 }
 
 const persist = async (page: Page, expected: BuildsDataFile) => {
-  await page.getByRole('button', { name: 'Save', exact: true }).click()
-  const normalize = (collection: BuildsDataFile) => ({
-    ...collection,
-    buildList: collection.buildList.map((category) => ({
-      ...category,
-      builds: category.builds.map((build) => ({ pin: false, skip: false, ...build })),
-    })),
-  })
-  await expect
-    .poll(() => {
-      const [savedVersions, savedCollection] = readPair()
-      return [savedVersions, normalize(savedCollection)]
-    })
-    .toEqual([versions, normalize(expected)])
+  await saveBrowserCollection(page, { ...expected, ...versions })
 }
 
 const assertOriginal = async (page: Page) => {
@@ -218,7 +208,7 @@ test('AE3 distinguishes invalid, failed, empty and retry states without stale ma
   await expect(candidate(page)).toBeVisible()
   await page.getByLabel('New YouTube URL', { exact: true }).fill(otherUrl)
   await expect(page.getByRole('button', { name: 'Add as new', exact: true })).toHaveCount(0)
-  await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
+  await openManualEditor(page)
   await expect(page.getByLabel('Title', { exact: true })).toHaveValue('')
   await expect(page.locator('.field-author .in-selection')).toHaveCount(0)
   await expect(page.getByLabel('URL', { exact: true })).toHaveValue(otherUrl)
@@ -249,7 +239,7 @@ test('AE3 manual continuation invalidates an in-flight lookup without importing 
   await add(page)
   await lookup(page)
   await expect.poll(() => sync.control.requestedIDs.length).toBe(1)
-  await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
+  await openManualEditor(page)
   await expect(page.getByLabel('URL', { exact: true })).toHaveValue(newUrl)
   const response = page.waitForResponse((result) => result.request().method() === 'POST')
   gate.resolve(undefined)
@@ -271,7 +261,7 @@ test('AE3 AE9 manual written-guide continuation trims the URL and saves without 
   await expect(candidate(page)).toBeVisible()
   const manualUrl = 'https://example.com/manual-written'
   await page.getByLabel('New YouTube URL', { exact: true }).fill(`  ${manualUrl}  `)
-  await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
+  await openManualEditor(page)
   await expect(page.getByLabel('URL', { exact: true })).toHaveValue(manualUrl)
   await expect(page.getByLabel('Video URL', { exact: true })).toHaveValue('')
   await expect(page.locator('.field-author .in-selection')).toHaveCount(0)
@@ -467,8 +457,7 @@ test('AE7 known author has no badge and canceled new author leaves no saved iden
   await expect(page.getByText('New author', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close', exact: true }).click()
   await add(page)
-  await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
-  await expect(page.getByLabel('Title', { exact: true })).toBeFocused()
+  await openManualEditor(page)
   await choose(page.locator('#editBuildAuthor'), 'MAGEFIST')
   await expect(page.getByText('New author', { exact: true })).toBeVisible()
   await page.keyboard.press('Escape')
@@ -589,7 +578,7 @@ for (const direct of [false, true]) {
       await page.locator('#melee article').first().getByRole('button', { name: 'Edit', exact: true }).click()
     } else {
       await add(page)
-      await page.getByRole('button', { name: 'Manual entry', exact: true }).click()
+      await openManualEditor(page)
     }
 
     const title = page.getByLabel('Title', { exact: true })

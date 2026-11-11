@@ -1,6 +1,6 @@
 import { type BuildsData, BuildsDataSchema } from '#lib/schema/BuildsData.schema.ts'
 import { loadCollection, saveCollection } from '#lib/server/collectionPersistence.ts'
-import { collectionPath, test as collectionTest, expect } from './collectionTest.ts'
+import { collectionPath, test as collectionTest, expect, saveBrowserCollection } from './collectionTest.ts'
 import { execFile } from 'node:child_process'
 import fs from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -384,8 +384,8 @@ test('historical versions remain available through Show outdated and explicit br
   await page.getByRole('checkbox', { name: 'Show outdated' }).check()
   await expect(page.getByRole('heading', { name: 'Historical starter' })).toBeVisible()
   expect(await pairBytes(collectionPath)).toEqual(before)
-  await page.getByRole('button', { name: 'Save', exact: true }).click()
-  await expect(page.getByText('File saved successfully', { exact: true })).toBeVisible()
+  await saveBrowserCollection(page, data)
+  await saveBrowserCollection(page, data)
   expect(await loadCollection(collectionPath)).toEqual(data)
   await page.reload()
   await page.getByRole('checkbox', { name: 'Show outdated' }).check()

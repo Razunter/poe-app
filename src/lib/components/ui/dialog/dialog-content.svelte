@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cn, type WithoutChildrenOrChild } from '#lib/utils.js'
+  import DialogOverlay from './dialog-overlay.svelte'
   import DialogPortal from './dialog-portal.svelte'
-  import * as Dialog from './index.ts'
   import XIcon from '@iconify-icons/mdi/close'
   import Icon from '@iconify/svelte'
   import { Dialog as DialogPrimitive } from 'bits-ui'
@@ -22,7 +22,7 @@
 </script>
 
 <DialogPortal {...portalProps}>
-  <Dialog.Overlay />
+  <DialogOverlay />
   <DialogPrimitive.Content
     bind:ref
     data-slot="dialog-content"

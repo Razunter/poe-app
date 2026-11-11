@@ -72,7 +72,8 @@
     "preview": "vite preview",
     "start": "bun --bun run build/",
     "test": "playwright test",
-    "types-sync": "svelte-kit sync"
+    "types-sync": "svelte-kit sync",
+    "verify": "bun run check && bun run lint && bun run test"
   },
   "trustedDependencies": [
     "core-js-pure",
