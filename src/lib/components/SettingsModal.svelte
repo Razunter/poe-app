@@ -92,7 +92,7 @@
       <hr class="border-gray-600 my-4" />
       <h3 class="text-white mb-3">Versions</h3>
       <div class="mb-3">
-        <Button size="lg" onclick={addVersion}>
+        <Button size="lg" variant="success" onclick={addVersion}>
           <Icon icon={plusThick} class="w-5 h-5" />
           <span>Add new version</span>
         </Button>
@@ -161,7 +161,7 @@
       </Accordion.Root>
     </form>
     <Dialog.Footer class="border-t border-gray-600 pt-6">
-      <Button type="submit" onclick={formSubmit}>
+      <Button type="submit" variant="success" onclick={formSubmit}>
         <Icon icon={contentSave} class="w-5 h-5" />
         <span>Save</span>
       </Button>

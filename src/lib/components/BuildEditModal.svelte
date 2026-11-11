@@ -124,120 +124,144 @@
 
 {#if modalOpen}
   <Dialog.Root bind:open={modalOpen}>
-    <Dialog.Content class="sm:max-w-[800px] h-full max-h-[90dvh]">
-      <Dialog.Header>
-        <Dialog.Title>
-          <Icon icon={pencilIcon} class="inline mr-2" />
-          Edit build
-        </Dialog.Title>
-      </Dialog.Header>
-      <form bind:this={form} onsubmit={formSubmit} class="overflow-y-auto flex flex-col gap-4">
-        {#if saveError}
-          <p role="alert" class="text-red-500">{saveError}</p>
-        {/if}
-        <Field.Field>
-          <Field.Label for="editBuildType">Type</Field.Label>
-          <Svelecte
-            inputId="editBuildType"
-            class="svelecte--dark"
-            options={buildTypesArray}
-            bind:value={buildType}
-            allowEditing
-            creatable
-            creatablePrefix=""
-            keepCreated
-            onCreateOption={(newOption: App.SvelecteOption) => {
-              buildType = newOption.value
-            }}
-          />
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="editBuildTitle">Title</Field.Label>
-          <div class="flex gap-4">
-            <Input id="editBuildTitle" required bind:value={build.title} />
-            <Button
-              title="transform to lowercase"
-              class="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-r"
-              onclick={() => {
-                build.title = build.title.toLowerCase()
-              }}
-            >
-              low
-            </Button>
-          </div>
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="editBuildAuthor">Author</Field.Label>
-          <Svelecte
-            inputId="editBuildAuthor"
-            class="svelecte--dark"
-            options={authorsArray}
-            bind:value={build.author}
-            clearable
-            allowEditing
-            creatable
-            creatablePrefix=""
-            keepCreated
-            onCreateOption={(newOption: App.SvelecteOption) => {
-              build.author = newOption.value
-            }}
-          />
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="editBuildVideoURL">Video URL</Field.Label>
-          <Input
-            id="editBuildVideoURL"
-            bind:value={build.video}
-            onpaste={(event) => {
-              const paste = event.clipboardData?.getData('text')
-              if (paste && !build.url) {
-                build.url = paste
-              }
-            }}
-          />
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="editBuildURL">URL</Field.Label>
-          <Input id="editBuildURL" required bind:value={build.url} class={invalidUrl === '' ? '' : 'border-red-500'} />
-          {#if invalidUrl}
-            <p class="text-red-500 text-sm mt-1">Duplicate URL: {invalidUrl}</p>
+    <Dialog.Content class="build-editor-modal sm:max-w-[800px] max-h-[90dvh]">
+      <div class="build-editor">
+        <Dialog.Header>
+          <Dialog.Title>
+            <Icon icon={pencilIcon} class="inline mr-2" />
+            Edit build
+          </Dialog.Title>
+        </Dialog.Header>
+        <form bind:this={form} onsubmit={formSubmit} class="build-editor-form">
+          {#if saveError}
+            <p role="alert" class="text-red-500">{saveError}</p>
           {/if}
-        </Field.Field>
-        <Field.Field>
-          <Field.Label for="editBuildVersions">Compatible game versions</Field.Label>
-          <Svelecte
-            inputId="editBuildVersions"
-            class="svelecte--dark"
-            options={versionsArray}
-            bind:value={build.versions}
-            multiple
-          />
-        </Field.Field>
-        <Field.Field orientation="horizontal">
-          <Checkbox bind:checked={() => build.pin ?? false, (checked) => (build.pin = checked)} class="size-4" />
-          <Field.Label>Pin build</Field.Label>
-        </Field.Field>
-        <Field.Field orientation="horizontal">
-          <Checkbox bind:checked={() => build.skip ?? false, (checked) => (build.skip = checked)} class="size-4" />
-          <Field.Label>Skip build</Field.Label>
-        </Field.Field>
-      </form>
-      <Dialog.Footer class="border-t border-gray-600 pt-6">
-        <Button
-          type="reset"
-          variant="destructive"
-          onclick={() => {
-            build = initBuild()
-          }}
-        >
-          <Icon icon={backupRestore} class="w-5 h-5" />
-          <span>Reset</span>
-        </Button>
-        <Button type="submit" onclick={formSubmit}>
-          <Icon icon={contentSave} class="w-5 h-5" />
-          <span>Save</span>
-        </Button>
-      </Dialog.Footer>
+          <Field.Field class="field-title">
+            <Field.Label for="editBuildTitle">Title</Field.Label>
+            <div class="editor-title-row">
+              <Input id="editBuildTitle" required bind:value={build.title} />
+              <Button
+                title="transform to lowercase"
+                class="px-3"
+                variant="secondary"
+                onclick={() => {
+                  build.title = build.title.toLowerCase()
+                }}
+              >
+                low
+              </Button>
+            </div>
+          </Field.Field>
+          <Field.Field class="field-type">
+            <Field.Label for="editBuildType">Type</Field.Label>
+            <Svelecte
+              inputId="editBuildType"
+              class="svelecte--dark"
+              options={buildTypesArray}
+              bind:value={buildType}
+              allowEditing
+              creatable
+              creatablePrefix=""
+              keepCreated
+              onCreateOption={(newOption: App.SvelecteOption) => {
+                buildType = newOption.value
+              }}
+            />
+          </Field.Field>
+          <Field.Field class="field-author">
+            <Field.Label for="editBuildAuthor"
+              >Author {#if build.author && !authorsArray.includes(build.author)}<span class="editor-new-author"
+                  >New author</span
+                >{/if}</Field.Label
+            >
+            <Svelecte
+              inputId="editBuildAuthor"
+              class="svelecte--dark"
+              options={authorsArray}
+              bind:value={build.author}
+              clearable
+              allowEditing
+              creatable
+              creatablePrefix=""
+              keepCreated
+              onCreateOption={(newOption: App.SvelecteOption) => {
+                build.author = newOption.value
+              }}
+            />
+          </Field.Field>
+          <Field.Field class="field-video">
+            <Field.Label for="editBuildVideoURL">Video URL</Field.Label>
+            <Input
+              id="editBuildVideoURL"
+              bind:value={build.video}
+              onpaste={(event) => {
+                const paste = event.clipboardData?.getData('text')
+                if (paste && !build.url) {
+                  build.url = paste
+                }
+              }}
+            />
+          </Field.Field>
+          <Field.Field class="field-url">
+            <Field.Label for="editBuildURL">URL</Field.Label>
+            <Input
+              id="editBuildURL"
+              required
+              bind:value={build.url}
+              class={invalidUrl === '' ? '' : 'border-red-500'}
+            />
+            {#if invalidUrl}
+              <p class="text-red-500 text-sm mt-1">Duplicate URL: {invalidUrl}</p>
+            {/if}
+          </Field.Field>
+          <Field.Field class="field-versions">
+            <Field.Label for="editBuildVersions"
+              >Compatible game versions <span class="editor-current">{buildsData.currentVersion} · current</span
+              ></Field.Label
+            >
+            <Svelecte
+              inputId="editBuildVersions"
+              class="svelecte--dark"
+              options={versionsArray}
+              bind:value={build.versions}
+              multiple
+            />
+          </Field.Field>
+          <Field.Field orientation="horizontal" class="field-pin">
+            <Checkbox
+              id="editBuildPin"
+              bind:checked={() => build.pin ?? false, (checked) => (build.pin = checked)}
+              class="size-4"
+            />
+            <Field.Label for="editBuildPin">Pin build</Field.Label>
+          </Field.Field>
+          <Field.Field orientation="horizontal" class="field-skip">
+            <Checkbox
+              id="editBuildSkip"
+              bind:checked={() => build.skip ?? false, (checked) => (build.skip = checked)}
+              class="size-4"
+            />
+            <Field.Label for="editBuildSkip">Skip build</Field.Label>
+          </Field.Field>
+        </form>
+        <Dialog.Footer>
+          <span class="editor-footnote">Disk save is separate</span>
+          <Button
+            type="reset"
+            variant="destructive"
+            onclick={() => {
+              build = initBuild()
+            }}
+          >
+            <Icon icon={backupRestore} class="w-5 h-5" />
+            <span>Reset</span>
+          </Button>
+          <Button type="submit" variant="success" onclick={formSubmit}>
+            <Icon icon={contentSave} class="w-5 h-5" />
+            <span>Save</span>
+          </Button>
+        </Dialog.Footer>
+      </div>
     </Dialog.Content>
   </Dialog.Root>
 {/if}

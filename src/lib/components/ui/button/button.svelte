@@ -4,25 +4,24 @@
   import { tv, type VariantProps } from 'tailwind-variants'
 
   export const buttonVariants = tv({
-    base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center gap-2 rounded-md cursor-pointer font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    base: "inline-flex min-h-8 min-w-8 shrink-0 items-center gap-2 rounded-sm border border-transparent font-semibold whitespace-nowrap cursor-pointer outline-none transition-[background-color,border-color,color] duration-150 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-button-accent aria-invalid:border-destructive disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     variants: {
       variant: {
-        default: 'bg-blue-600 hover:bg-blue-700 text-white',
-        success: 'bg-green-600 hover:bg-green-700 text-white',
-        white: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-        destructive:
-          'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white',
+        default: 'border-button-accent/60 bg-button-primary text-button-accent hover:bg-button-primary-hover',
+        success: 'border-button-success/60 bg-button-success-surface text-button-success hover:bg-button-success-hover',
+        white: 'border-button-border bg-transparent text-button-foreground hover:border-button-accent hover:bg-button',
+        destructive: 'border-button-danger/60 bg-button-danger-surface text-button-danger hover:bg-button-danger-hover',
         outline:
-          'bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'border-button-border bg-transparent text-button-foreground hover:border-button-accent hover:bg-button',
+        secondary: 'border-button-border bg-button text-button-foreground hover:bg-button-hover',
+        ghost: 'bg-transparent text-button-foreground hover:bg-button',
+        link: 'bg-transparent text-button-accent underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        xl: 'h-12 text-lg rounded-lg px-6 has-[>svg]:px-4',
+        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
+        lg: 'h-10 px-6 has-[>svg]:px-4',
+        xl: 'h-12 px-6 text-lg leading-6 has-[>svg]:px-4',
         icon: 'size-9',
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',

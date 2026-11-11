@@ -77,6 +77,7 @@
       </Button>
       <Button
         class="w-full justify-center"
+        variant="destructive"
         size="xl"
         onclick={() => {
           removeOutdatedBuilds()

@@ -116,6 +116,10 @@ node_modules
 /CODING_STANDARDS.md
 /REVIEW.md
 /STRATEGY.md
+/.impeccable/
+/DESIGN.md
+/GLOSSARY.md
+/PRODUCT.md
 
 # Local Beads issue tracking
 /.beads/

@@ -117,6 +117,7 @@ export default [
       '.beads',
       '.opencode',
       '.codegraph',
+      '.impeccable',
       'playwright-report',
       'test-results',
     ],
