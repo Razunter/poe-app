@@ -101,6 +101,9 @@ protect against independent external writers or arbitrary hardware failure.
 After changing `JSON_PATH`, `YOUTUBE_API_KEY`, or `PUBLIC_ORIGIN`, restart the
 development server or rebuild production output.
 
+**Cleanup outdated** treats supported YouTube watch and share URLs alike. It removes
+outdated YouTube builds while protecting current and compatible builds.
+
 ## Optional syncing
 
 **Sync builds** checks guide versions for outdated builds and fetches missing
@@ -111,9 +114,10 @@ YouTube thumbnails. It reads the version a guide declares in its page title:
   version, the guide's league badge is used
 - PoE Vault guides (`/guides/…`)
 
-Mobalytics is not supported: it answers ordinary requests with a Cloudflare
-challenge. Other pages on these sites, such as news, listings, and PoE 2, are
-reported as unsupported.
+Mobalytics is not supported because it answers ordinary requests with a Cloudflare
+challenge. Sync skips its guide-version checks without logging each build and
+still fetches missing YouTube thumbnails. Other pages on supported sites, such as
+news, listings, and PoE 2, are reported as unsupported.
 
 Each guide costs one page request, with at most two requests per site at a time
 and no retries. Sync adds the exact version the guide declares, even an older
@@ -123,6 +127,9 @@ leaves the build's version tags unchanged and is reported in the log.
 Only one sync runs at a time. The action stays disabled until every lookup
 settles. Edits, additions, deletions, and category moves made during sync survive.
 Fetched fields apply only when their source values are unchanged.
+
+YouTube metadata lookups stop after 15 seconds and report a lookup failure.
+This deadline applies to both intake and Sync builds.
 
 Supported YouTube watch URLs can include query parameters before or after `v`.
 An unsupported lookup leaves the stored video and thumbnail unchanged. Removing a

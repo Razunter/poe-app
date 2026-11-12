@@ -27,7 +27,7 @@ const updateBuildVersions = async (build: Build) => {
   }
 
   const guide = classifyGuideUrl(build.url)
-  if (!guide) {
+  if (!guide || (!guide.supported && guide.source.name === 'Mobalytics')) {
     return build
   }
 

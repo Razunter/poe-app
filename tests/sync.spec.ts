@@ -439,16 +439,22 @@ test('guide version outcomes use the real server parser with one request per sup
       tags: ['3.25'],
       request: true,
     },
+    ...['https://maxroll.gg/poe/news/3-30-patch-notes', 'https://maxroll.gg/poe2/build-guides/some-build'].map(
+      (url, index) => ({
+        title: `unsupported route ${String.fromCodePoint(65 + index)}`,
+        url,
+        tags: ['3.25'],
+        log: 'Unsupported',
+        request: false,
+      }),
+    ),
     ...[
-      'https://maxroll.gg/poe/news/3-30-patch-notes',
-      'https://maxroll.gg/poe2/build-guides/some-build',
       'https://mobalytics.gg/poe/builds/tesla-hierophant-3-27',
       'https://mobalytics.gg/poe/profile/fastaf/builds/the-ultimate-uber-bosser-msoz-3-27',
     ].map((url, index) => ({
-      title: `unsupported route ${String.fromCodePoint(65 + index)}`,
+      title: `unsupported Mobalytics guide ${String.fromCodePoint(65 + index)}`,
       url,
       tags: ['3.25'],
-      log: 'Unsupported',
       request: false,
     })),
     {
@@ -503,6 +509,11 @@ test('guide version outcomes use the real server parser with one request per sup
         result.logs.filter((entry) => entry.includes(row.title)),
         row.title,
       ).toEqual(expect.arrayContaining([expect.stringContaining(row.log)]))
+    } else {
+      expect(
+        result.logs.filter((entry) => entry.includes(row.title)),
+        row.title,
+      ).toEqual([])
     }
   }
 
