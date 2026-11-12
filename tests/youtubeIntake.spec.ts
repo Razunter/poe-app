@@ -177,7 +177,7 @@ test('new draft prefills metadata and independent current-version defaults', () 
   expect(newBuildDraft(videoUrl, video, '3.30').versions).toEqual(['3.30'])
 })
 
-test('metadata command handler validates IDs and consumed fields before returning upstream data', async () => {
+test('metadata command validates upstream data and bounds stalled requests and bodies without blocking later lookups', async () => {
   const server = await createServer({
     configFile: false,
     cacheDir: '.svelte-kit/youtube-intake-test-cache',
@@ -190,7 +190,7 @@ test('metadata command handler validates IDs and consumed fields before returnin
         name: 'youtube-command-boundaries',
         enforce: 'pre',
         resolveId(id) {
-          if (['$app/env/private', '$app/server', 'wretch'].includes(id)) {
+          if (['$app/env/private', '$app/server'].includes(id)) {
             return '\0youtube-test:' + id
           }
 
@@ -205,28 +205,50 @@ test('metadata command handler validates IDs and consumed fields before returnin
             return 'export const YOUTUBE_API_KEY = "test&key=value"'
           }
 
-          if (id === '\0youtube-test:wretch') {
-            return `export const control = { urls: [], result: undefined, failure: undefined };
-            export default url => {
-              control.urls.push(url);
-              return { get: () => ({ json: async () => {
-                if (control.failure) throw control.failure;
-                return control.result;
-              } }) };
-            }`
-          }
-
           return null
         },
       },
     ],
   })
+  const originalFetch = globalThis.fetch
+  const originalTimeout = AbortSignal.timeout
+  const control: {
+    urls: string[]
+    result: unknown
+    failure?: Error
+    stall?: 'body' | 'fetch'
+    started?: () => void
+  } = { urls: [], result: undefined }
   try {
+    globalThis.fetch = async (input, init) => {
+      control.urls.push(String(input))
+      if (control.failure) {
+        throw control.failure
+      }
+
+      if (control.stall === 'fetch') {
+        const { promise, reject } = Promise.withResolvers<Response>()
+        init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), { once: true })
+        control.started?.()
+        return promise
+      }
+
+      if (control.stall === 'body') {
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              init?.signal?.addEventListener('abort', () => controller.error(init.signal?.reason), { once: true })
+              control.started?.()
+            },
+          }),
+        )
+      }
+
+      return Response.json(control.result)
+    }
+
     const { getYouTubeData } = (await server.ssrLoadModule(path.resolve('src/lib/api/getYouTubeData.remote.ts'))) as {
       getYouTubeData: (input: unknown) => Promise<YouTubeData>
-    }
-    const { control } = (await server.ssrLoadModule('wretch')) as {
-      control: { urls: string[]; result: unknown; failure?: Error }
     }
     control.result = { items: [video] }
     for (const id of ['', 'short', `${newId}&key=attacker`, `https://youtu.be/${newId}`, 42, null]) {
@@ -261,11 +283,50 @@ test('metadata command handler validates IDs and consumed fields before returnin
 
     control.result = { items: [{ id: newId, snippet: { title: 'Valid', channelTitle: 'Channel' } }] }
     expect((await getYouTubeData(newId)).items[0].snippet.thumbnails).toEqual({})
-    control.result = { items: [] }
+    Object.assign(control, { result: { items: [] } })
     expect(await getYouTubeData(newId)).toEqual({ items: [] })
-    control.failure = new Error('Upstream unavailable')
+    Object.assign(control, { failure: new Error('Upstream unavailable') })
     await expect(getYouTubeData(newId)).rejects.toMatchObject({ status: 500 })
+    Object.assign(control, { failure: undefined })
+    for (const stall of ['fetch', 'body'] as const) {
+      const deadline = new AbortController()
+      const timeouts: number[] = []
+      AbortSignal.timeout = (milliseconds) => {
+        timeouts.push(milliseconds)
+        return deadline.signal
+      }
+
+      control.stall = stall
+      const started = Promise.withResolvers<undefined>()
+      control.started = () => started.resolve(undefined)
+      const expired = Promise.withResolvers<never>()
+      const watchdog = setTimeout(
+        () => expired.reject(new Error('YouTube lookup did not settle after its deadline')),
+        1_000,
+      )
+      const lookup = Promise.race([getYouTubeData(newId), expired.promise])
+      try {
+        await Promise.race([started.promise, expired.promise])
+        deadline.abort(new DOMException('Deadline exceeded', 'TimeoutError'))
+        await expect(lookup).rejects.toMatchObject({
+          status: 500,
+          body: { message: 'YouTube metadata lookup failed' },
+        })
+        expect(timeouts).toEqual([15_000])
+      } finally {
+        clearTimeout(watchdog)
+        deadline.abort()
+      }
+
+      control.stall = undefined
+      control.started = undefined
+      AbortSignal.timeout = originalTimeout
+      control.result = { items: [video] }
+      expect(await getYouTubeData(newId)).toEqual({ items: [video] })
+    }
   } finally {
+    Object.assign(globalThis, { fetch: originalFetch })
+    Object.assign(AbortSignal, { timeout: originalTimeout })
     await server.close()
   }
 })

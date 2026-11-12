@@ -35,7 +35,12 @@ export const getYouTubeData = command(videoIdSchema, async (videoID) => {
   url.searchParams.set('part', 'snippet')
 
   try {
-    const data = dataSchema.parse(await wretch(url.toString()).get().json<unknown>())
+    const data = dataSchema.parse(
+      await wretch(url.toString())
+        .options({ signal: AbortSignal.timeout(15_000) })
+        .get()
+        .json<unknown>(),
+    )
     if (data.items.some((item) => item.id !== videoID)) {
       throw new Error('YouTube returned a different video')
     }
