@@ -74,7 +74,7 @@
     "test": "playwright test",
     "types-sync": "svelte-kit sync",
     "verify": "bun run check && bun run lint && bun run test",
-    "verify:commit": "bun verifyCommit.js"
+    "verify:commit": "bun scripts/verifyCommit.js"
   },
   "trustedDependencies": [
     "core-js-pure",

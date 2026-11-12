@@ -40,7 +40,8 @@ test('commit checks lint staged contents without reading unstaged edits', () => 
   const directory = mkdtempSync(path.join(tmpdir(), 'poe-commit-lint-'))
   const file = path.join(directory, 'src/file with spaces.js')
   const git = (...args: string[]) => execFileSync('git', args, { cwd: directory, encoding: 'utf8' })
-  const check = () => spawnSync('bun', [path.join(root, 'verifyCommit.js')], { cwd: directory, encoding: 'utf8' })
+  const check = () =>
+    spawnSync('bun', [path.join(root, 'scripts/verifyCommit.js')], { cwd: directory, encoding: 'utf8' })
 
   try {
     git('init', '-q')
