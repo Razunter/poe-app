@@ -1,6 +1,7 @@
 import { buildsData } from '#lib/BuildsData.svelte.ts'
 import { getNewestVersion } from '#lib/BuildsProcessing/getNewestVersion.ts'
 import { isOutdatedBuild } from '#lib/BuildsProcessing/isOutdatedBuild.ts'
+import { getYouTubeVideoId } from '#lib/BuildsProcessing/youtubeIntake.ts'
 import { log } from '#lib/stores.ts'
 import { compareVersions } from 'compare-versions'
 
@@ -19,7 +20,7 @@ export const removeOutdatedBuilds = () => {
 
       if (isOutdatedBuild(build.versions)) {
         // YT-only
-        if (build.url.includes('youtube.com')) {
+        if (getYouTubeVideoId(build.url)) {
           leave = false
           count.YT += 1
           count.Total += 1

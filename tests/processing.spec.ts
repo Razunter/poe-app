@@ -3,10 +3,10 @@ import { collectionPath, expect, test } from './collectionTest.ts'
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const build = (title: string, versions: string[], youtube = false): Build => ({
+const build = (title: string, versions: string[], url = `https://example.com/${title}`): Build => ({
   title,
   versions,
-  url: youtube ? `https://www.youtube.com/watch?v=${title}` : `https://example.com/${title}`,
+  url,
 })
 
 const loadCollection = async (
@@ -64,9 +64,16 @@ test('release distance retains adjacent patches and two releases but removes mor
       build('two-releases', ['3.25']),
       build('three-releases', ['3.24']),
       build('unknown-age', ['3.19']),
-      build('current-protected', ['3.26.1'], true),
-      build('compatible-protected', ['3.23'], true),
-      build('outdated-youtube', ['3.26'], true),
+      build('current-protected', ['3.26.1'], 'https://www.youtube.com/watch?v=current0001'),
+      build('compatible-protected', ['3.23'], 'https://www.youtube.com/watch?v=compat00001'),
+      build('current-share-protected', ['3.26.1'], 'https://youtu.be/current0001'),
+      build('compatible-share-protected', ['3.23'], 'https://youtu.be/compat00001'),
+      build('outdated-youtube', ['3.26'], 'https://www.youtube.com/watch?v=outdated001'),
+      build('outdated-share', ['3.26'], 'https://youtu.be/outdated001'),
+      build('recent-incidental-path', ['3.26'], 'https://example.com/youtube.com/recent'),
+      build('recent-incidental-query', ['3.25'], 'https://example.com/recent?source=youtube.com'),
+      build('old-incidental-path', ['3.24'], 'https://example.com/youtube.com/old'),
+      build('old-incidental-query', ['3.24'], 'https://example.com/old?source=youtube.com'),
     ],
     ['3.23'],
   )
@@ -77,8 +84,12 @@ test('release distance retains adjacent patches and two releases but removes mor
     'https://example.com/adjacent-base',
     'https://example.com/two-releases',
     'https://example.com/unknown-age',
-    'https://www.youtube.com/watch?v=current-protected',
-    'https://www.youtube.com/watch?v=compatible-protected',
+    'https://www.youtube.com/watch?v=current0001',
+    'https://www.youtube.com/watch?v=compat00001',
+    'https://youtu.be/current0001',
+    'https://youtu.be/compat00001',
+    'https://example.com/youtube.com/recent',
+    'https://example.com/recent?source=youtube.com',
   ])
 })
 
@@ -86,7 +97,10 @@ test('release distance retains non-YouTube builds when the current release is un
   await loadCollection(
     '3.26.1',
     ['3.20', '3.21', '3.22', '3.23'],
-    [build('unknown-current', ['3.20']), build('outdated-youtube', ['3.20'], true)],
+    [
+      build('unknown-current', ['3.20']),
+      build('outdated-youtube', ['3.20'], 'https://www.youtube.com/watch?v=outdated001'),
+    ],
   )
   await page.goto('/')
   await page.getByRole('checkbox', { name: 'Show outdated' }).check()
